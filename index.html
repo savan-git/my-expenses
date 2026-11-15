@@ -2,80 +2,107 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2-User Live Expense Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<title>Expense Tracker</title>
 <style>
   :root { --primary:#2563eb; --success:#16a34a; --danger:#dc2626; --warning:#d97706; --bg:#f1f5f9; --card:#fff; --text:#1e293b; --border:#cbd5e1; }
-  body { font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 12px; }
-  .container { max-width: 1250px; margin: 0 auto; }
-  .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-  h1, h3, h4 { margin: 0 0 8px 0; font-size: 1.25rem; }
-  .sync-bar { background: #e0f2fe; border: 1px solid #7dd3fc; padding: 8px 12px; border-radius: 6px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; font-size: 0.85rem; }
-  .sync-bar input { flex: 1; min-width: 210px; padding: 6px 8px; border: 1px solid #94a3b8; border-radius: 4px; }
-  .live-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; }
-  .mini-card { background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 7px 11px; min-width: 125px; flex-shrink: 0; }
-  .mini-card small { display: block; font-size: 0.7rem; color: #64748b; font-weight: 600; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px 10px 76px 10px; }
+  .container { max-width: 1150px; margin: 0 auto; }
+  
+  /* Top Header & Status Pill */
+  .top-bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .title-area { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  h1 { margin: 0; font-size: 1.15rem; font-weight: 700; }
+  h3, h4 { margin: 0 0 10px 0; font-size: 1rem; }
+  
+  .status-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; background: #e2e8f0; color: #334155; }
+  .status-pill.online { background: #dcfce7; color: #166534; }
+  .status-pill.offline { background: #fee2e2; color: #991b1b; }
+  .edit-db-btn { background: #ffffff; border: 1px solid #fca5a5; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; padding: 0; }
+  
+  .db-drawer { display: none; background: #fff1f2; border: 1px solid #fecdd3; padding: 10px; border-radius: 8px; margin-bottom: 10px; gap: 6px; align-items: center; }
+  .db-drawer.show { display: flex; flex-wrap: wrap; }
+  .db-drawer input { flex: 1; min-width: 200px; font-size: 14px; padding: 8px; }
+
+  .top-actions { display: flex; gap: 6px; }
+  .btn-icon { padding: 7px 10px; border: none; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer; color: #fff; }
+
+  /* Horizontal Balance Cards */
+  .live-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; scrollbar-width: none; }
+  .live-strip::-webkit-scrollbar { display: none; }
+  .mini-card { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 8px 11px; min-width: 118px; flex-shrink: 0; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+  .mini-card small { display: block; font-size: 0.68rem; color: #64748b; font-weight: 600; margin-bottom: 2px; }
   .mini-card strong { font-size: 0.92rem; }
-  .tabs { display: flex; gap: 5px; overflow-x: auto; margin-bottom: 12px; border-bottom: 2px solid var(--border); padding-bottom: 6px; }
-  .tab-btn { background: #e2e8f0; color: #334155; border: none; padding: 8px 13px; border-radius: 6px; font-weight: 600; cursor: pointer; white-space: nowrap; font-size: 0.85rem; }
-  .tab-btn.active { background: var(--primary); color: #fff; }
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
-  .card { background: var(--card); padding: 14px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 14px; }
-  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 10px; }
+
+  /* Cards & Mobile Inputs (16px prevents iOS/Android auto-zoom) */
+  .card { background: var(--card); padding: 14px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 12px; }
+  .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  @media (min-width: 768px) { .form-grid { grid-template-columns: repeat(4, 1fr); } }
   .form-group { display: flex; flex-direction: column; }
-  label { font-size: 0.78rem; font-weight: 600; margin-bottom: 3px; color: #475569; }
-  input, select { padding: 7px; border: 1px solid var(--border); border-radius: 5px; font-size: 0.88rem; }
+  .span-2 { grid-column: span 2; }
+  label { font-size: 0.75rem; font-weight: 600; margin-bottom: 4px; color: #475569; }
+  input, select { width: 100%; padding: 10px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 16px; background: #fff; }
+  input:focus, select:focus { outline: none; border-color: var(--primary); }
+
   .btn-group { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
-  .btn { padding: 8px 13px; border: none; border-radius: 5px; font-size: 0.85rem; font-weight: 600; cursor: pointer; color: #fff; }
-  .btn-primary { background: var(--primary); }
+  .btn { padding: 11px 16px; border: none; border-radius: 6px; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: #fff; }
+  .btn-primary { background: var(--primary); flex: 1; min-width: 130px; }
   .btn-success { background: var(--success); }
   .btn-warning { background: var(--warning); }
   .btn-danger { background: var(--danger); }
-  .btn-sm { padding: 4px 7px; font-size: 0.75rem; border: none; border-radius: 4px; color: #fff; cursor: pointer; }
-  .table-wrap { overflow-x: auto; max-height: 520px; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
-  th, td { padding: 7px 8px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  .btn-sm { padding: 5px 8px; font-size: 0.75rem; border: none; border-radius: 4px; color: #fff; cursor: pointer; }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; max-height: 55vh; border-radius: 6px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th, td { padding: 8px 9px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
   th { background: #0f172a; color: #fff; position: sticky; top: 0; z-index: 2; }
-  th.sortable { cursor: pointer; user-select: none; }
-  th.sortable:hover { background: #1e293b; }
-  tr.filter-row th { background: #334155; padding: 4px; top: 33px; }
-  tr.filter-row input, tr.filter-row select { width: 100%; box-sizing: border-box; padding: 4px; font-size: 0.78rem; border-radius: 3px; border: none; }
-  tr:hover { background: #f8fafc; }
-  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 14px; }
+  th.sortable { cursor: pointer; }
+  tr.filter-row th { background: #334155; padding: 4px; top: 32px; }
+  tr.filter-row input, tr.filter-row select { padding: 5px; font-size: 13px; border-radius: 4px; border: none; }
+  
+  .grid-2 { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  @media (min-width: 768px) { .grid-2 { grid-template-columns: 1fr 1fr; } }
   .text-green { color: var(--success); font-weight: 700; }
   .text-red { color: var(--danger); font-weight: 700; }
   .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* Fixed Mobile Bottom Tab Bar */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #0f172a; display: flex; justify-content: space-around; padding: 6px 2px; z-index: 99; box-shadow: 0 -2px 8px rgba(0,0,0,0.15); }
+  .nav-btn { background: none; border: none; color: #94a3b8; font-size: 0.7rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 6px; cursor: pointer; flex: 1; }
+  .nav-btn span.ico { font-size: 1.15rem; }
+  .nav-btn.active { color: #38bdf8; }
 </style>
 </head>
 <body>
 <div class="container">
   <div class="top-bar">
-    <h1>Finance Tracker</h1>
-    <div>
+    <div class="title-area">
+      <h1>Expense Tracker</h1>
+      <div id="statusPill" class="status-pill">
+        <span id="syncStatusText">⏳ Connecting...</span>
+        <button id="editDbBtn" class="edit-db-btn" title="Configure Firebase URL" onclick="toggleDbDrawer()" style="display:none;">⚙️</button>
+      </div>
+    </div>
+    <div class="top-actions">
       <input type="file" id="csvFileInput" accept=".csv,.txt" style="display:none" onchange="importCSV(event)">
-      <button class="btn btn-warning" onclick="document.getElementById('csvFileInput').click()">Import CSV</button>
-      <button class="btn btn-success" onclick="downloadExcel()">Download CSV</button>
+      <button class="btn-icon btn-warning" onclick="document.getElementById('csvFileInput').click()">Import</button>
+      <button class="btn-icon btn-success" onclick="downloadExcel()">Export</button>
     </div>
   </div>
 
-  <!-- 2-USER REAL-TIME SYNC BAR -->
-  <div class="sync-bar">
-    <strong>☁️ 2-User Sync:</strong>
-    <input type="text" id="firebaseUrlInput" placeholder="Paste Firebase Realtime DB URL (e.g. https://firebaseio.com)">
-    <button class="btn btn-primary btn-sm" onclick="connectCloud()">Connect & Sync</button>
-    <span id="syncStatus" style="font-weight:600; color:#0369a1;">Offline Mode (Local)</span>
+  <!-- Collapsible Firebase URL Re-entry Box (Shows when offline or clicked) -->
+  <div id="dbDrawer" class="db-drawer">
+    <input type="text" id="firebaseUrlInput" placeholder="Enter Firebase Realtime DB URL">
+    <button class="btn btn-primary btn-sm" style="padding:8px 12px;" onclick="saveNewFirebaseUrl()">Save & Retry</button>
   </div>
 
   <div class="live-strip" id="liveBalanceStrip"></div>
 
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('tab-data', this)">1. Expense Data</button>
-    <button class="tab-btn" onclick="switchTab('tab-balance', this)">2. Account Balance</button>
-    <button class="tab-btn" onclick="switchTab('tab-projection', this)">3. Income Projection</button>
-    <button class="tab-btn" onclick="switchTab('tab-analysis', this)">4. Expense Analysis</button>
-    <button class="tab-btn" onclick="switchTab('tab-official', this)">5. Official Expenses</button>
-  </div>
   <!-- TAB 1: EXPENSE DATA -->
   <div id="tab-data" class="tab-content active">
     <div class="card">
@@ -88,22 +115,9 @@
             <select id="type" required>
               <option value="Expense">Expense</option>
               <option value="Income">Income</option>
-              <option value="Debt">Debt (Card Spend)</option>
+              <option value="Debt">Debt (Card)</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>Category *</label>
-            <input type="text" id="category" list="catList" placeholder="Select or type..." required>
-            <datalist id="catList">
-              <option value="Official"><option value="Groceries"><option value="Dining Out">
-              <option value="Investment"><option value="Loan"><option value="Debt repay">
-              <option value="Self transfer"><option value="Health"><option value="Shopping">
-              <option value="Vacation"><option value="Personal Care"><option value="Recharge">
-              <option value="Miscellaneous"><option value="Gyproc"><option value="Interest">
-              <option value="Dividend"><option value="Cash Back">
-            </datalist>
-          </div>
-          <div class="form-group"><label>Sub-Category</label><input type="text" id="subCategory" placeholder="e.g. Car, Petrol, RD"></div>
           <div class="form-group">
             <label>Account *</label>
             <select id="account" required>
@@ -118,80 +132,99 @@
               <option value="SBI - Komal">SBI - Komal</option>
             </select>
           </div>
-          <div class="form-group"><label>Amount *</label><input type="number" id="amount" step="0.01" placeholder="0.00" required></div>
-          <div class="form-group"><label>Remarks</label><input type="text" id="remarks" placeholder="Notes"></div>
+          <div class="form-group">
+            <label>Category *</label>
+            <input type="text" id="category" list="catList" placeholder="Select/Type" required>
+            <datalist id="catList">
+              <option value="Official"><option value="Groceries"><option value="Dining Out">
+              <option value="Investment"><option value="Loan"><option value="Debt repay">
+              <option value="Self transfer"><option value="Health"><option value="Shopping">
+              <option value="Vacation"><option value="Personal Care"><option value="Recharge">
+              <option value="Miscellaneous"><option value="Gyproc"><option value="Interest">
+              <option value="Dividend"><option value="Cash Back">
+            </datalist>
+          </div>
+          <div class="form-group"><label>Sub-Category</label><input type="text" id="subCategory" placeholder="e.g. Petrol, RD"></div>
+          <div class="form-group"><label>Amount (₹) *</label><input type="number" id="amount" step="0.01" inputmode="decimal" placeholder="0.00" required></div>
+          <div class="form-group"><label>Remarks</label><input type="text" id="remarks" placeholder="Optional note"></div>
         </div>
         <div class="btn-group">
           <button type="submit" class="btn btn-primary">+ Add Entry</button>
-          <button type="button" class="btn btn-warning" onclick="resetFilters()">Reset Filters</button>
-          <button type="button" class="btn btn-danger" onclick="clearAllData()">Clear All</button>
-          <span id="entryCount" style="margin-left:auto; font-weight:600; font-size:0.85rem;">Showing: 0</span>
+          <button type="button" class="btn btn-warning" style="padding:11px 12px;" onclick="resetFilters()">Reset</button>
+          <button type="button" class="btn btn-danger" style="padding:11px 12px;" onclick="clearAllData()">Clear</button>
         </div>
+        <div id="entryCount" style="margin-top:8px; font-size:0.8rem; font-weight:600; color:#64748b; text-align:right;">Showing: 0</div>
       </form>
     </div>
-
-    <div class="card table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th class="sortable" onclick="setSort('sr')">Sr.No. ⇅</th>
-            <th class="sortable" onclick="setSort('date')">Date ⇅</th>
-            <th class="sortable" onclick="setSort('month')">Month ⇅</th>
-            <th class="sortable" onclick="setSort('type')">Type ⇅</th>
-            <th class="sortable" onclick="setSort('category')">Category ⇅</th>
-            <th class="sortable" onclick="setSort('subCategory')">Sub-Category ⇅</th>
-            <th class="sortable" onclick="setSort('account')">Account ⇅</th>
-            <th class="sortable num" onclick="setSort('amount')">Amount ⇅</th>
-            <th class="sortable" onclick="setSort('remarks')">Remarks ⇅</th>
-            <th>Action</th>
-          </tr>
-          <tr class="filter-row">
-            <th></th>
-            <th><input type="text" id="f_date" placeholder="YYYY-MM" onkeyup="renderTable()"></th>
-            <th><input type="text" id="f_month" placeholder="Month" onkeyup="renderTable()"></th>
-            <th>
-              <select id="f_type" onchange="renderTable()">
-                <option value="">All</option><option value="Expense">Expense</option>
-                <option value="Income">Income</option><option value="Debt">Debt</option>
-              </select>
-            </th>
-            <th><input type="text" id="f_category" placeholder="Filter..." onkeyup="renderTable()"></th>
-            <th><input type="text" id="f_subCategory" placeholder="Filter..." onkeyup="renderTable()"></th>
-            <th>
-              <select id="f_account" onchange="renderTable()">
-                <option value="">All</option>
-                <option value="Kotak - Savan">Kotak - Savan</option><option value="BOB - Savan">BOB - Savan</option>
-                <option value="ICICI">ICICI</option><option value="Cash">Cash</option>
-                <option value="Kotak Rupay">Kotak Rupay</option><option value="Komal Kotak">Komal Kotak</option>
-                <option value="HDFC Pixel">HDFC Pixel</option><option value="BOB - Komal">BOB - Komal</option>
-                <option value="SBI - Komal">SBI - Komal</option>
-              </select>
-            </th>
-            <th><input type="text" id="f_amount" placeholder="Amt" onkeyup="renderTable()"></th>
-            <th><input type="text" id="f_remarks" placeholder="Filter..." onkeyup="renderTable()"></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
+    <div class="card" style="padding:10px;">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="sortable" onclick="setSort('sr')"># ⇅</th>
+              <th class="sortable" onclick="setSort('date')">Date ⇅</th>
+              <th class="sortable" onclick="setSort('month')">Month ⇅</th>
+              <th class="sortable" onclick="setSort('type')">Type ⇅</th>
+              <th class="sortable" onclick="setSort('category')">Category ⇅</th>
+              <th class="sortable" onclick="setSort('subCategory')">Sub-Cat ⇅</th>
+              <th class="sortable" onclick="setSort('account')">Account ⇅</th>
+              <th class="sortable num" onclick="setSort('amount')">Amount ⇅</th>
+              <th class="sortable" onclick="setSort('remarks')">Remarks ⇅</th>
+              <th>Del</th>
+            </tr>
+            <tr class="filter-row">
+              <th></th>
+              <th><input type="text" id="f_date" placeholder="Date" onkeyup="renderTable()"></th>
+              <th><input type="text" id="f_month" placeholder="Mon" onkeyup="renderTable()"></th>
+              <th>
+                <select id="f_type" onchange="renderTable()">
+                  <option value="">All</option><option value="Expense">Exp</option>
+                  <option value="Income">Inc</option><option value="Debt">Debt</option>
+                </select>
+              </th>
+              <th><input type="text" id="f_category" placeholder="Cat" onkeyup="renderTable()"></th>
+              <th><input type="text" id="f_subCategory" placeholder="Sub" onkeyup="renderTable()"></th>
+              <th>
+                <select id="f_account" onchange="renderTable()">
+                  <option value="">All</option>
+                  <option value="Kotak - Savan">Kotak - Savan</option><option value="BOB - Savan">BOB - Savan</option>
+                  <option value="ICICI">ICICI</option><option value="Cash">Cash</option>
+                  <option value="Kotak Rupay">Kotak Rupay</option><option value="Komal Kotak">Komal Kotak</option>
+                  <option value="HDFC Pixel">HDFC Pixel</option><option value="BOB - Komal">BOB - Komal</option>
+                  <option value="SBI - Komal">SBI - Komal</option>
+                </select>
+              </th>
+              <th><input type="text" id="f_amount" placeholder="Amt" onkeyup="renderTable()"></th>
+              <th><input type="text" id="f_remarks" placeholder="Note" onkeyup="renderTable()"></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
+
   <!-- TAB 2: ACCOUNT BALANCE -->
   <div id="tab-balance" class="tab-content">
     <div class="grid-2">
       <div class="card">
         <h3>Bank & Cash Live Balances</h3>
-        <table>
-          <thead><tr><th>Account</th><th class="num">Opening (Apr)</th><th class="num">Live Balance</th></tr></thead>
-          <tbody id="bankBalanceBody"></tbody>
-        </table>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Account</th><th class="num">Opening</th><th class="num">Live Balance</th></tr></thead>
+            <tbody id="bankBalanceBody"></tbody>
+          </table>
+        </div>
       </div>
       <div class="card">
         <h3>Credit Card Limits & Debt</h3>
-        <table>
-          <thead><tr><th>Card</th><th class="num">Limit</th><th class="num">Available</th><th class="num">Current Debt</th></tr></thead>
-          <tbody id="ccBalanceBody"></tbody>
-        </table>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Card</th><th class="num">Limit</th><th class="num">Available</th><th class="num">Debt</th></tr></thead>
+            <tbody id="ccBalanceBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -199,33 +232,35 @@
   <!-- TAB 3: INCOME PROJECTION -->
   <div id="tab-projection" class="tab-content">
     <div class="card">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <h3>Monthly Income & Fixed Commitments</h3>
-        <button class="btn btn-primary" onclick="addProjectionRow()">+ Add Item</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3>Monthly Projection</h3>
+        <button class="btn btn-primary btn-sm" style="flex:none; padding:7px 12px;" onclick="addProjectionRow()">+ Add Item</button>
       </div>
-      <table>
-        <thead><tr><th>Type</th><th>Item / Category</th><th class="num">Amount (₹)</th><th>Action</th></tr></thead>
-        <tbody id="projectionBody"></tbody>
-        <tfoot id="projectionFoot" style="background:#f1f5f9; font-weight:700;"></tfoot>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Type</th><th>Item</th><th class="num">Amount (₹)</th><th>Del</th></tr></thead>
+          <tbody id="projectionBody"></tbody>
+          <tfoot id="projectionFoot" style="background:#f1f5f9; font-weight:700;"></tfoot>
+        </table>
+      </div>
     </div>
   </div>
 
   <!-- TAB 4: EXPENSE ANALYSIS -->
   <div id="tab-analysis" class="tab-content">
     <div class="card">
-      <div style="margin-bottom:15px;">
-        <label>Select Month: </label>
-        <select id="analysisMonthFilter" onchange="renderAnalysis()" style="min-width:150px;"></select>
+      <div style="margin-bottom:12px;">
+        <label>Filter Month:</label>
+        <select id="analysisMonthFilter" onchange="renderAnalysis()"></select>
       </div>
       <div class="grid-2">
         <div>
-          <h4>Category-wise Spend (Expense + Debt)</h4>
-          <table><thead><tr><th>Category</th><th class="num">Total (₹)</th></tr></thead><tbody id="analysisCatBody"></tbody></table>
+          <h4>Category-wise Spend</h4>
+          <div class="table-wrap"><table><thead><tr><th>Category</th><th class="num">Total (₹)</th></tr></thead><tbody id="analysisCatBody"></tbody></table></div>
         </div>
         <div>
           <h4>Account-wise Spend</h4>
-          <table><thead><tr><th>Account</th><th class="num">Total (₹)</th></tr></thead><tbody id="analysisAccBody"></tbody></table>
+          <div class="table-wrap"><table><thead><tr><th>Account</th><th class="num">Total (₹)</th></tr></thead><tbody id="analysisAccBody"></tbody></table></div>
         </div>
       </div>
     </div>
@@ -234,27 +269,37 @@
   <!-- TAB 5: OFFICIAL EXPENSES -->
   <div id="tab-official" class="tab-content">
     <div class="card">
-      <div style="display:flex; gap:15px; align-items:center; flex-wrap:wrap; margin-bottom:15px;">
-        <div><label>Month: </label><select id="officialMonthFilter" onchange="renderOfficial()" style="min-width:140px;"></select></div>
-        <div id="officialSummary" style="margin-left:auto; display:flex; gap:15px; font-weight:700;"></div>
+      <div style="margin-bottom:10px;">
+        <label>Filter Month:</label>
+        <select id="officialMonthFilter" onchange="renderOfficial()"></select>
       </div>
+      <div id="officialSummary" style="display:flex; justify-content:space-between; background:#f8fafc; padding:10px; border-radius:6px; margin-bottom:12px; font-size:0.85rem; font-weight:700;"></div>
       <div class="grid-2">
         <div>
           <h4>Official Expenses (To Claim)</h4>
           <div class="table-wrap"><table><thead><tr><th>Date</th><th>Sub-Cat</th><th>Account</th><th>Remarks</th><th class="num">Amount</th></tr></thead><tbody id="officialExpBody"></tbody></table></div>
         </div>
         <div>
-          <h4>Tour Reimbursements Received</h4>
+          <h4>Reimbursements Received</h4>
           <div class="table-wrap"><table><thead><tr><th>Date</th><th>Sub-Cat</th><th>Account</th><th>Remarks</th><th class="num">Amount</th></tr></thead><tbody id="officialIncBody"></tbody></table></div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- STICKY BOTTOM THUMB NAVIGATION FOR MOBILE -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="switchTab('tab-data', this)"><span class="ico">📝</span><span>Entry</span></button>
+  <button class="nav-btn" onclick="switchTab('tab-balance', this)"><span class="ico">🏦</span><span>Balances</span></button>
+  <button class="nav-btn" onclick="switchTab('tab-projection', this)"><span class="ico">📈</span><span>Budget</span></button>
+  <button class="nav-btn" onclick="switchTab('tab-analysis', this)"><span class="ico">📊</span><span>Analysis</span></button>
+  <button class="nav-btn" onclick="switchTab('tab-official', this)"><span class="ico">💼</span><span>Official</span></button>
+</nav>
 <script>
+  const DEFAULT_FIREBASE_URL = 'https://my-expense-tracker-3e5e4-default-rtdb.asia-southeast1.firebasedatabase.app';
+  let firebaseUrl = localStorage.getItem('firebase_db_url') || DEFAULT_FIREBASE_URL;
   let expenses = JSON.parse(localStorage.getItem('offline_expenses_v2')) || [];
-  let firebaseUrl = localStorage.getItem('firebase_db_url') || 'let firebaseUrl = localStorage.getItem('firebase_db_url') || 'https://my-expense-tracker-3e5e4-default-rtdb.asia-southeast1.firebasedatabase.app';
-';
   let sortCol = 'sr';
   let sortAsc = false;
 
@@ -284,39 +329,61 @@
   const dateInput = document.getElementById('date');
   const monthInput = document.getElementById('month');
 
-  function connectCloud() {
-    let url = document.getElementById('firebaseUrlInput').value.trim().replace(/\/$/, '');
-    if (!url.startsWith('https://')) {
-      alert('Please enter a valid Firebase Realtime Database URL starting with https://');
+  function setOnlineStatus(isOnline) {
+    const pill = document.getElementById('statusPill');
+    const txt = document.getElementById('syncStatusText');
+    const editBtn = document.getElementById('editDbBtn');
+    if (isOnline) {
+      pill.className = 'status-pill online';
+      txt.textContent = '🟢 Online';
+      editBtn.style.display = 'none';
+      document.getElementById('dbDrawer').classList.remove('show');
+    } else {
+      pill.className = 'status-pill offline';
+      txt.textContent = '🔴 Offline';
+      editBtn.style.display = 'inline-flex';
+    }
+  }
+
+  function toggleDbDrawer() {
+    const drawer = document.getElementById('dbDrawer');
+    drawer.classList.toggle('show');
+    document.getElementById('firebaseUrlInput').value = firebaseUrl;
+  }
+
+  function saveNewFirebaseUrl() {
+    const val = document.getElementById('firebaseUrlInput').value.trim().replace(/\/$/, '');
+    if (!val.startsWith('https://')) {
+      alert('Enter a valid URL starting with https://');
       return;
     }
-    firebaseUrl = url;
+    firebaseUrl = val;
     localStorage.setItem('firebase_db_url', firebaseUrl);
     pullFromCloud();
   }
 
   async function pushToCloud() {
-    if (!firebaseUrl) return;
-    const status = document.getElementById('syncStatus');
-    status.textContent = 'Syncing...';
+    if (!navigator.onLine) { setOnlineStatus(false); return; }
     try {
-      await fetch(firebaseUrl + '/trackerData.json', {
+      const res = await fetch(firebaseUrl + '/trackerData.json', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ expenses: expenses, projections: projections, updatedAt: Date.now() })
       });
-      status.textContent = '🟢 Live Synced (' + new Date().toLocaleTimeString() + ')';
+      if (!res.ok) throw new Error('HTTP Error');
+      setOnlineStatus(true);
     } catch (err) {
-      status.textContent = '🔴 Sync Error (Saved Locally)';
+      setOnlineStatus(false);
     }
   }
 
   async function pullFromCloud() {
-    if (!firebaseUrl) return;
-    const status = document.getElementById('syncStatus');
+    if (!navigator.onLine) { setOnlineStatus(false); return; }
     try {
       const res = await fetch(firebaseUrl + '/trackerData.json');
+      if (!res.ok) throw new Error('HTTP Error');
       const data = await res.json();
+      setOnlineStatus(true);
       if (data && Array.isArray(data.expenses)) {
         if (JSON.stringify(data.expenses) !== JSON.stringify(expenses)) {
           expenses = data.expenses;
@@ -324,22 +391,23 @@
           localStorage.setItem('offline_expenses_v2', JSON.stringify(expenses));
           renderAllNoPush();
         }
-        status.textContent = '🟢 Live Synced (' + new Date().toLocaleTimeString() + ')';
       } else if (expenses.length > 0) {
         await pushToCloud();
       }
     } catch (err) {
-      status.textContent = '🔴 Offline / Check DB URL';
+      setOnlineStatus(false);
     }
   }
 
-  // Poll every 5 seconds for real-time updates from the second Android device
-  setInterval(() => { if (firebaseUrl) pullFromCloud(); }, 5000);
+  window.addEventListener('online', pullFromCloud);
+  window.addEventListener('offline', () => setOnlineStatus(false));
+  setInterval(pullFromCloud, 5000);
   function switchTab(tabId, btn) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
     btn.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     renderAllNoPush();
   }
 
@@ -405,9 +473,9 @@
     let grandBank = 0;
     for (let acc in bankTotals) {
       grandBank += bankTotals[acc];
-      bankRows += `<tr><td>${acc}</td><td class="num">₹${bankOpenings[acc].toFixed(2)}</td><td class="num text-green">₹${bankTotals[acc].toFixed(2)}</td></tr>`;
+      bankRows += `<tr><td>${acc}</td><td class="num">₹${bankOpenings[acc].toFixed(0)}</td><td class="num text-green">₹${bankTotals[acc].toFixed(2)}</td></tr>`;
     }
-    bankRows += `<tr style="background:#f1f5f9;font-weight:700;"><td>Grand Total</td><td></td><td class="num">₹${grandBank.toFixed(2)}</td></tr>`;
+    bankRows += `<tr style="background:#f1f5f9;font-weight:700;"><td>Total</td><td></td><td class="num">₹${grandBank.toFixed(2)}</td></tr>`;
     bankBody.innerHTML = bankRows;
 
     const ccBody = document.getElementById('ccBalanceBody');
@@ -415,7 +483,7 @@
     for (let card in ccConfig) {
       const avail = ccAvail[card];
       const debt = Math.max(0, ccConfig[card].limit - avail);
-      ccRows += `<tr><td>${card}</td><td class="num">₹${ccConfig[card].limit.toFixed(2)}</td><td class="num text-green">₹${avail.toFixed(2)}</td><td class="num text-red">₹${debt.toFixed(2)}</td></tr>`;
+      ccRows += `<tr><td>${card}</td><td class="num">₹${ccConfig[card].limit.toFixed(0)}</td><td class="num text-green">₹${avail.toFixed(0)}</td><td class="num text-red">₹${debt.toFixed(2)}</td></tr>`;
     }
     ccBody.innerHTML = ccRows;
   }
@@ -475,10 +543,10 @@
         <td>${item.sr}</td><td>${item.date}</td><td>${item.month}</td><td>${item.type}</td>
         <td>${item.category}</td><td>${item.subCategory}</td><td>${item.account}</td>
         <td class="num">${parseFloat(item.amount || 0).toFixed(2)}</td><td>${item.remarks}</td>
-        <td><button class="btn-sm btn-danger" onclick="deleteEntry(${item.realIdx})">Del</button></td>
+        <td><button class="btn-sm btn-danger" onclick="deleteEntry(${item.realIdx})">✕</button></td>
       </tr>`).join('');
 
-    document.getElementById('entryCount').textContent = `Showing: ${filtered.length} / ${expenses.length}`;
+    document.getElementById('entryCount').textContent = `Showing: ${filtered.length} of ${expenses.length}`;
   }
   function renderAllNoPush() {
     localStorage.setItem('offline_expenses_v2', JSON.stringify(expenses));
@@ -518,7 +586,7 @@
   }
 
   function clearAllData() {
-    if (confirm('Delete ALL entries? Download your CSV backup first!')) { expenses = []; refreshAllAndSync(); }
+    if (confirm('Delete ALL entries? Export CSV backup first!')) { expenses = []; refreshAllAndSync(); }
   }
 
   function renderProjections() {
@@ -528,10 +596,10 @@
       const val = parseFloat(p.amount) || 0;
       if (p.type === 'Income') net += val; else net -= val;
       return `<tr>
-        <td><select onchange="updateProj(${i},'type',this.value)"><option ${p.type==='Income'?'selected':''}>Income</option><option ${p.type==='Expense'?'selected':''}>Expense</option><option ${p.type==='Investment'?'selected':''}>Investment</option></select></td>
-        <td><input type="text" value="${p.name}" onchange="updateProj(${i},'name',this.value)" style="width:90%"></td>
-        <td class="num"><input type="number" value="${val}" onchange="updateProj(${i},'amount',this.value)" style="text-align:right;width:105px;"></td>
-        <td><button class="btn-sm btn-danger" onclick="delProj(${i})">Del</button></td></tr>`;
+        <td><select style="padding:5px;font-size:13px;" onchange="updateProj(${i},'type',this.value)"><option ${p.type==='Income'?'selected':''}>Income</option><option ${p.type==='Expense'?'selected':''}>Expense</option><option ${p.type==='Investment'?'selected':''}>Investment</option></select></td>
+        <td><input type="text" style="padding:5px;font-size:13px;" value="${p.name}" onchange="updateProj(${i},'name',this.value)"></td>
+        <td class="num"><input type="number" style="padding:5px;font-size:13px;text-align:right;width:90px;" value="${val}" onchange="updateProj(${i},'amount',this.value)"></td>
+        <td><button class="btn-sm btn-danger" onclick="delProj(${i})">✕</button></td></tr>`;
     }).join('');
     document.getElementById('projectionFoot').innerHTML = `<tr><td colspan="2">Projected Net Surplus</td><td class="num ${net>=0?'text-green':'text-red'}">₹${net.toFixed(2)}</td><td></td></tr>`;
   }
@@ -573,7 +641,7 @@
     });
     document.getElementById('officialExpBody').innerHTML = expHtml;
     document.getElementById('officialIncBody').innerHTML = incHtml;
-    document.getElementById('officialSummary').innerHTML = `<span class="text-red">Spent: ₹${expSum.toFixed(2)}</span><span class="text-green">Reimbursed: ₹${incSum.toFixed(2)}</span><span>Pending: ₹${(expSum-incSum).toFixed(2)}</span>`;
+    document.getElementById('officialSummary').innerHTML = `<span class="text-red">Spent: ₹${expSum.toFixed(0)}</span><span class="text-green">Recd: ₹${incSum.toFixed(0)}</span><span>Pend: ₹${(expSum-incSum).toFixed(0)}</span>`;
   }
 
   function parseCSVLine(line) {
@@ -655,11 +723,8 @@
   }
 
   setTodayDate();
-  if (firebaseUrl) {
-    document.getElementById('firebaseUrlInput').value = firebaseUrl;
-    pullFromCloud();
-  }
   renderAllNoPush();
+  pullFromCloud();
 </script>
 </body>
 </html>
