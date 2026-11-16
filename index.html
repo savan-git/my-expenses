@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0f172a">
 <title>Personal & Official Finance Suite</title>
-<script src="https://sheetjs.com"></script>
+
 <style>
   :root {
     --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --warning: #d97706;
@@ -234,7 +234,7 @@
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
         <h3 style="margin:0;">Master Data Archive</h3>
-        <button class="btn btn-success" style="padding:9px 14px;" onclick="downloadXlsx()">⬇ Download Excel (.xlsx)</button>
+        <button type="button" class="btn btn-success" style="padding:9px 14px;" onclick="downloadXlsx()">⬇ Download Excel</button>
       </div>
       <div class="form-grid" style="margin-bottom:12px;">
         <div class="form-group"><label>Period Type</label><select id="masterPeriodType" onchange="updateMasterSubFilter()"><option value="all">All Time</option><option value="fy">Financial Year</option><option value="quarter">Quarter</option><option value="month">Monthly</option></select></div>
@@ -964,18 +964,41 @@
 
   function downloadXlsx() {
     const list = getFilteredMasterData();
-    if (list.length === 0) { alert('No records in selected filter to export.'); return; }
-    const rows = list.map((e, i) => ({
-      'Sr.No.': i + 1, 'Date': formatDDMMYYYY(e.date), 'Month': e.month, 'Type': e.type,
-      'Category': e.category, 'Sub-Category': e.subCategory, 'Account': e.account,
-      'Amount': parseFloat(e.amount) || 0, 'Remarks': e.remarks
-    }));
-    const ws = XLSX.utils.json_to_sheet(rows);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Expense Data');
-    const tagVal = document.getElementById('masterPeriodValue').value || 'All';
-    XLSX.writeFile(wb, `Expenses_${tagVal.replace(/[^a-zA-Z0-9-]/g,'_')}.xlsx`);
+    if (list.length === 0) {
+      alert('No records in selected filter to export.');
+      return;
+    }
+
+    const tagVal = (document.getElementById('masterPeriodValue')?.value || 'All').replace(/[^a-zA-Z0-9-]/g, '_');
+    const headers = ['Sr.No.', 'Date', 'Month', 'Type', 'Category', 'Sub-Category', 'Account', 'Amount', 'Remarks'];
+    const esc = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+    const csvLines = [headers.join(',')];
+
+    list.forEach((e, i) => {
+      csvLines.push([
+        i + 1,
+        esc(formatDDMMYYYY(e.date)),
+        esc(e.month),
+        esc(e.type),
+        esc(e.category),
+        esc(e.subCategory),
+        esc(e.account),
+        parseFloat(e.amount) || 0,
+        esc(e.remarks)
+      ].join(','));
+    });
+
+    const blob = new Blob(['\uFEFF' + csvLines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Expenses_${tagVal}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
+
   function renderProjections() {
     const tbody = document.getElementById('projectionBody');
     let net = 0;
