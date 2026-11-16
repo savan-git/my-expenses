@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0f172a">
 <title>Personal & Official Finance Suite</title>
-
 <style>
   :root {
     --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --warning: #d97706;
@@ -22,6 +21,7 @@
   .status-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 700; background: #e2e8f0; color: #334155; }
   .status-pill.online { background: #dcfce7; color: #166534; }
   .status-pill.offline { background: #fee2e2; color: #991b1b; }
+  .user-pill { background: #e0e7ff; color: #1e40af; padding: 4px 10px; border-radius: 20px; font-size: 0.74rem; font-weight: 700; cursor: pointer; border: none; }
   .edit-db-btn { background: #fff; border: 1px solid #fca5a5; border-radius: 50%; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.75rem; padding: 0; }
   .db-drawer { display: none; background: #fff1f2; border: 1px solid #fecdd3; padding: 10px; border-radius: 8px; margin-bottom: 10px; gap: 6px; align-items: center; }
   .db-drawer.show { display: flex; flex-wrap: wrap; }
@@ -46,14 +46,14 @@
   .btn-warning { background: var(--warning); }
   .btn-danger { background: var(--danger); }
   .btn-sm { padding: 5px 8px; font-size: 0.74rem; border: none; border-radius: 5px; color: #fff; cursor: pointer; font-weight: 600; }
-  .btn-edit-ico { width: 28px; height: 26px; padding: 0; background: var(--primary); color: #fff; border: none; border-radius: 5px; font-size: 0.78rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
-  .ms-search { position: sticky; top: 0; background: #fff; padding: 4px; border-bottom: 1px solid var(--border); margin-bottom: 4px; z-index: 5; }
-  .ms-search input { padding: 5px 7px; font-size: 13px; border: 1px solid #cbd5e1; border-radius: 5px; }
+  .btn-edit-ico { width: 28px; height: 26px; padding: 0; background: var(--primary); color: #fff; border: none; border-radius: 5px; font-size: 0.78rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin-right: 4px; }
   .ms-wrap { position: relative; }
   .ms-btn { width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 7px; background: #fff; font-size: 0.84rem; font-weight: 600; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--text); }
   .ms-btn.has-filter { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
-  .ms-menu { display: none; position: absolute; top: 105%; left: 0; right: 0; min-width: 175px; background: #fff; border: 1px solid #94a3b8; border-radius: 8px; box-shadow: 0 6px 16px rgba(0,0,0,0.14); z-index: 50; max-height: 220px; overflow-y: auto; padding: 6px; }
+  .ms-menu { display: none; position: absolute; top: 105%; left: 0; right: 0; min-width: 185px; background: #fff; border: 1px solid #94a3b8; border-radius: 8px; box-shadow: 0 6px 16px rgba(0,0,0,0.14); z-index: 50; max-height: 230px; overflow-y: auto; padding: 6px; }
   .ms-menu.open { display: block; }
+  .ms-search { position: sticky; top: 0; background: #fff; padding: 4px; border-bottom: 1px solid var(--border); margin-bottom: 4px; z-index: 5; }
+  .ms-search input { padding: 5px 7px; font-size: 13px; border: 1px solid #cbd5e1; border-radius: 5px; }
   .ms-opt { display: flex; align-items: center; gap: 8px; padding: 6px 8px; font-size: 0.82rem; font-weight: 500; cursor: pointer; border-radius: 5px; margin: 0; color: var(--text); }
   .ms-opt:hover { background: #f1f5f9; }
   .ms-opt input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var(--primary); cursor: pointer; }
@@ -87,9 +87,82 @@
   .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.65); z-index: 200; align-items: center; justify-content: center; padding: 14px; }
   .modal-backdrop.open { display: flex; }
   .modal-card { background: #fff; border-radius: 14px; padding: 16px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); }
+  .auth-overlay { position: fixed; inset: 0; background: #0f172a; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .auth-overlay.hidden { display: none; }
+  .auth-card { background: #fff; border-radius: 14px; padding: 22px; width: 100%; max-width: 360px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); text-align: center; }
 </style>
 </head>
 <body>
+<div id="authOverlay" class="auth-overlay">
+  <div class="auth-card">
+    <h2 style="margin:0 0 6px 0; font-size:1.25rem;">🔒 Finance Suite</h2>
+    <p style="margin:0 0 16px 0; font-size:0.82rem; color:var(--muted);">Select user and enter PIN to unlock</p>
+    <div style="text-align:left; margin-bottom:10px;">
+      <label>User</label>
+      <select id="loginUser"><option value="Savan">Savan</option><option value="Komal">Komal</option></select>
+    </div>
+    <div style="text-align:left; margin-bottom:12px;">
+      <label>PIN / Password</label>
+      <input type="password" id="loginPin" inputmode="numeric" placeholder="Enter PIN" onkeyup="if(event.key==='Enter') attemptLogin()">
+    </div>
+    <label style="display:flex; align-items:center; gap:6px; font-size:0.78rem; margin-bottom:14px; cursor:pointer;">
+      <input type="checkbox" id="rememberMe" checked style="width:16px; height:16px; margin:0;"> Keep me logged in on this device
+    </label>
+    <button type="button" class="btn btn-primary" style="width:100%;" onclick="attemptLogin()">Unlock Tracker</button>
+    <div id="loginError" style="color:var(--danger); font-size:0.78rem; font-weight:600; margin-top:8px;"></div>
+  </div>
+<script>
+window.onerror = function(msg, url, line) {
+  document.getElementById('syncStatusText').textContent = 'Err L' + line + ': ' + msg;
+};
+
+  const USER_PINS = {
+    "Savan": "1234",
+    "Komal": "5678"
+  };
+
+  let currentUser = localStorage.getItem('finance_active_user') || sessionStorage.getItem('finance_active_user') || '';
+
+  function initAuth() {
+    const overlay = document.getElementById('authOverlay');
+    const badge = document.getElementById('activeUserBadge');
+    if (currentUser && USER_PINS[currentUser]) {
+      overlay.classList.add('hidden');
+      if (badge) badge.textContent = '👤 ' + currentUser;
+    } else {
+      overlay.classList.remove('hidden');
+    }
+  }
+
+  function attemptLogin() {
+    const user = document.getElementById('loginUser').value;
+    const pin = document.getElementById('loginPin').value.trim();
+    const remember = document.getElementById('rememberMe').checked;
+    if (String(USER_PINS[user]) === pin) {
+      currentUser = user;
+      if (remember) localStorage.setItem('finance_active_user', user);
+      else sessionStorage.setItem('finance_active_user', user);
+      document.getElementById('loginPin').value = '';
+      document.getElementById('loginError').textContent = '';
+      initAuth();
+    } else {
+      document.getElementById('loginError').textContent = 'Incorrect PIN. Please try again.';
+    }
+  }
+
+  function logoutUser() {
+    if (confirm('Lock tracker and switch user?')) {
+      currentUser = '';
+      localStorage.removeItem('finance_active_user');
+      sessionStorage.removeItem('finance_active_user');
+      initAuth();
+    }
+  }
+
+  initAuth();
+</script>
+</div>
+
 <div class="container">
   <div class="top-bar">
     <div class="title-area">
@@ -98,6 +171,7 @@
         <span id="syncStatusText">⏳ Connecting</span>
         <button id="editDbBtn" class="edit-db-btn" title="Edit Firebase URL" onclick="toggleDbDrawer()" style="display:none;">⚙️</button>
       </div>
+      <button type="button" id="activeUserBadge" class="user-pill" title="Tap to Lock / Switch User" onclick="logoutUser()">👤 Savan</button>
     </div>
     <div>
       <input type="file" id="csvFileInput" accept=".csv,.txt" style="display:none" onchange="importCSV(event)">
@@ -148,8 +222,8 @@
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Sr.No.</th><th class="sortable" onclick="setSort('date')">Date (DD-MM-YYYY) ⇅</th><th class="sortable" onclick="setSort('month')">Month ⇅</th><th class="sortable" onclick="setSort('type')">Type ⇅</th><th class="sortable" onclick="setSort('category')">Category ⇅</th><th class="sortable" onclick="setSort('subCategory')">Sub-Cat ⇅</th><th class="sortable" onclick="setSort('account')">Account ⇅</th><th class="sortable num" onclick="setSort('amount')">Amount ⇅</th><th class="sortable" onclick="setSort('remarks')">Remarks ⇅</th><th>Action</th></tr>
-            <tr class="filter-row"><th></th><th><input type="text" id="f_date" placeholder="DD-MM" onkeyup="renderEntryTable()"></th><th><input type="text" id="f_month" placeholder="Month" onkeyup="renderEntryTable()"></th><th><select id="f_type" onchange="renderEntryTable()"><option value="">All</option><option value="Expense">Expense</option><option value="Income">Income</option><option value="Debt">Debt</option></select></th><th><input type="text" id="f_category" placeholder="Cat" onkeyup="renderEntryTable()"></th><th><input type="text" id="f_subCategory" placeholder="Sub" onkeyup="renderEntryTable()"></th><th><select id="f_account" onchange="renderEntryTable()"><option value="">All</option><option value="Kotak - Savan">Kotak - Savan</option><option value="BOB - Savan">BOB - Savan</option><option value="ICICI">ICICI</option><option value="Cash">Cash</option><option value="Kotak Rupay">Kotak Rupay</option><option value="Komal Kotak">Komal Kotak</option><option value="HDFC Pixel">HDFC Pixel</option><option value="BOB - Komal">BOB - Komal</option><option value="SBI - Komal">SBI - Komal</option></select></th><th><input type="text" id="f_amount" placeholder="Amt" onkeyup="renderEntryTable()"></th><th><input type="text" id="f_remarks" placeholder="Note" onkeyup="renderEntryTable()"></th><th></th></tr>
+            <tr><th>Sr.No.</th><th class="sortable" onclick="setSort('date')">Date ⇅</th><th class="sortable" onclick="setSort('month')">Month ⇅</th><th class="sortable" onclick="setSort('type')">Type ⇅</th><th class="sortable" onclick="setSort('category')">Category ⇅</th><th class="sortable" onclick="setSort('subCategory')">Sub-Cat ⇅</th><th class="sortable" onclick="setSort('account')">Account ⇅</th><th class="sortable num" onclick="setSort('amount')">Amount ⇅</th><th class="sortable" onclick="setSort('remarks')">Remarks ⇅</th><th>Added By / When</th><th>Action</th></tr>
+            <tr class="filter-row"><th></th><th><input type="text" id="f_date" placeholder="DD-MM" onkeyup="renderEntryTable()"></th><th><input type="text" id="f_month" placeholder="Month" onkeyup="renderEntryTable()"></th><th><select id="f_type" onchange="renderEntryTable()"><option value="">All</option><option value="Expense">Expense</option><option value="Income">Income</option><option value="Debt">Debt</option></select></th><th><input type="text" id="f_category" placeholder="Cat" onkeyup="renderEntryTable()"></th><th><input type="text" id="f_subCategory" placeholder="Sub" onkeyup="renderEntryTable()"></th><th><select id="f_account" onchange="renderEntryTable()"><option value="">All</option><option value="Kotak - Savan">Kotak - Savan</option><option value="BOB - Savan">BOB - Savan</option><option value="ICICI">ICICI</option><option value="Cash">Cash</option><option value="Kotak Rupay">Kotak Rupay</option><option value="Komal Kotak">Komal Kotak</option><option value="HDFC Pixel">HDFC Pixel</option><option value="BOB - Komal">BOB - Komal</option><option value="SBI - Komal">SBI - Komal</option></select></th><th><input type="text" id="f_amount" placeholder="Amt" onkeyup="renderEntryTable()"></th><th><input type="text" id="f_remarks" placeholder="Note" onkeyup="renderEntryTable()"></th><th></th><th></th></tr>
           </thead>
           <tbody id="tableBody"></tbody>
         </table>
@@ -199,7 +273,6 @@
             <button type="button" class="btn-sm btn-danger" onclick="clearDrill()">✕ Close</button>
           </div>
         </div>
-
         <div class="table-wrap"><table><thead><tr><th style="width:32px;">Inc</th><th>Edit</th><th>Date</th><th>Type</th><th>Sub-Category</th><th>Account</th><th>Remarks</th><th class="num">Amount</th></tr></thead><tbody id="drillBody"></tbody></table></div>
       </div>
     </div>
@@ -223,7 +296,7 @@
       <div id="offDrillBox" style="display:none; margin-top:16px; border-top:2px solid var(--border); padding-top:12px;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
           <h4 id="offDrillTitle" style="margin:0; color:var(--primary);">Tour Breakdown</h4>
-          <div style="display:flex; gap:6px;"><button type="button" class="btn-sm btn-primary" onclick="toggleAllDrillChecks('off', true)">Check All</button><button type="button" class="btn-sm btn-danger" onclick="clearOffDrill()">✕ Close</button></div>
+          <div style="display:flex; gap:6px;"><button type="button" class="btn-sm btn-primary" style="flex:none; min-width:auto;" onclick="toggleAllDrillChecks('off', true)">Check All</button><button type="button" class="btn-sm btn-danger" onclick="clearOffDrill()">✕ Close</button></div>
         </div>
         <div class="table-wrap"><table><thead><tr><th style="width:32px;">Inc</th><th>Edit</th><th>Date</th><th>Type</th><th>Account</th><th>Remarks</th><th class="num">Amount</th></tr></thead><tbody id="offDrillBody"></tbody></table></div>
       </div>
@@ -234,7 +307,7 @@
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
         <h3 style="margin:0;">Master Data Archive</h3>
-        <button type="button" class="btn btn-success" style="padding:9px 14px;" onclick="downloadXlsx()">⬇ Download Excel</button>
+        <button class="btn btn-success" style="padding:9px 14px;" onclick="downloadXlsx()">⬇ Export CSV</button>
       </div>
       <div class="form-grid" style="margin-bottom:12px;">
         <div class="form-group"><label>Period Type</label><select id="masterPeriodType" onchange="updateMasterSubFilter()"><option value="all">All Time</option><option value="fy">Financial Year</option><option value="quarter">Quarter</option><option value="month">Monthly</option></select></div>
@@ -243,12 +316,11 @@
         <div class="form-group"><label>Quick Search</label><input type="text" id="masterSearch" placeholder="Category, Remarks..." onkeyup="renderMasterTable()"></div>
       </div>
       <div id="masterSummary" style="font-size:0.82rem; font-weight:700; color:var(--muted); margin-bottom:8px;"></div>
-      <div class="table-wrap"><table><thead><tr><th>Sr.No.</th><th>Date (DD-MM-YYYY)</th><th>Month</th><th>Type</th><th>Category</th><th>Sub-Category</th><th>Account</th><th class="num">Amount</th><th>Remarks</th></tr></thead><tbody id="masterTableBody"></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>Sr.No.</th><th>Date</th><th>Month</th><th>Type</th><th>Category</th><th>Sub-Category</th><th>Account</th><th class="num">Amount</th><th>Remarks</th><th>Added By / When</th></tr></thead><tbody id="masterTableBody"></tbody></table></div>
     </div>
   </div>
 </div>
 
-<!-- IN-PLACE EDIT MODAL -->
 <div id="editModal" class="modal-backdrop" onclick="closeEditModal()">
   <div class="modal-card" onclick="event.stopPropagation()">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
@@ -284,6 +356,15 @@
   <button class="nav-btn" onclick="switchTab('tab-alldata', this)"><span class="ico">🗂️</span><span>All Data</span></button>
 </nav>
 <script>
+  function getNowTimestamp() {
+    const d = new Date();
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    const hh = String(d.getHours()).padStart(2, '0');
+    const min = String(d.getMinutes()).padStart(2, '0');
+    return dd + '-' + mm + '-' + yyyy + ' ' + hh + ':' + min;
+  }
   const DB_HOST = 'my-expense-tracker-3e5e4-default-rtdb.asia-southeast1.firebasedatabase.app';
   const DEFAULT_FIREBASE_URL = 'https://' + DB_HOST;
   let firebaseUrl = localStorage.getItem('firebase_db_url') || DEFAULT_FIREBASE_URL;
@@ -294,7 +375,6 @@
   let expenses = JSON.parse(localStorage.getItem('offline_expenses_v2')) || [];
   let sortCol = 'date';
   let sortAsc = false;
-
   const bankOpenings = {
     "Kotak - Savan": 123580.92, "Komal Kotak": 311262.02,
     "BOB - Savan": 0, "BOB - Komal": 0, "SBI - Komal": 0, "Cash": 226.00
@@ -328,7 +408,7 @@
   function formatDDMMYYYY(iso) {
     if (!iso || !iso.includes('-')) return iso || '';
     const p = iso.split('-');
-    return `${p.at(2)}-${p.at(1)}-${p.at(0)}`;
+    return p.at(2) + '-' + p.at(1) + '-' + p.at(0);
   }
 
   function isSelfTransfer(cat) {
@@ -400,7 +480,6 @@
   window.addEventListener('online', pullFromCloud);
   window.addEventListener('offline', () => setOnlineStatus(false));
   setInterval(pullFromCloud, 5000);
-
   function switchTab(tabId, btn) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
@@ -412,7 +491,7 @@
 
   function setTodayDate() {
     const now = new Date();
-    dateInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    dateInput.value = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
     updateMonthField();
   }
 
@@ -480,7 +559,6 @@
     }
     document.getElementById('ccBalanceBody').innerHTML = ccRows;
   }
-  // IN-PLACE EDIT MODAL HANDLERS
   const editDateEl = document.getElementById('edit_date');
   const editMonthEl = document.getElementById('edit_month');
   editDateEl.addEventListener('change', () => {
@@ -512,6 +590,7 @@
     e.preventDefault();
     const idx = parseInt(document.getElementById('edit_idx').value, 10);
     if (isNaN(idx) || !expenses.at(idx)) return;
+    const prev = expenses.at(idx);
     expenses[idx] = {
       date: editDateEl.value,
       month: editMonthEl.value,
@@ -520,12 +599,21 @@
       category: document.getElementById('edit_category').value.trim(),
       subCategory: document.getElementById('edit_subCategory').value.trim(),
       amount: parseFloat(document.getElementById('edit_amount').value) || 0,
-      remarks: document.getElementById('edit_remarks').value.trim()
+      remarks: document.getElementById('edit_remarks').value.trim(),
+      addedBy: prev.addedBy || 'Imported',
+      addedAt: prev.addedAt || '-',
+      editedBy: (currentUser || 'Savan') + ' (' + getNowTimestamp() + ')'
     };
     closeEditModal();
     refreshAllAndSync();
   });
 
+  function formatAudit(item) {
+    if (!item.addedBy && !item.editedBy) return 'Imported';
+    let txt = item.addedBy ? (item.addedBy + ' · ' + (item.addedAt || '')) : 'Imported';
+    if (item.editedBy) txt += ' (Ed: ' + item.editedBy + ')';
+    return txt;
+  }
   function clearEntryForm() {
     document.getElementById('category').value = '';
     document.getElementById('subCategory').value = '';
@@ -594,25 +682,24 @@
     });
 
     document.getElementById('tableBody').innerHTML = filtered.map((item, idx) => {
-      const editBtn = tag('button', 'class="btn-edit-ico" style="margin-right:4px;" onclick="openEditModal(' + item.realIdx + ')"', '✏️');
-      const delBtn = tag('button', 'class="btn-sm btn-danger" onclick="deleteEntry(' + item.realIdx + ')"', '✕');
+      const editBtn = tag('button', 'type="button" class="btn-edit-ico" title="Edit" onclick="openEditModal(' + item.realIdx + ')"', '✏️');
+      const delBtn = tag('button', 'type="button" class="btn-sm btn-danger" onclick="deleteEntry(' + item.realIdx + ')"', '✕');
       return tag('tr', '',
         tag('td','',idx + 1) + tag('td','',item.dispDate) + tag('td','',item.month) + tag('td','',item.type) +
         tag('td','',item.category) + tag('td','',item.subCategory) + tag('td','',item.account) +
-        tag('td','class="num"',parseFloat(item.amount || 0).toFixed(2)) + tag('td','',item.remarks) + tag('td','',editBtn + delBtn)
+        tag('td','class="num"',parseFloat(item.amount || 0).toFixed(2)) + tag('td','',item.remarks) +
+        tag('td','',formatAudit(item)) + tag('td','',editBtn + delBtn)
       );
     }).join('');
 
-    document.getElementById('entryCount').textContent = `${filtered.length} rows shown`;
+    document.getElementById('entryCount').textContent = filtered.length + ' rows shown';
   }
-
   const msState = {
     an_month: new Set(), an_acc: new Set(), an_type: new Set(), an_sub: new Set(),
     off_month: new Set(), off_acc: new Set()
   };
 
-  let selectedDrillCat = null;
-  let selectedDrillSide = null;
+  let selectedDrillCat = null, selectedDrillSide = null;
   const excludedDashIdx = new Set();
   let selectedOffTour = null;
   const excludedOffIdx = new Set();
@@ -638,8 +725,7 @@
 
   function filterMsOptions(inp) {
     const q = inp.value.toLowerCase();
-    const menu = inp.closest('.ms-menu');
-    menu.querySelectorAll('.ms-opt').forEach(lbl => {
+    inp.closest('.ms-menu').querySelectorAll('.ms-opt').forEach(lbl => {
       lbl.style.display = lbl.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
     });
   }
@@ -649,7 +735,6 @@
     const btn = document.getElementById(btnId);
     const menu = document.getElementById(menuId);
     if (!btn || !menu) return;
-
     const prevSearch = menu.querySelector('.ms-search input')?.value || '';
 
     if (set.size === 0) {
@@ -657,22 +742,21 @@
       btn.innerHTML = tag('span','',defaultLabel) + tag('span','','▾');
     } else {
       btn.classList.add('has-filter');
-      const label = set.size === 1 ? [...set].at(0) : `${set.size} Selected`;
+      const label = set.size === 1 ? [...set].at(0) : (set.size + ' Selected');
       btn.innerHTML = tag('span','',label) + tag('span','','▾');
     }
 
     const searchBox = key === 'an_sub'
-      ? tag('div', 'class="ms-search"', tag('input', `type="text" placeholder="Search sub-category..." value="${prevSearch.replace(/"/g, '&quot;')}" onkeyup="filterMsOptions(this)"`))
+      ? tag('div', 'class="ms-search"', tag('input', 'type="text" placeholder="Search sub-category..." value="' + prevSearch.replace(/"/g, '&quot;') + '" onkeyup="filterMsOptions(this)"'))
       : '';
 
     const optsHtml = options.map(opt => {
       const checked = set.has(opt) ? 'checked' : '';
       const safeAttr = opt.replace(/"/g, '&quot;');
       const hidden = (prevSearch && !opt.toLowerCase().includes(prevSearch.toLowerCase())) ? ' style="display:none;"' : '';
-      const inp = tag('input', `type="checkbox" ${checked} data-k="${key}" data-v="${safeAttr}" data-s="${scope}" onchange="toggleMsOption(this.dataset.k, this.dataset.v, this.dataset.s)"`);
-      return tag('label', `class="ms-opt"${hidden}`, inp + tag('span','',opt));
+      const inp = tag('input', 'type="checkbox" ' + checked + ' data-k="' + key + '" data-v="' + safeAttr + '" data-s="' + scope + '" onchange="toggleMsOption(this.dataset.k, this.dataset.v, this.dataset.s)"');
+      return tag('label', 'class="ms-opt"' + hidden, inp + tag('span','',opt));
     }).join('');
-
     menu.innerHTML = searchBox + optsHtml;
   }
 
@@ -705,7 +789,6 @@
     if (scope === 'dash') { if (includeAll) excludedDashIdx.clear(); renderAnalysis(); }
     else { if (includeAll) excludedOffIdx.clear(); renderOfficial(); }
   }
-
   function renderAnalysis() {
     const orderedMonths = monthNames.filter(m => expenses.some(e => e.month === m));
     const accounts = [...new Set(expenses.map(e => (e.account || '').trim()).filter(Boolean))].sort();
@@ -729,7 +812,6 @@
 
     const incMap = {}, expMap = {};
     let totalInc = 0, totalExp = 0;
-
     filtered.forEach(e => {
       const amt = parseFloat(e.amount) || 0;
       const cat = (e.category || 'Other').trim();
@@ -747,7 +829,7 @@
       const pct = total > 0 ? ((sum / total) * 100).toFixed(1) : '0.0';
       const isSel = selectedDrillSide === side && selectedDrillCat === cat;
       const safeAttr = cat.replace(/"/g, '&quot;');
-      return tag('tr', `class="drill-row ${isSel ? 'selected' : ''}" data-c="${safeAttr}" data-s="${side}" onclick="selectDrillCategory(this.dataset.c, this.dataset.s)"`,
+      return tag('tr', 'class="drill-row ' + (isSel ? 'selected' : '') + '" data-c="' + safeAttr + '" data-s="' + side + '" onclick="selectDrillCategory(this.dataset.c, this.dataset.s)"',
         tag('td','',cat) + tag('td','class="num ' + colorCls + '"','₹' + sum.toLocaleString('en-IN',{maximumFractionDigits:0})) + tag('td','class="num"',pct + '%')
       );
     }).join('');
@@ -760,7 +842,7 @@
     document.getElementById('dashExpTable').innerHTML = buildCatRows(sortedExp, totalExp, 'exp', 'text-red') +
       tag('tr','class="grand-total"', tag('td','','Total Spend') + tag('td','class="num text-red"','₹' + totalExp.toLocaleString('en-IN',{maximumFractionDigits:0})) + tag('td','class="num"','100%'));
 
-       const drillBox = document.getElementById('drillBox');
+    const drillBox = document.getElementById('drillBox');
     if (selectedDrillCat && selectedDrillSide) {
       const dq = (document.getElementById('drillSearch')?.value || '').trim().toLowerCase();
       const items = filtered.filter(e => {
@@ -777,8 +859,8 @@
         const amt = parseFloat(e.amount) || 0;
         const isEx = excludedDashIdx.has(e.realIdx);
         if (!isEx) { activeSum += amt; activeCount++; }
-        const chk = tag('input', `type="checkbox" ${!isEx ? 'checked' : ''} onchange="toggleDrillCheck(${e.realIdx},'dash')"`);
-        const editBtn = tag('button', `type="button" class="btn-edit-ico" title="Edit" onclick="openEditModal(${e.realIdx})"`, '✏️');
+        const chk = tag('input', 'type="checkbox" ' + (!isEx ? 'checked' : '') + ' onchange="toggleDrillCheck(' + e.realIdx + ',\'dash\')"');
+        const editBtn = tag('button', 'type="button" class="btn-edit-ico" title="Edit" onclick="openEditModal(' + e.realIdx + ')"', '✏️');
         return tag('tr', isEx ? 'class="excluded-row"' : '',
           tag('td','',chk) + tag('td','',editBtn) + tag('td','',formatDDMMYYYY(e.date)) + tag('td','',e.type) +
           tag('td','',e.subCategory || '-') + tag('td','',e.account) + tag('td','',e.remarks || '-') +
@@ -786,9 +868,9 @@
         );
       }).join('');
 
-      document.getElementById('drillTitle').textContent = `${selectedDrillCat} (${activeCount}/${items.length} selected)`;
+      document.getElementById('drillTitle').textContent = selectedDrillCat + ' (' + activeCount + '/' + items.length + ' selected)';
       document.getElementById('drillBody').innerHTML = rowsHtml +
-        tag('tr','class="grand-total"', tag('td','colspan="7"',`Selected Total (${selectedDrillCat})`) + tag('td','class="num"','₹' + activeSum.toLocaleString('en-IN',{minimumFractionDigits:2})));
+        tag('tr','class="grand-total"', tag('td','colspan="7"','Selected Total (' + selectedDrillCat + ')') + tag('td','class="num"','₹' + activeSum.toLocaleString('en-IN',{minimumFractionDigits:2})));
       drillBox.style.display = 'block';
     } else {
       drillBox.style.display = 'none';
@@ -799,39 +881,24 @@
     const box = document.getElementById('offDrillBox');
     if (box) box.style.display = 'none';
   }
-
   function resetOfficialFilters() {
     msState.off_month.clear(); msState.off_acc.clear();
     document.getElementById('off_status').value = 'All';
     clearOffDrill(); renderOfficial();
   }
-
   function selectOffTour(tour) {
     if (selectedOffTour === tour) clearOffDrill();
     else { selectedOffTour = tour; excludedOffIdx.clear(); }
     renderOfficial();
   }
-
   function renderOfficial() {
-    const allOff = expenses.map((e, i) => Object.assign({ realIdx: i }, e))
-      .filter(e => (e.category || '').trim().toLowerCase() === 'official');
-
+    const allOff = expenses.map((e, i) => Object.assign({ realIdx: i }, e)).filter(e => (e.category || '').trim().toLowerCase() === 'official');
     const orderedMonths = monthNames.filter(m => allOff.some(e => e.month === m));
     const accounts = [...new Set(allOff.map(e => (e.account || '').trim()).filter(Boolean))].sort();
-
     renderMsDropdown('off_month', 'menu_off_month', 'btn_off_month', 'All Months', orderedMonths, 'official');
     renderMsDropdown('off_acc', 'menu_off_acc', 'btn_off_acc', 'All Accounts', accounts, 'official');
-
-    const filtered = allOff.filter(e => {
-      if (msState.off_month.size && !msState.off_month.has(e.month)) return false;
-      if (msState.off_acc.size && !msState.off_acc.has(e.account)) return false;
-      return true;
-    });
-
-    const tourMap = {};
-    let grandSpent = 0, grandRecd = 0;
-    const incRows = [];
-
+    const filtered = allOff.filter(e => (!msState.off_month.size || msState.off_month.has(e.month)) && (!msState.off_acc.size || msState.off_acc.has(e.account)));
+    const tourMap = {}; let grandSpent = 0, grandRecd = 0; const incRows = [];
     filtered.forEach(e => {
       const amt = parseFloat(e.amount) || 0;
       const tour = (e.subCategory || 'General Official').trim();
@@ -839,13 +906,11 @@
       if (e.type === 'Income') { tourMap[tour].recd += amt; grandRecd += amt; incRows.push(e); }
       else { tourMap[tour].spent += amt; grandSpent += amt; }
     });
-
     const pendingTotal = grandSpent - grandRecd;
     document.getElementById('officialSummary').innerHTML =
       tag('div','class="kpi-box"', tag('small','','Total Official Spend') + tag('div','class="val text-red"','₹' + grandSpent.toLocaleString('en-IN',{maximumFractionDigits:0}))) +
       tag('div','class="kpi-box"', tag('small','','Reimbursed') + tag('div','class="val text-green"','₹' + grandRecd.toLocaleString('en-IN',{maximumFractionDigits:0}))) +
       tag('div','class="kpi-box"', tag('small','','Pending Claim') + tag('div','class="val ' + (pendingTotal>0?'text-red':'text-green') + '"','₹' + pendingTotal.toLocaleString('en-IN',{maximumFractionDigits:0})));
-
     const statusFilter = document.getElementById('off_status')?.value || 'All';
     const tourEntries = Object.entries(tourMap).filter(([_, v]) => {
       const pend = v.spent - v.recd;
@@ -853,71 +918,45 @@
       if (statusFilter === 'Settled') return pend <= 1;
       return true;
     }).sort((a, b) => (b.at(1).spent - b.at(1).recd) - (a.at(1).spent - a.at(1).recd));
-
     document.getElementById('officialTourTable').innerHTML = tourEntries.map(([tour, v]) => {
-      const pend = v.spent - v.recd;
-      const isSel = selectedOffTour === tour;
-      const safeAttr = tour.replace(/"/g, '&quot;');
-      return tag('tr', `class="drill-row ${isSel ? 'selected' : ''}" data-t="${safeAttr}" onclick="selectOffTour(this.dataset.t)"`,
-        tag('td','',tour) +
-        tag('td','class="num"','₹' + v.spent.toLocaleString('en-IN',{maximumFractionDigits:0})) +
+      const pend = v.spent - v.recd; const isSel = selectedOffTour === tour; const safeAttr = tour.replace(/"/g, '&quot;');
+      return tag('tr', 'class="drill-row ' + (isSel ? 'selected' : '') + '" data-t="' + safeAttr + '" onclick="selectOffTour(this.dataset.t)"',
+        tag('td','',tour) + tag('td','class="num"','₹' + v.spent.toLocaleString('en-IN',{maximumFractionDigits:0})) +
         tag('td','class="num text-green"','₹' + v.recd.toLocaleString('en-IN',{maximumFractionDigits:0})) +
         tag('td','class="num ' + (pend>1?'text-red':'text-green') + '"','₹' + pend.toLocaleString('en-IN',{maximumFractionDigits:0}))
       );
     }).join('');
-
     document.getElementById('officialIncBody').innerHTML = incRows.sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(e =>
-      tag('tr', '',
-        tag('td','',formatDDMMYYYY(e.date)) + tag('td','',e.month) + tag('td','',e.subCategory || '-') +
-        tag('td','',e.account) + tag('td','class="num text-green"','₹' + parseFloat(e.amount||0).toLocaleString('en-IN',{minimumFractionDigits:2}))
-      )
+      tag('tr', '', tag('td','',formatDDMMYYYY(e.date)) + tag('td','',e.month) + tag('td','',e.subCategory || '-') + tag('td','',e.account) + tag('td','class="num text-green"','₹' + parseFloat(e.amount||0).toLocaleString('en-IN',{minimumFractionDigits:2})))
     ).join('') + tag('tr','class="grand-total"', tag('td','colspan="4"','Total Reimbursed') + tag('td','class="num text-green"','₹' + grandRecd.toLocaleString('en-IN',{minimumFractionDigits:2})));
-
     const offBox = document.getElementById('offDrillBox');
     if (selectedOffTour) {
-      const items = filtered.filter(e => (e.subCategory || 'General Official').trim() === selectedOffTour)
-        .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-
+      const items = filtered.filter(e => (e.subCategory || 'General Official').trim() === selectedOffTour).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
       let activeNet = 0, activeCount = 0;
       const rowsHtml = items.map(e => {
-        const amt = parseFloat(e.amount) || 0;
-        const isEx = excludedOffIdx.has(e.realIdx);
+        const amt = parseFloat(e.amount) || 0; const isEx = excludedOffIdx.has(e.realIdx);
         if (!isEx) { activeNet += (e.type === 'Income' ? -amt : amt); activeCount++; }
-        const chk = tag('input', `type="checkbox" ${!isEx ? 'checked' : ''} onchange="toggleDrillCheck(${e.realIdx},'off')"`);
-        const editBtn = tag('button', `class="btn-edit-ico" onclick="openEditModal(${e.realIdx})"`, '✏️');
-        return tag('tr', isEx ? 'class="excluded-row"' : '',
-          tag('td','',chk) + tag('td','',editBtn) + tag('td','',formatDDMMYYYY(e.date)) + tag('td','',e.type) +
-          tag('td','',e.account) + tag('td','',e.remarks || '-') +
-          tag('td','class="num ' + (e.type==='Income'?'text-green':'text-red') + '"','₹' + amt.toLocaleString('en-IN',{minimumFractionDigits:2}))
-        );
+        const chk = tag('input', 'type="checkbox" ' + (!isEx ? 'checked' : '') + ' onchange="toggleDrillCheck(' + e.realIdx + ',\'off\')"');
+        const editBtn = tag('button', 'type="button" class="btn-edit-ico" title="Edit" onclick="openEditModal(' + e.realIdx + ')"', '✏️');
+        return tag('tr', isEx ? 'class="excluded-row"' : '', tag('td','',chk) + tag('td','',editBtn) + tag('td','',formatDDMMYYYY(e.date)) + tag('td','',e.type) + tag('td','',e.account) + tag('td','',e.remarks || '-') + tag('td','class="num ' + (e.type==='Income'?'text-green':'text-red') + '"','₹' + amt.toLocaleString('en-IN',{minimumFractionDigits:2})));
       }).join('');
-
-      document.getElementById('offDrillTitle').textContent = `${selectedOffTour} (${activeCount}/${items.length} items included)`;
-      document.getElementById('offDrillBody').innerHTML = rowsHtml +
-        tag('tr','class="grand-total"', tag('td','colspan="6"',`Net Pending Claim (${selectedOffTour})`) + tag('td','class="num"','₹' + activeNet.toLocaleString('en-IN',{minimumFractionDigits:2})));
+      document.getElementById('offDrillTitle').textContent = selectedOffTour + ' (' + activeCount + '/' + items.length + ' items included)';
+      document.getElementById('offDrillBody').innerHTML = rowsHtml + tag('tr','class="grand-total"', tag('td','colspan="6"','Net Pending Claim (' + selectedOffTour + ')') + tag('td','class="num"','₹' + activeNet.toLocaleString('en-IN',{minimumFractionDigits:2})));
       offBox.style.display = 'block';
-    } else {
-      offBox.style.display = 'none';
-    }
+    } else { offBox.style.display = 'none'; }
   }
-
   function getFinancialYear(isoDate) {
     if (!isoDate || !isoDate.includes('-')) return '';
     const p = isoDate.split('-');
     const yr = parseInt(p.at(0), 10);
     const mo = parseInt(p.at(1), 10);
-    return mo >= 4 ? `FY-${String(yr).slice(-2)}-${String(yr+1).slice(-2)}` : `FY-${String(yr-1).slice(-2)}-${String(yr).slice(-2)}`;
+    return mo >= 4 ? ('FY-' + String(yr).slice(-2) + '-' + String(yr+1).slice(-2)) : ('FY-' + String(yr-1).slice(-2) + '-' + String(yr).slice(-2));
   }
-
   function getQuarter(isoDate) {
     if (!isoDate || !isoDate.includes('-')) return '';
     const mo = parseInt(isoDate.split('-').at(1), 10);
-    if (mo >= 4 && mo <= 6) return 'Q1 (Apr-Jun)';
-    if (mo >= 7 && mo <= 9) return 'Q2 (Jul-Sep)';
-    if (mo >= 10 && mo <= 12) return 'Q3 (Oct-Dec)';
-    return 'Q4 (Jan-Mar)';
+    return mo <= 3 ? 'Q4 (Jan-Mar)' : mo <= 6 ? 'Q1 (Apr-Jun)' : mo <= 9 ? 'Q2 (Jul-Sep)' : 'Q3 (Oct-Dec)';
   }
-
   function updateMasterSubFilter() {
     const pType = document.getElementById('masterPeriodType').value;
     const valSel = document.getElementById('masterPeriodValue');
@@ -925,16 +964,14 @@
     if (pType === 'fy') opts = [...new Set(expenses.map(e => getFinancialYear(e.date)).filter(Boolean))];
     else if (pType === 'quarter') opts = ['Q1 (Apr-Jun)', 'Q2 (Jul-Sep)', 'Q3 (Oct-Dec)', 'Q4 (Jan-Mar)'];
     else if (pType === 'month') opts = [...new Set(expenses.map(e => e.month).filter(Boolean))];
-    valSel.innerHTML = opts.map(o => tag('option', `value="${o}"`, o)).join('');
+    valSel.innerHTML = opts.map(o => tag('option', 'value="' + o + '"', o)).join('');
     renderMasterTable();
   }
-
   function getFilteredMasterData() {
     const pType = document.getElementById('masterPeriodType').value;
     const pVal = document.getElementById('masterPeriodValue').value;
     const acc = document.getElementById('masterAccountFilter').value || 'All';
     const q = (document.getElementById('masterSearch').value || '').toLowerCase();
-
     return expenses.filter(e => {
       if (pType === 'fy' && pVal && getFinancialYear(e.date) !== pVal) return false;
       if (pType === 'quarter' && pVal && getQuarter(e.date) !== pVal) return false;
@@ -944,114 +981,70 @@
       return true;
     });
   }
-
   function renderMasterTable() {
     const accounts = ['All', ...new Set(expenses.map(e => e.account).filter(Boolean))];
     const accSel = document.getElementById('masterAccountFilter');
     const curAcc = accSel.value;
-    accSel.innerHTML = accounts.map(v => tag('option', `value="${v}"${v===curAcc?' selected':''}`, v)).join('');
-
+    accSel.innerHTML = accounts.map(v => tag('option', 'value="' + v + '"' + (v===curAcc?' selected':''), v)).join('');
     const list = getFilteredMasterData();
-    document.getElementById('masterSummary').textContent = `Filtered Records: ${list.length} of ${expenses.length}`;
+    document.getElementById('masterSummary').textContent = 'Filtered Records: ' + list.length + ' of ' + expenses.length;
     document.getElementById('masterTableBody').innerHTML = list.map((item, idx) =>
-      tag('tr', '',
-        tag('td','',idx + 1) + tag('td','',formatDDMMYYYY(item.date)) + tag('td','',item.month) + tag('td','',item.type) +
-        tag('td','',item.category) + tag('td','',item.subCategory) + tag('td','',item.account) +
-        tag('td','class="num"',parseFloat(item.amount || 0).toFixed(2)) + tag('td','',item.remarks)
-      )
+      tag('tr', '', tag('td','',idx + 1) + tag('td','',formatDDMMYYYY(item.date)) + tag('td','',item.month) + tag('td','',item.type) +
+      tag('td','',item.category) + tag('td','',item.subCategory) + tag('td','',item.account) +
+      tag('td','class="num"',parseFloat(item.amount || 0).toFixed(2)) + tag('td','',item.remarks) + tag('td','',formatAudit(item)))
     ).join('');
   }
-
   function downloadXlsx() {
     const list = getFilteredMasterData();
-    if (list.length === 0) {
-      alert('No records in selected filter to export.');
-      return;
-    }
-
+    if (list.length === 0) { alert('No records in selected filter to export.'); return; }
     const tagVal = (document.getElementById('masterPeriodValue')?.value || 'All').replace(/[^a-zA-Z0-9-]/g, '_');
-    const headers = ['Sr.No.', 'Date', 'Month', 'Type', 'Category', 'Sub-Category', 'Account', 'Amount', 'Remarks'];
+    const headers = ['Sr.No.', 'Date', 'Month', 'Type', 'Category', 'Sub-Category', 'Account', 'Amount', 'Remarks', 'Added By / When'];
     const esc = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';
     const csvLines = [headers.join(',')];
-
     list.forEach((e, i) => {
-      csvLines.push([
-        i + 1,
-        esc(formatDDMMYYYY(e.date)),
-        esc(e.month),
-        esc(e.type),
-        esc(e.category),
-        esc(e.subCategory),
-        esc(e.account),
-        parseFloat(e.amount) || 0,
-        esc(e.remarks)
-      ].join(','));
+      csvLines.push([i + 1, esc(formatDDMMYYYY(e.date)), esc(e.month), esc(e.type), esc(e.category), esc(e.subCategory), esc(e.account), parseFloat(e.amount) || 0, esc(e.remarks), esc(formatAudit(e))].join(','));
     });
-
     const blob = new Blob(['\uFEFF' + csvLines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = `Expenses_${tagVal}.csv`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    a.href = url; a.download = 'Expenses_' + tagVal + '.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
   }
-
   function renderProjections() {
-    const tbody = document.getElementById('projectionBody');
-    let net = 0;
+    const tbody = document.getElementById('projectionBody'); let net = 0;
     tbody.innerHTML = projections.map((p, i) => {
       const val = parseFloat(p.amount) || 0;
       if (p.type === 'Income') net += val; else net -= val;
-      const selHtml = tag('select', `style="padding:5px;font-size:13px;" onchange="updateProj(${i},'type',this.value)"`,
-        tag('option', p.type==='Income'?'selected':'', 'Income') +
-        tag('option', p.type==='Expense'?'selected':'', 'Expense') +
-        tag('option', p.type==='Investment'?'selected':'', 'Investment')
-      );
-      const nameHtml = tag('input', `type="text" style="padding:5px;font-size:13px;" value="${p.name}" onchange="updateProj(${i},'name',this.value)"`);
-      const amtHtml = tag('input', `type="number" style="padding:5px;font-size:13px;text-align:right;width:90px;" value="${val}" onchange="updateProj(${i},'amount',this.value)"`);
-      const delHtml = tag('button', `class="btn-sm btn-danger" onclick="delProj(${i})"`, '✕');
+      const selHtml = tag('select', 'style="padding:5px;font-size:13px;" onchange="updateProj(' + i + ',\'type\',this.value)"', tag('option', p.type==='Income'?'selected':'', 'Income') + tag('option', p.type==='Expense'?'selected':'', 'Expense') + tag('option', p.type==='Investment'?'selected':'', 'Investment'));
+      const nameHtml = tag('input', 'type="text" style="padding:5px;font-size:13px;" value="' + p.name + '" onchange="updateProj(' + i + ',\'name\',this.value)"');
+      const amtHtml = tag('input', 'type="number" style="padding:5px;font-size:13px;text-align:right;width:90px;" value="' + val + '" onchange="updateProj(' + i + ',\'amount\',this.value)"');
+      const delHtml = tag('button', 'class="btn-sm btn-danger" onclick="delProj(' + i + ')"', '✕');
       return tag('tr', '', tag('td','',selHtml) + tag('td','',nameHtml) + tag('td','class="num"',amtHtml) + tag('td','',delHtml));
     }).join('');
     document.getElementById('projectionFoot').innerHTML = tag('tr', '', tag('td','colspan="2"','Projected Net Surplus') + tag('td','class="num ' + (net>=0?'text-green':'text-red') + '"','₹' + net.toFixed(2)) + tag('td','',''));
   }
-
   function updateProj(i, f, v) { projections.at(i)[f] = f === 'amount' ? (parseFloat(v) || 0) : v; localStorage.setItem('offline_projections', JSON.stringify(projections)); renderProjections(); pushToCloud(); }
   function addProjectionRow() { projections.push({ type: "Expense", name: "New Item", amount: 0 }); localStorage.setItem('offline_projections', JSON.stringify(projections)); renderProjections(); pushToCloud(); }
   function delProj(i) { projections.splice(i, 1); localStorage.setItem('offline_projections', JSON.stringify(projections)); renderProjections(); pushToCloud(); }
 
   function renderAllNoPush() {
     localStorage.setItem('offline_expenses_v2', JSON.stringify(expenses));
-    renderEntryTable();
-    renderBalances();
-    renderProjections();
-    renderAnalysis();
-    renderOfficial();
-    renderMasterTable();
+    renderEntryTable(); renderBalances(); renderProjections(); renderAnalysis(); renderOfficial(); renderMasterTable();
   }
-
   function refreshAllAndSync() { renderAllNoPush(); pushToCloud(); }
 
   document.getElementById('expenseForm').addEventListener('submit', function(e) {
     e.preventDefault();
     expenses.push({
-      date: dateInput.value, month: monthInput.value,
-      type: document.getElementById('type').value,
-      category: document.getElementById('category').value.trim(),
-      subCategory: document.getElementById('subCategory').value.trim(),
-      account: document.getElementById('account').value,
-      amount: parseFloat(document.getElementById('amount').value) || 0,
-      remarks: document.getElementById('remarks').value.trim()
+      date: dateInput.value, month: monthInput.value, type: document.getElementById('type').value,
+      category: document.getElementById('category').value.trim(), subCategory: document.getElementById('subCategory').value.trim(),
+      account: document.getElementById('account').value, amount: parseFloat(document.getElementById('amount').value) || 0,
+      remarks: document.getElementById('remarks').value.trim(), addedBy: currentUser || 'Savan', addedAt: getNowTimestamp()
     });
-    refreshAllAndSync();
-    clearEntryForm();
+    refreshAllAndSync(); clearEntryForm();
   });
 
-  function deleteEntry(idx) {
-    if (confirm('Delete this entry?')) { expenses.splice(idx, 1); refreshAllAndSync(); }
-  }
+  function deleteEntry(idx) { if (confirm('Delete this entry?')) { expenses.splice(idx, 1); refreshAllAndSync(); } }
 
   function parseCSVLine(line) {
     const result = []; let cur = '', inQuotes = false;
@@ -1061,8 +1054,7 @@
       else if (ch === ',' && !inQuotes) { result.push(cur.trim()); cur = ''; }
       else { cur += ch; }
     }
-    result.push(cur.trim());
-    return result;
+    result.push(cur.trim()); return result;
   }
 
   function normalizeDate(raw) {
@@ -1075,12 +1067,10 @@
       const mIdx = shortMonths.indexOf(mText.at(2).toLowerCase());
       let yr = mText.at(3);
       if (yr.length === 2) yr = '20' + yr;
-      if (mIdx !== -1) return `${yr}-${String(mIdx + 1).padStart(2, '0')}-${dd}`;
+      if (mIdx !== -1) return yr + '-' + String(mIdx + 1).padStart(2, '0') + '-' + dd;
     }
     const mNum = raw.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})$/);
-    if (mNum) {
-      return `${mNum.at(3)}-${mNum.at(2).padStart(2,'0')}-${mNum.at(1).padStart(2,'0')}`;
-    }
+    if (mNum) { return mNum.at(3) + '-' + mNum.at(2).padStart(2,'0') + '-' + mNum.at(1).padStart(2,'0'); }
     return '';
   }
 
@@ -1089,40 +1079,28 @@
     if (!file) return;
     const reader = new FileReader();
     reader.onload = function(e) {
-      const lines = e.target.result.split(/\r?\n/);
-      let count = 0;
+      const lines = e.target.result.split(/\r?\n/); let count = 0;
       for (let line of lines) {
         const c = parseCSVLine(line);
         if (c.length < 8) continue;
         if (c.at(0) === 'Account type' || c.at(1) === 'Month') break;
-        const srNo = parseInt(c.at(0), 10);
-        const cleanDate = normalizeDate(c.at(1));
-        const amt = parseFloat(c.at(7));
+        const srNo = parseInt(c.at(0), 10); const cleanDate = normalizeDate(c.at(1)); const amt = parseFloat(c.at(7));
         if (!isNaN(srNo) && cleanDate && !isNaN(amt)) {
           expenses.push({
-            date: cleanDate,
-            month: c.at(2) || monthNames.at(parseInt(cleanDate.split('-').at(1),10)-1),
-            type: c.at(3) || 'Expense',
-            category: c.at(4) || 'Miscellaneous',
-            subCategory: c.at(5) || '',
-            account: c.at(6) || 'Kotak - Savan',
-            amount: amt,
-            remarks: c.at(8) || ''
+            date: cleanDate, month: c.at(2) || monthNames.at(parseInt(cleanDate.split('-').at(1),10)-1),
+            type: c.at(3) || 'Expense', category: c.at(4) || 'Miscellaneous', subCategory: c.at(5) || '',
+            account: c.at(6) || 'Kotak - Savan', amount: amt, remarks: c.at(8) || '',
+            addedBy: 'CSV Import', addedAt: getNowTimestamp()
           });
           count++;
         }
       }
-      refreshAllAndSync();
-      event.target.value = '';
-      alert('Successfully imported ' + count + ' entries!');
+      refreshAllAndSync(); event.target.value = ''; alert('Successfully imported ' + count + ' entries!');
     };
     reader.readAsText(file);
   }
 
-  setTodayDate();
-  updateMasterSubFilter();
-  renderAllNoPush();
-  pullFromCloud();
+  initAuth(); setTodayDate(); updateMasterSubFilter(); renderAllNoPush(); pullFromCloud();
 </script>
 </body>
 </html>
