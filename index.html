@@ -168,15 +168,6 @@
       <button id="secureLoginButton" type="submit" class="btn btn-primary" style="width:100%">Sign in securely</button>
     </form>
     <p id="loginError" style="min-height:1.3em;color:var(--danger);font-size:.8rem;font-weight:600;margin:10px 0 0" role="alert"></p>
-    <details id="firebaseSetup" style="margin-top:14px;border-top:1px solid #cbd5e1;padding-top:12px">
-      <summary style="cursor:pointer;font-size:.81rem;font-weight:700;color:#1d4ed8">⚙️ First-time setup: Firebase web key and authorized UIDs</summary>
-      <p style="font-size:.76rem;color:var(--muted);line-height:1.45">Find the Web API Key in Firebase Project settings → General → Web API Key. Find Savan/Komal user IDs under Authentication → Users. These identifiers are not passwords. Configure once per browser/device.</p>
-      <div class="form-group" style="margin:8px 0"><label>Firebase Web API Key</label><input id="configApiKey" autocomplete="off" spellcheck="false" placeholder="AIza…"></div>
-      <div class="form-group" style="margin:8px 0"><label>Savan user UID</label><input id="configSavanUid" autocomplete="off" spellcheck="false" placeholder="Firebase UID for Savan"></div>
-      <div class="form-group" style="margin:8px 0"><label>Komal user UID</label><input id="configKomalUid" autocomplete="off" spellcheck="false" placeholder="Firebase UID for Komal"></div>
-      <button type="button" class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="saveFirebaseSetup()">Save Firebase configuration</button>
-      <div id="configStatus" style="font-size:.77rem;margin-top:6px;color:#475569"></div>
-    </details>
   </div>
   <div id="openingSetupCard" class="auth-card" style="display:none;max-width:600px;text-align:left;max-height:90vh;overflow-y:auto">
     <h2 style="margin:0 0 8px">🔐 Secure opening-balance migration</h2>
@@ -195,11 +186,29 @@
     if(status) status.textContent='Error (line '+line+')';
     console.error(msg,url,line);
   };
-  const FIREBASE_CONFIG_KEY='finance_firebase_client_config_v1';
+  // ================================================================
+  // CONFIGURE THESE 3 VALUES BEFORE UPLOADING THIS FILE TO GITHUB.
+  // Replace the text BETWEEN quotes; leave the surrounding quotes.
+  // Do NOT put passwords, service-account keys or financial data here.
+  // Firebase Realtime Database Rules MUST still restrict access to
+  // these two approved UIDs; client-side checks alone are NOT security.
+  // ================================================================
+  const FIREBASE_WEB_API_KEY = 'AIzaSyCnQl-OwbT0znszc-QXk7QhuiMSH80wejE';
+  const SAVAN_FIREBASE_UID   = 'eIyDhvty6WhmN4teXdZVJLP5r9z1';
+  const KOMAL_FIREBASE_UID   = 'GevCwId4whQ7KybgxmGwXytmPt73';
+  // ================================================================
   const AUTH_SESSION_KEY='finance_firebase_session_v1';
   const FIREBASE_PROJECT_ID='my-expense-tracker-3e5e4';
-  let firebaseClientConfig={apiKey:'',savanUid:'',komalUid:''};
-  try {firebaseClientConfig={...firebaseClientConfig,...JSON.parse(localStorage.getItem(FIREBASE_CONFIG_KEY)||'{}')};}catch(_){}
+  const firebaseClientConfig=Object.freeze({
+    apiKey:FIREBASE_WEB_API_KEY.trim(),
+    savanUid:SAVAN_FIREBASE_UID.trim(),
+    komalUid:KOMAL_FIREBASE_UID.trim()
+  });
+  function isFirebaseConfigReady(){
+    return !!(firebaseClientConfig.apiKey && firebaseClientConfig.savanUid && firebaseClientConfig.komalUid &&
+      !Object.values(firebaseClientConfig).some(v=>v.startsWith('PASTE_')) &&
+      firebaseClientConfig.savanUid!==firebaseClientConfig.komalUid);
+  }
   let authSession=null;
   let currentUser='';
   let authEpoch=0;
@@ -223,19 +232,6 @@
     if(badge)badge.textContent=currentUser?'👤 '+currentUser:'🔒 Sign in';
   }
   function initAuth(){renderAuthGate();}
-  function saveFirebaseSetup(){
-    const values={
-      apiKey:document.getElementById('configApiKey').value.trim(),
-      savanUid:document.getElementById('configSavanUid').value.trim(),
-      komalUid:document.getElementById('configKomalUid').value.trim()
-    };
-    const message=document.getElementById('configStatus');
-    if(!values.apiKey||!values.savanUid||!values.komalUid||values.savanUid===values.komalUid){message.textContent='Enter a Web API Key and two distinct Firebase UIDs.';return;}
-    firebaseClientConfig=values;
-    localStorage.setItem(FIREBASE_CONFIG_KEY,JSON.stringify(values));
-    message.textContent='Configuration saved on this device. Sign in above.';
-    setLoginError('');
-  }
   function configuredUserForUid(uid){
     if(uid&&uid===firebaseClientConfig.savanUid)return 'Savan';
     if(uid&&uid===firebaseClientConfig.komalUid)return 'Komal';
@@ -341,8 +337,8 @@
     const email=document.getElementById('loginEmail').value.trim();
     const password=document.getElementById('loginPassword').value;
     const btn=document.getElementById('secureLoginButton');
-    if(!firebaseClientConfig.apiKey||!firebaseClientConfig.savanUid||!firebaseClientConfig.komalUid){
-      document.getElementById('firebaseSetup').open=true;setLoginError('Complete Firebase first-time setup below.');return;
+    if(!isFirebaseConfigReady()){
+      setLoginError('Firebase is not configured. Edit the three PASTE_… constants near the top of index.html and upload the updated file.');return;
     }
     btn.disabled=true;btn.textContent='Verifying account…';setLoginError('');
     try {
@@ -377,10 +373,7 @@
     setOnlineStatus(false);renderAuthGate();
   }
   function restoreLoginSetup(){
-    document.getElementById('configApiKey').value=firebaseClientConfig.apiKey||'';
-    document.getElementById('configSavanUid').value=firebaseClientConfig.savanUid||'';
-    document.getElementById('configKomalUid').value=firebaseClientConfig.komalUid||'';
-    if(!firebaseClientConfig.apiKey||!firebaseClientConfig.savanUid||!firebaseClientConfig.komalUid)document.getElementById('firebaseSetup').open=true;
+    if(!isFirebaseConfigReady())setLoginError('Firebase configuration required: replace the three PASTE_… values in index.html before publishing.');
     for(const storage of getSessionStorage()){
       try{const old=JSON.parse(storage.getItem(AUTH_SESSION_KEY)||'null');if(old?.refreshToken){authSession=old;break;}}catch(_){}
     }
