@@ -57,8 +57,15 @@
   .ms-opt { display: flex; align-items: center; gap: 8px; padding: 6px 8px; font-size: 0.82rem; font-weight: 500; cursor: pointer; border-radius: 5px; margin: 0; color: var(--text); }
   .ms-opt:hover { background: #f1f5f9; }
   .ms-opt input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: var(--primary); cursor: pointer; }
+  .audit-cell { white-space: normal; min-width: 158px; width: 178px; max-width: 205px; line-height: 1.4; font-size: .76rem; }
+  .audit-cell .audit-edited { display:block; color: var(--muted); margin-top:2px; overflow-wrap:anywhere; }
+  .account-rename { margin-left:5px; border:1px solid #bfdbfe; border-radius:5px; padding:3px 6px; background:#eff6ff; color:#1d4ed8; cursor:pointer; font-size:.74rem; }
+  .danger-zone { border:1px solid #fecaca; background:#fff7f7; padding:12px; border-radius:10px; margin-top:12px; }
   tr.drill-row { cursor: pointer; transition: background 0.12s; }
   tr.drill-row.selected { background: #dbeafe !important; font-weight: 700; }
+  tr.drill-row.selected:hover { background: #bfdbfe !important; }
+  .account-add-fields { display:none; margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
+  .account-add-fields.open { display:block; }
   tr.excluded-row { opacity: 0.45; text-decoration: line-through; background: #f8fafc; }
   .table-wrap { overflow-x: auto; max-height: 55vh; border-radius: 8px; border: 1px solid var(--border); }
   table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
@@ -90,6 +97,63 @@
   .auth-overlay { position: fixed; inset: 0; background: #0f172a; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 16px; }
   .auth-overlay.hidden { display: none; }
   .auth-card { background: #fff; border-radius: 14px; padding: 22px; width: 100%; max-width: 360px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); text-align: center; }
+  #dashKpis{grid-template-columns:repeat(2,minmax(0,1fr));}
+  @media(min-width:800px){#dashKpis{grid-template-columns:repeat(4,minmax(0,1fr));}}
+  .bill-hint {font-size:.76rem;color:var(--muted);line-height:1.5;margin:8px 0 12px;}
+  .bill-status{font-size:.72rem;font-weight:700;padding:3px 7px;border-radius:12px;display:inline-block;}
+  .bill-status.paid{background:#dcfce7;color:#166534;}
+  .bill-status.pending{background:#fef3c7;color:#92400e;}
+  .bill-status.overdue{background:#fee2e2;color:#991b1b;}
+  .bill-action{background:#e2e8f0;color:#1e293b;border:0;padding:5px 9px;border-radius:5px;cursor:pointer;margin-right:4px;}
+
+/* V5 Analysis: isolated responsive layout; all other tabs unchanged */
+.analysis-v5 .an-header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:13px}
+.analysis-v5 .an-header h2{font-size:1.32rem;margin:0;color:#0f172a}.analysis-v5 .an-header p{margin:4px 0 0;color:#64748b;font-size:.83rem}
+.analysis-v5 .an-layout{display:grid;grid-template-columns:205px minmax(0,1fr);gap:12px;align-items:start}
+.analysis-v5 .an-sidebar{padding:12px;position:sticky;top:10px;margin-bottom:0}.analysis-v5 .an-sidehead{display:flex;align-items:center;justify-content:space-between;gap:6px}.analysis-v5 .an-sidehead h3{margin:0}.analysis-v5 .an-collapse{border:0;background:#e2e8f0;border-radius:5px;padding:5px 8px;color:#334155;cursor:pointer}.analysis-v5 .an-filterfields{display:grid;gap:13px;margin-top:15px}.analysis-v5 .an-filterfields .ms-btn{font-size:.76rem}.analysis-v5 .an-filterfields .ms-menu{z-index:60}.analysis-v5 .an-sidebar.collapsed{width:100%}.analysis-v5 .an-sidebar.collapsed .an-filterfields{display:none}
+.analysis-v5 .an-main{min-width:0}.analysis-v5 .an-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:11px}.analysis-v5 .an-kpi{border-radius:11px;border:1px solid #dbe3f0;padding:13px 11px;background:white;min-width:0;display:flex;flex-direction:column;gap:7px}.analysis-v5 .an-kpititle{font-size:.73rem;font-weight:750;line-height:1.3;color:#334155}.analysis-v5 .an-kpi strong{font-size:clamp(1.05rem,2vw,1.52rem);font-variant-numeric:tabular-nums;line-height:1.2;overflow-wrap:anywhere}.analysis-v5 .an-kpi small{font-size:.66rem;color:#64748b;line-height:1.4}.analysis-v5 .an-kpi-blue{background:#eff6ff}.analysis-v5 .an-kpi-red{background:#fff1f2}.analysis-v5 .an-kpi-amber{background:#fffbeb}.analysis-v5 .an-kpi-green{background:#f0fdf4}.analysis-v5 .an-kpi-cyan{background:#ecfeff}.analysis-v5 .an-kpi-purple{background:#f5f3ff}
+.analysis-v5 .an-midgrid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:11px}.analysis-v5 .an-midgrid .card{margin-bottom:0;min-width:0;padding:13px}.analysis-v5 .an-paneltitle{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.analysis-v5 h3{font-size:.91rem}.analysis-v5 .an-caption{font-size:.74rem;color:#64748b;margin:4px 0 12px;line-height:1.45}.analysis-v5 .an-trend{grid-column:1}.analysis-v5 .an-chart{width:100%;min-height:150px}.analysis-v5 .an-chart svg{width:100%;height:auto;display:block}.analysis-v5 .an-legend{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;font-size:.69rem;color:#475569}.analysis-v5 .an-legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}.analysis-v5 .an-range{display:flex;background:#e2e8f0;border-radius:7px;padding:2px}.analysis-v5 .an-range button{border:0;background:transparent;border-radius:5px;font-size:.7rem;padding:5px 9px;cursor:pointer}.analysis-v5 .an-range .an-range-active{background:#1d4ed8;color:white}
+.analysis-v5 .an-inflows{grid-column:2;grid-row:1/3}.analysis-v5 .an-inflowrow,.analysis-v5 .an-inflowtotal{display:flex;justify-content:space-between;gap:10px;padding:10px 3px;border-bottom:1px solid #e2e8f0;font-size:.77rem}.analysis-v5 .an-inflowrow span{min-width:0}.analysis-v5 .an-inflowrow b,.analysis-v5 .an-inflowtotal b{white-space:nowrap}.analysis-v5 .an-inflowtotal{background:#eff6ff;border-radius:7px;font-size:.82rem;padding:11px;margin-top:10px;font-weight:700}.analysis-v5 .an-inflowextra{margin-top:10px;font-size:.77rem;color:#166534;line-height:1.4}.analysis-v5 .an-note{background:#f1f5f9;color:#475569;padding:11px;border-radius:7px;font-size:.71rem;line-height:1.5;margin:14px 0 0}
+.analysis-v5 .an-topcats{grid-column:1}.analysis-v5 .an-performance{grid-column:2}.analysis-v5 .an-performance .table-wrap{max-height:310px}.analysis-v5 .an-performance th,.analysis-v5 .an-performance td{font-size:.72rem;padding:8px 6px}.analysis-v5 .an-catbutton{background:transparent;border:0;text-align:left;cursor:pointer;color:inherit;font:inherit;min-width:0}.analysis-v5 .an-topcats .an-catbutton{width:100%;display:grid;grid-template-columns:minmax(78px,1fr) minmax(35px,1.3fr) minmax(97px,auto);gap:8px;align-items:center;padding:10px 5px;border-radius:7px}.analysis-v5 .an-catbutton:hover{background:#eff6ff}.analysis-v5 .an-catselected{background:#dbeafe!important;color:#1d4ed8;font-weight:750}.analysis-v5 .an-catname{font-size:.77rem;overflow-wrap:anywhere}.analysis-v5 .an-catvalue{font-size:.73rem;text-align:right;white-space:nowrap;font-weight:650}.analysis-v5 .an-catvalue small{font-weight:400;color:#64748b}.analysis-v5 .an-bartrack{height:9px;border-radius:20px;background:#e2e8f0;overflow:hidden}.analysis-v5 .an-bartrack i{display:block;height:100%;background:linear-gradient(90deg,#93c5fd,#2563eb);border-radius:20px}
+.analysis-v5 .an-drill{margin-top:11px;padding:13px}.analysis-v5 .an-drillhead{display:flex;align-items:start;justify-content:space-between;gap:8px;flex-wrap:wrap}.analysis-v5 .an-drillhead h3{margin-bottom:0}.analysis-v5 .an-drillhead .an-caption{margin:5px 0}.analysis-v5 .an-totals{background:#eff6ff;border-radius:8px;display:flex;flex-wrap:wrap;gap:8px 18px;padding:11px;font-size:.77rem;align-items:center;margin:9px 0 12px}.analysis-v5 .an-drilltools{display:flex;align-items:center;gap:8px;margin:8px 0}.analysis-v5 .an-drilltools input{flex:1;min-width:0;font-size:14px}.analysis-v5 .an-pills{display:flex;overflow-x:auto;gap:6px;padding:5px 0 12px}.analysis-v5 .an-pills .an-catbutton{flex:none;white-space:nowrap;padding:7px 11px;border:1px solid #cbd5e1;border-radius:20px;font-size:.73rem}.analysis-v5 .an-pills .an-catselected{border-color:#2563eb}.analysis-v5 .an-drill .table-wrap{max-height:52vh}.analysis-v5 .an-empty{font-size:.78rem;color:#64748b;padding:12px;text-align:center}.analysis-v5 #drillBody td{font-size:.76rem}
+@media (max-width:1100px){.analysis-v5 .an-layout{grid-template-columns:175px minmax(0,1fr)}.analysis-v5 .an-midgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.analysis-v5 .an-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:760px){.analysis-v5 .an-layout{display:block}.analysis-v5 .an-sidebar{position:static;margin-bottom:11px}.analysis-v5 .an-filterfields{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.analysis-v5 .an-filterfields .ms-menu{min-width:180px}.analysis-v5 .an-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.analysis-v5 .an-kpi{padding:11px 9px;min-height:106px}.analysis-v5 .an-kpi strong{font-size:1.16rem}.analysis-v5 .an-midgrid{display:flex;flex-direction:column}.analysis-v5 .an-midgrid .card{width:100%}.analysis-v5 .an-topcats .an-catbutton{grid-template-columns:minmax(65px,1fr) minmax(40px,1.1fr) minmax(90px,auto)}.analysis-v5 .an-totals{gap:7px 12px}.analysis-v5 .an-drill .table-wrap{max-height:56vh}.analysis-v5 .an-header h2{font-size:1.16rem}}
+@media (max-width:390px){.analysis-v5 .an-filterfields{grid-template-columns:1fr}.analysis-v5 .an-topcats .an-catbutton{grid-template-columns:minmax(70px,1fr) minmax(30px,1fr) minmax(84px,auto)}.analysis-v5 .an-catvalue small{display:none}}
+
+/* V6: desktop-first interactive Analysis; the other five tabs are unaffected. */
+.analysis-v6 .an-layout{grid-template-columns:215px minmax(0,1fr)}
+.analysis-v6 .an-kpis{grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+.analysis-v6 .an-kpi{text-align:left;cursor:pointer;min-height:148px;box-shadow:0 2px 7px #0f172a0d;transition:transform .14s,box-shadow .14s,border-color .14s}
+.analysis-v6 .an-kpi:hover{transform:translateY(-2px);box-shadow:0 5px 17px #2563eb20}
+.analysis-v6 .an-kpi:focus-visible,.analysis-v6 .an-listrow:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+.analysis-v6 .an-kpi-selected{border:2px solid #2563eb;box-shadow:0 0 0 3px #dbeafe}
+.analysis-v6 .an-kpititle{display:flex;gap:6px;align-items:center;min-height:35px}.analysis-v6 .an-kpi-icon{font-size:1.25rem}
+.analysis-v6 .an-kpi strong{font-size:clamp(.98rem,1.36vw,1.33rem)}
+.analysis-v6 .an-midgrid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:stretch}
+.analysis-v6 .an-topcats,.analysis-v6 .an-inflows{grid-column:auto;grid-row:auto}
+.analysis-v6 .an-midgrid>.card{min-height:330px}
+.analysis-v6 .an-count{padding:5px 9px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:20px;color:#1d4ed8;font-size:.69rem;font-weight:700}
+.analysis-v6 .an-scroll-list{max-height:340px;overflow-y:auto;scrollbar-color:#94a3b8 #f1f5f9}
+.analysis-v6 .an-listhead{background:#0f172a;color:white;border-radius:7px 7px 0 0;padding:10px 9px;font-size:.72rem;font-weight:700}
+.analysis-v6 .an-catgrid{display:grid;grid-template-columns:22px minmax(90px,.95fr) minmax(65px,1.4fr) minmax(90px,auto);gap:9px;align-items:center}
+.analysis-v6 .an-inflowgrid{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:9px;align-items:center}
+.analysis-v6 .an-listrow{width:100%;border:0;border-bottom:1px solid #e2e8f0;text-align:left;background:#fff;color:#0f172a;padding:10px 9px;cursor:pointer;font-family:inherit;font-size:.76rem}
+.analysis-v6 .an-listrow:hover{background:#eff6ff}.analysis-v6 .an-listselected{background:#dbeafe!important;color:#1e40af}
+.analysis-v6 .an-check{width:17px;height:17px;border:1.5px solid #94a3b8;border-radius:4px;background:white;display:inline-flex;align-items:center;justify-content:center;font-weight:800;color:white}
+.analysis-v6 .an-listselected .an-check{background:#2563eb;border-color:#2563eb}
+.analysis-v6 .an-catvalue{font-size:.72rem}.analysis-v6 .an-listrow .an-catname{font-weight:650}
+.analysis-v6 .an-note{margin:10px 0 0}
+.analysis-v6 .an-drill{margin-top:13px;min-height:260px}
+.analysis-v6 .an-totals{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin:10px 0;background:#eff6ff;border:1px solid #bfdbfe}
+.analysis-v6 .an-totals>div{border-right:1px solid #bfdbfe;padding:2px 8px;display:flex;flex-direction:column;gap:5px}
+.analysis-v6 .an-totals>div:last-child{border-right:0}.analysis-v6 .an-totals small{font-size:.68rem;color:#475569}.analysis-v6 .an-totals strong{font-size:1rem;font-variant-numeric:tabular-nums}
+.analysis-v6 .an-pills{flex-wrap:wrap;overflow:visible;padding:5px 0 10px}.analysis-v6 .an-chip{background:#eff6ff;border:1px solid #93c5fd;border-radius:18px;padding:6px 10px;color:#1d4ed8;font-weight:700;font-size:.7rem;cursor:pointer}
+.analysis-v6 .an-drill .table-wrap{max-height:52vh}.analysis-v6 .an-drill table th,.analysis-v6 .an-drill table td{font-size:.72rem;padding:8px 7px}
+.analysis-v6 .an-audit{white-space:normal;min-width:135px;max-width:180px;line-height:1.35}.analysis-v6 .an-audit span{display:block;color:#64748b}
+.analysis-v6 .an-filterfields .ms-menu{min-width:230px}.analysis-v6 .an-sidebar{position:sticky;top:10px}
+@media(max-width:1450px){.analysis-v6 .an-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.analysis-v6 .an-kpi{min-height:110px}}
+@media(max-width:900px){.analysis-v6 .an-layout{grid-template-columns:175px minmax(0,1fr)}.analysis-v6 .an-midgrid{grid-template-columns:1fr}.analysis-v6 .an-totals{grid-template-columns:repeat(3,minmax(0,1fr))}.analysis-v6 .an-totals>div:nth-child(3){border-right:0}}
+@media(max-width:760px){.analysis-v6 .an-layout{display:block}.analysis-v6 .an-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.analysis-v6 .an-sidebar{position:static}.analysis-v6 .an-totals{grid-template-columns:repeat(2,minmax(0,1fr))}.analysis-v6 .an-totals>div:nth-child(2n){border-right:0}.analysis-v6 .an-catgrid{grid-template-columns:20px minmax(70px,.8fr) minmax(45px,1fr) minmax(80px,auto);gap:5px}}
 </style>
 </head>
 <body>
@@ -222,7 +286,7 @@ window.onerror = function(msg, url, line) {
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Sr.No.</th><th class="sortable" onclick="setSort('date')">Date ⇅</th><th class="sortable" onclick="setSort('month')">Month ⇅</th><th class="sortable" onclick="setSort('type')">Type ⇅</th><th class="sortable" onclick="setSort('category')">Category ⇅</th><th class="sortable" onclick="setSort('subCategory')">Sub-Cat ⇅</th><th class="sortable" onclick="setSort('account')">Account ⇅</th><th class="sortable num" onclick="setSort('amount')">Amount ⇅</th><th class="sortable" onclick="setSort('remarks')">Remarks ⇅</th><th>Added By / When</th><th>Action</th></tr>
+            <tr><th>Sr.No.</th><th class="sortable" onclick="setSort('date')">Date ⇅</th><th class="sortable" onclick="setSort('month')">Month ⇅</th><th class="sortable" onclick="setSort('type')">Type ⇅</th><th class="sortable" onclick="setSort('category')">Category ⇅</th><th class="sortable" onclick="setSort('subCategory')">Sub-Cat ⇅</th><th class="sortable" onclick="setSort('account')">Account ⇅</th><th class="sortable num" onclick="setSort('amount')">Amount ⇅</th><th class="sortable" onclick="setSort('remarks')">Remarks ⇅</th><th style="min-width:158px;width:180px;">Added By / When</th><th>Action</th></tr>
             <tr class="filter-row"><th></th><th><input type="text" id="f_date" placeholder="DD-MM" onkeyup="renderEntryTable()"></th><th><input type="text" id="f_month" placeholder="Month" onkeyup="renderEntryTable()"></th><th><select id="f_type" onchange="renderEntryTable()"><option value="">All</option><option value="Expense">Expense</option><option value="Income">Income</option><option value="Debt">Debt</option></select></th><th><input type="text" id="f_category" placeholder="Cat" onkeyup="renderEntryTable()"></th><th><input type="text" id="f_subCategory" placeholder="Sub" onkeyup="renderEntryTable()"></th><th><select id="f_account" onchange="renderEntryTable()"><option value="">All</option><option value="Kotak - Savan">Kotak - Savan</option><option value="BOB - Savan">BOB - Savan</option><option value="ICICI">ICICI</option><option value="Cash">Cash</option><option value="Kotak Rupay">Kotak Rupay</option><option value="Komal Kotak">Komal Kotak</option><option value="HDFC Pixel">HDFC Pixel</option><option value="BOB - Komal">BOB - Komal</option><option value="SBI - Komal">SBI - Komal</option></select></th><th><input type="text" id="f_amount" placeholder="Amt" onkeyup="renderEntryTable()"></th><th><input type="text" id="f_remarks" placeholder="Note" onkeyup="renderEntryTable()"></th><th></th><th></th></tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -231,10 +295,45 @@ window.onerror = function(msg, url, line) {
     </div>
   </div>
   <div id="tab-balance" class="tab-content">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div><h3 style="margin:0;">Manage Accounts</h3><small style="color:var(--muted);">New accounts sync across devices through Firebase.</small></div>
+        <button type="button" class="btn btn-primary" style="flex:none;min-width:0;" onclick="toggleAddAccount()">+ Add New Account</button>
+      </div>
+      <form id="addAccountForm" class="account-add-fields">
+        <div class="form-grid">
+          <div class="form-group"><label>Account Name *</label><input id="newAccountName" maxlength="100" placeholder="e.g. Axis - Savan" required></div>
+          <div class="form-group"><label>Account Type *</label><select id="newAccountType" onchange="updateAddAccountFields()"><option value="bank">Bank / Cash</option><option value="credit">Credit Card</option></select></div>
+          <div class="form-group" id="newBankOpeningGroup"><label>Opening Balance (₹) *</label><input id="newBankOpening" type="number" step="0.01" value="0" required></div>
+          <div class="form-group" id="newCreditLimitGroup" style="display:none;"><label>Credit Limit (₹) *</label><input id="newCreditLimit" type="number" min="0" step="0.01" value="0"></div>
+          <div class="form-group" id="newCreditAvailableGroup" style="display:none;"><label>Opening Available Limit (₹) *</label><input id="newCreditAvailable" type="number" min="0" step="0.01" value="0"></div>
+        </div>
+        <div class="btn-group"><button class="btn btn-success" type="submit">Save Account</button><button class="btn btn-secondary" type="button" onclick="toggleAddAccount(false)">Cancel</button></div>
+      </form>
+    </div>
     <div class="grid-2">
       <div class="card"><h3>Bank & Cash Live Balances</h3><div class="table-wrap"><table><thead><tr><th>Account</th><th class="num">Opening</th><th class="num">Live Balance</th></tr></thead><tbody id="bankBalanceBody"></tbody></table></div></div>
       <div class="card"><h3>Credit Card Limits & Debt</h3><div class="table-wrap"><table><thead><tr><th>Card</th><th class="num">Limit</th><th class="num">Available</th><th class="num">Current Debt</th></tr></thead><tbody id="ccBalanceBody"></tbody></table></div></div>
     </div>
+    <div class="card" style="margin-top:14px;">
+      <h3>💳 Credit Card Bill Reconciliation</h3>
+      <p class="bill-hint">Add each issued statement (bill amount, statement date and due date). Payments are matched automatically from transactions categorised <b>Debt repay</b>, with the credit card name in <b>Sub-Category</b>. Payments are assigned oldest outstanding bill first. Recording a statement does <b>not</b> create an expense, change your balance or duplicate a repayment.</p>
+      <form id="creditBillForm">
+        <input type="hidden" id="billEditId">
+        <div class="form-grid">
+          <div class="form-group"><label>Credit Card *</label><select id="billCard" required></select></div>
+          <div class="form-group"><label>Statement Date *</label><input id="billStatementDate" type="date" required></div>
+          <div class="form-group"><label>Payment Due Date *</label><input id="billDueDate" type="date" required></div>
+          <div class="form-group"><label>Statement Amount (₹) *</label><input id="billAmount" type="number" min="0" step="0.01" required></div>
+          <div class="form-group"><label>Remarks</label><input id="billNote" maxlength="150" placeholder="Optional"></div>
+        </div>
+        <div class="btn-group"><button class="btn btn-primary" style="flex:none;min-width:0;" type="submit" id="billSaveBtn">+ Save Statement</button><button class="btn btn-secondary" type="button" onclick="clearBillForm()">Clear</button></div>
+      </form>
+      <div class="kpi-grid" id="billKpis" style="margin-top:14px;"></div>
+      <div class="table-wrap"><table><thead><tr><th>Card</th><th>Statement</th><th>Due</th><th class="num">Billed</th><th class="num">Paid (matched)</th><th class="num">Outstanding</th><th>Status</th><th>Action</th></tr></thead><tbody id="billTableBody"></tbody></table></div>
+      <p class="bill-hint">Matching includes repayments dated on/after the earliest saved statement for each card; older repayments are ignored. If a payment belongs to an older bill that you have not entered, the calculated amounts may differ from your bank's statement. Always verify against the bank's official bill.</p>
+    </div>
+    <p style="font-size:.76rem;color:var(--muted);margin:8px 0 0;">Tap ✏️ beside any account to change its name in every saved transaction, including linked card repayments.</p>
   </div>
 
   <div id="tab-projection" class="tab-content">
@@ -247,34 +346,34 @@ window.onerror = function(msg, url, line) {
     </div>
   </div>
 
-  <div id="tab-analysis" class="tab-content">
-    <div class="card">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <h3 style="margin:0;">Income & Spend Analysis</h3>
-        <button type="button" class="btn-sm btn-secondary" onclick="resetDashFilters()">Reset All</button>
-      </div>
-      <div class="form-grid" style="margin-bottom:12px;">
-        <div class="ms-wrap"><label>Months</label><button type="button" id="btn_an_month" class="ms-btn" onclick="toggleMsMenu('menu_an_month', event)"><span>All Months</span><span>▾</span></button><div id="menu_an_month" class="ms-menu" onclick="event.stopPropagation()"></div></div>
-        <div class="ms-wrap"><label>Accounts</label><button type="button" id="btn_an_acc" class="ms-btn" onclick="toggleMsMenu('menu_an_acc', event)"><span>All Accounts</span><span>▾</span></button><div id="menu_an_acc" class="ms-menu" onclick="event.stopPropagation()"></div></div>
-        <div class="ms-wrap"><label>Types</label><button type="button" id="btn_an_type" class="ms-btn" onclick="toggleMsMenu('menu_an_type', event)"><span>All Types</span><span>▾</span></button><div id="menu_an_type" class="ms-menu" onclick="event.stopPropagation()"></div></div>
-        <div class="ms-wrap"><label>Sub-Categories</label><button type="button" id="btn_an_sub" class="ms-btn" onclick="toggleMsMenu('menu_an_sub', event)"><span>All Sub-Cats</span><span>▾</span></button><div id="menu_an_sub" class="ms-menu" onclick="event.stopPropagation()"></div></div>
-      </div>
-      <div class="kpi-grid" id="dashKpis"></div>
-      <div class="grid-2">
-        <div><h4 style="color:var(--success);">Incomes (Tap row to inspect)</h4><div class="table-wrap"><table><thead><tr><th>Category</th><th class="num">Amount</th><th class="num">%</th></tr></thead><tbody id="dashIncTable"></tbody></table></div></div>
-        <div><h4 style="color:var(--danger);">Spends (Tap row to inspect)</h4><div class="table-wrap"><table><thead><tr><th>Category</th><th class="num">Amount</th><th class="num">%</th></tr></thead><tbody id="dashExpTable"></tbody></table></div></div>
-      </div>
-      <div id="drillBox" style="display:none; margin-top:16px; border-top:2px solid var(--border); padding-top:12px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-          <h4 id="drillTitle" style="margin:0; color:var(--primary);">Details</h4>
-          <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-            <input type="text" id="drillSearch" placeholder="Search sub-cat / remarks..." style="padding:5px 8px; font-size:13px; width:175px;" onkeyup="renderAnalysis()">
-            <button type="button" class="btn-sm btn-primary" style="flex:none; min-width:auto;" onclick="toggleAllDrillChecks('dash', true)">Check All</button>
-            <button type="button" class="btn-sm btn-danger" onclick="clearDrill()">✕ Close</button>
-          </div>
+  <div id="tab-analysis" class="tab-content analysis-v5 analysis-v6">
+    <div class="an-header"><div><h2>📊 Analysis Dashboard</h2><p>Interactive Spending, Savings, Debt &amp; Recovery Insights</p></div><button type="button" class="btn-sm btn-secondary" onclick="resetDashFilters()">↺ Reset Filters</button></div>
+    <div class="an-layout">
+      <aside class="an-sidebar card" id="anFilters"><div class="an-sidehead"><h3>⚲ Smart Filters</h3><button type="button" class="an-collapse" onclick="document.getElementById('anFilters').classList.toggle('collapsed')" aria-label="Collapse filters">☰</button></div>
+        <p class="an-caption">Refine every metric in real time</p>
+        <div class="an-filterfields">
+          <div class="ms-wrap"><label>Months (Year–Month)</label><button type="button" id="btn_an_month" class="ms-btn" onclick="toggleMsMenu('menu_an_month', event)"><span>All Months</span><span>▾</span></button><div id="menu_an_month" class="ms-menu" onclick="event.stopPropagation()"></div></div>
+          <div class="ms-wrap"><label>Accounts</label><button type="button" id="btn_an_acc" class="ms-btn" onclick="toggleMsMenu('menu_an_acc', event)"><span>All Accounts</span><span>▾</span></button><div id="menu_an_acc" class="ms-menu" onclick="event.stopPropagation()"></div></div>
+          <div class="ms-wrap"><label>Transaction Types</label><button type="button" id="btn_an_type" class="ms-btn" onclick="toggleMsMenu('menu_an_type', event)"><span>All Types</span><span>▾</span></button><div id="menu_an_type" class="ms-menu" onclick="event.stopPropagation()"></div></div>
+          <div class="ms-wrap"><label>Categories</label><button type="button" id="btn_an_cat" class="ms-btn" onclick="toggleMsMenu('menu_an_cat', event)"><span>All Categories</span><span>▾</span></button><div id="menu_an_cat" class="ms-menu" onclick="event.stopPropagation()"></div></div>
+          <div class="ms-wrap"><label>Sub-Categories</label><button type="button" id="btn_an_sub" class="ms-btn" onclick="toggleMsMenu('menu_an_sub', event)"><span>All Sub-Cats</span><span>▾</span></button><div id="menu_an_sub" class="ms-menu" onclick="event.stopPropagation()"></div></div>
+          <button type="button" class="btn btn-secondary" style="width:100%;" onclick="resetDashFilters()">Clear All Filters</button>
         </div>
-        <div class="table-wrap"><table><thead><tr><th style="width:32px;">Inc</th><th>Edit</th><th>Date</th><th>Type</th><th>Sub-Category</th><th>Account</th><th>Remarks</th><th class="num">Amount</th></tr></thead><tbody id="drillBody"></tbody></table></div>
-      </div>
+      </aside>
+      <main class="an-main">
+        <div class="an-kpis" id="dashKpis" aria-label="Click any financial metric to see its transactions"></div>
+        <div class="an-midgrid">
+          <section class="card an-topcats"><div class="an-paneltitle"><h3>📊 Top Spending Categories</h3><span id="anCategoryCount" class="an-count"></span></div><p class="an-caption">All spending categories. Select multiple rows to combine their transactions.</p><div class="an-listhead an-catgrid"><span>✓</span><span>Category</span><span>Distribution</span><span class="num">Amount / Share</span></div><div id="anTopCats" class="an-scroll-list"></div></section>
+          <section class="card an-inflows"><div class="an-paneltitle"><h3>💰 Cash Recoveries &amp; Other Inflows</h3><span id="anInflowCount" class="an-count"></span></div><p class="an-caption">Non-salary receipts. Select multiple groups to drill down.</p><div class="an-listhead an-inflowgrid"><span>✓</span><span>Inflow group</span><span class="num">Amount</span></div><div id="anInflowsList" class="an-scroll-list"></div><p class="an-note">Official reimbursements above tour expenses contribute the surplus to Savings, but are not additional cash receipts.</p></section>
+        </div>
+        <section class="card an-drill" id="drillBox"><div class="an-drillhead"><div><h3>🧾 Transaction Drill-Down</h3><p class="an-caption" id="drillTitle">Select a KPI, category or inflow group to inspect the matching transactions.</p></div><button type="button" class="btn-sm btn-secondary" onclick="clearDrill();renderAnalysis()">✕ Clear Selection</button></div>
+          <div id="anSelectedTotals" class="an-totals"></div>
+          <div class="an-drilltools"><input type="search" id="drillSearch" aria-label="Search selected transactions" placeholder="Search date, category, account, remarks…" oninput="renderAnalysis()"><button type="button" class="btn-sm btn-primary" onclick="toggleAllDrillChecks('dash',true)">✓ Include All</button></div>
+          <div class="an-pills" id="anCatPills"></div>
+          <div class="table-wrap"><table><thead><tr><th>Inc</th><th>Edit</th><th>Date</th><th>Month</th><th>Type</th><th>Source</th><th>Category</th><th>Sub-Category</th><th>Account</th><th class="num">Amount</th><th>Remarks</th><th>Added By / When</th></tr></thead><tbody id="drillBody"></tbody></table></div>
+          <p id="anDrillNote" class="an-caption" style="margin:9px 2px 0"></p>
+        </section>
+      </main>
     </div>
   </div>
   <div id="tab-official" class="tab-content">
@@ -315,8 +414,19 @@ window.onerror = function(msg, url, line) {
         <div class="form-group"><label>Account Filter</label><select id="masterAccountFilter" onchange="renderMasterTable()"></select></div>
         <div class="form-group"><label>Quick Search</label><input type="text" id="masterSearch" placeholder="Category, Remarks..." onkeyup="renderMasterTable()"></div>
       </div>
+      <div class="danger-zone">
+        <h3 style="color:#991b1b;">🛡️ Bulk CSV Maintenance</h3>
+        <p style="font-size:.82rem;line-height:1.5;margin:6px 0;">For Excel changes, use <b>Export ALL CSV</b>, edit your file, then <b>Replace All From CSV</b>. The replacement checks every row, downloads a fresh backup, verifies your login PIN and performs one conditional cloud update. Budget and accounts stay intact.</p>
+        <div class="btn-group">
+          <button type="button" class="btn btn-secondary" onclick="downloadFullCSV()">⬇ Export ALL CSV</button>
+          <button type="button" class="btn btn-warning" onclick="document.getElementById('replaceCsvInput').click()">♻ Replace All From CSV</button>
+          <button type="button" class="btn btn-danger" onclick="deleteAllTransactions()">🗑 Delete All Entries</button>
+          <input type="file" accept=".csv,text/csv" id="replaceCsvInput" style="display:none" onchange="replaceAllFromCSV(event)">
+        </div>
+        <p style="font-size:.74rem;color:#991b1b;margin:8px 0 0;">Cloud connection required. Close the tracker on other devices while replacing data. A replacement is NOT an append/import.</p>
+      </div>
       <div id="masterSummary" style="font-size:0.82rem; font-weight:700; color:var(--muted); margin-bottom:8px;"></div>
-      <div class="table-wrap"><table><thead><tr><th>Sr.No.</th><th>Date</th><th>Month</th><th>Type</th><th>Category</th><th>Sub-Category</th><th>Account</th><th class="num">Amount</th><th>Remarks</th><th>Added By / When</th></tr></thead><tbody id="masterTableBody"></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>Sr.No.</th><th>Date</th><th>Month</th><th>Type</th><th>Category</th><th>Sub-Category</th><th>Account</th><th class="num">Amount</th><th>Remarks</th><th style="min-width:158px;width:180px;">Added By / When</th></tr></thead><tbody id="masterTableBody"></tbody></table></div>
     </div>
   </div>
 </div>
@@ -386,6 +496,12 @@ window.onerror = function(msg, url, line) {
     "Kotak Rupay": { limit: 180000, openAvail: 180000.00 }
   };
 
+  let accountRenames = JSON.parse(localStorage.getItem('offline_account_renames_v1') || '{}');
+  if (!accountRenames || typeof accountRenames !== 'object' || Array.isArray(accountRenames)) accountRenames = {};
+  let creditStatements = JSON.parse(localStorage.getItem('offline_credit_statements_v1') || '[]');
+  if (!Array.isArray(creditStatements)) creditStatements=[];
+  let customAccounts = JSON.parse(localStorage.getItem('offline_custom_accounts_v1') || '[]');
+  if (!Array.isArray(customAccounts)) customAccounts = [];
   let projections = JSON.parse(localStorage.getItem('offline_projections')) || [
     { type: "Income", name: "Salary (Gyproc)", amount: 80870 },
     { type: "Expense", name: "Home Loan (Micasa)", amount: 11353 },
@@ -446,35 +562,280 @@ window.onerror = function(msg, url, line) {
     pullFromCloud();
   }
 
-  async function pushToCloud() {
-    if (!navigator.onLine) { setOnlineStatus(false); return; }
-    try {
-      const res = await fetch(firebaseUrl + '/trackerData.json', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ expenses: expenses, projections: projections, updatedAt: Date.now() })
-      });
-      if (!res.ok) throw new Error('HTTP');
-      setOnlineStatus(true);
-    } catch (err) { setOnlineStatus(false); }
-  }
+  // The last confirmed server version is the merge baseline. Never PUT cached data on page load.
+  const SNAP_KEY = 'finance_last_cloud_snapshot_v1';
+  const DIRTY_KEY = 'finance_pending_cloud_changes_v1';
+  let lastCloudSnapshot = null;
+  try { lastCloudSnapshot = JSON.parse(localStorage.getItem(SNAP_KEY) || 'null'); } catch (_) {}
+  let localDirty = localStorage.getItem(DIRTY_KEY) === '1';
+  let cloudBusy = false;
+  let cloudReady = false;
+  let cloudSyncPromise = null;
+  let cloudRevision = 0;
+  let cloudBulkEpoch = lastCloudSnapshot?.bulkEpoch || ''; 
 
-  async function pullFromCloud() {
-    if (!navigator.onLine) { setOnlineStatus(false); return; }
-    try {
-      const res = await fetch(firebaseUrl + '/trackerData.json');
-      if (!res.ok) throw new Error('HTTP');
-      const data = await res.json();
-      setOnlineStatus(true);
-      if (data && Array.isArray(data.expenses)) {
-        if (JSON.stringify(data.expenses) !== JSON.stringify(expenses)) {
-          expenses = data.expenses;
-          if (Array.isArray(data.projections)) projections = data.projections;
-          localStorage.setItem('offline_expenses_v2', JSON.stringify(expenses));
-          renderAllNoPush();
+  function resolvedAccount(name, aliases = accountRenames) {
+    let result=String(name||'').trim(), seen=new Set();
+    while (aliases[result] && !seen.has(result)) {seen.add(result);result=aliases[result];}
+    return result;
+  }
+  function normalizeAccountReferences(rows, aliases = accountRenames) {
+    return rows.map(e => {
+      const copy={...e};
+      if (copy.account) copy.account=resolvedAccount(copy.account,aliases);
+      if ((copy.category||'').trim().toLowerCase()==='debt repay' && copy.subCategory)
+        copy.subCategory=resolvedAccount(copy.subCategory,aliases);
+      return copy;
+    });
+  }
+  function safeHtml(v) {return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+  function renameAccount(oldName) {
+    if (!cloudReady || !navigator.onLine || localDirty) {alert('Wait for all cloud changes to finish before renaming accounts.');return;}
+    const existing=allAccountNames();
+    const next=prompt('Rename account "'+oldName+'" to:', oldName);
+    if (next===null) return;
+    const updated=next.trim();
+    if (!updated || updated.length>100 || /[<>]/.test(updated)) {alert('Enter a valid name (up to 100 characters).');return;}
+    if (updated===oldName) return;
+    if (existing.some(a => a.toLowerCase()===updated.toLowerCase())) {alert('An account with that name already exists.');return;}
+    const linked=expenses.filter(e=>e.account===oldName || ((e.category||'').toLowerCase()==='debt repay'&&e.subCategory===oldName)).length;
+    if (!confirm('Rename "'+oldName+'" to "'+updated+'" in '+linked+' linked transactions? This will sync to both devices.')) return;
+    // Alias map also renames original built-in accounts without changing their opening values.
+    Object.keys(accountRenames).forEach(k=>{if (resolvedAccount(k)===oldName) accountRenames[k]=updated;});
+    accountRenames[oldName]=updated;
+    customAccounts.forEach(a=>{if(a.name===oldName)a.name=updated;});
+    expenses=normalizeAccountReferences(expenses);
+    creditStatements=creditStatements.map(b=>({...b,card:resolvedAccount(b.card)}));
+    refreshAllAndSync();
+  }
+  function renameAccountButton(name) {
+    return '<button type="button" class="account-rename" title="Rename account" data-acc="'+safeHtml(name)+'" onclick="renameAccount(this.dataset.acc)">✏️</button>';
+  }
+  function sanitizeCustomAccounts(rows) {
+    if (!Array.isArray(rows)) return [];
+    const result = [], seen = new Set([...Object.keys(bankOpenings), ...Object.keys(ccConfig)].map(v => v.toLowerCase()));
+    rows.forEach(a => {
+      if (!a || typeof a.name !== 'string') return;
+      const name = a.name.trim();
+      const kind = a.type === 'credit' ? 'credit' : 'bank';
+      if (!name || seen.has(name.toLowerCase())) return;
+      const opening = Number(a.openingBalance), limit = Number(a.limit), available = Number(a.openAvail);
+      if (kind === 'bank' && !Number.isFinite(opening)) return;
+      if (kind === 'credit' && (!Number.isFinite(limit) || !Number.isFinite(available) || limit < 0 || available < 0 || available > limit)) return;
+      seen.add(name.toLowerCase());
+      result.push(kind === 'bank' ? {name, type:'bank', openingBalance:opening} : {name, type:'credit', limit, openAvail:available});
+    });
+    return result;
+  }
+  customAccounts = sanitizeCustomAccounts(customAccounts);
+  function allBankOpenings() {
+    const out = {};
+    Object.entries(bankOpenings).forEach(([k,v])=>out[resolvedAccount(k)]=v);
+    customAccounts.filter(a => a.type === 'bank').forEach(a => out[a.name] = a.openingBalance);
+    return out;
+  }
+  function allCreditConfigs() {
+    const out = {};
+    Object.entries(ccConfig).forEach(([k,v])=>out[resolvedAccount(k)]=v);
+    customAccounts.filter(a => a.type === 'credit').forEach(a => out[a.name] = {limit:a.limit,openAvail:a.openAvail});
+    return out;
+  }
+  function allAccountNames() {
+    return [...Object.keys(allBankOpenings()), ...Object.keys(allCreditConfigs()), ...expenses.map(e => e.account).filter(Boolean)]
+      .filter((v, i, a) => a.indexOf(v) === i);
+  }
+  function updateAccountDropdowns() {
+    const names = allAccountNames();
+    ['account','edit_account','f_account'].forEach(id => {
+      const select = document.getElementById(id);
+      if (!select) return;
+      const previous = select.value;
+      select.replaceChildren();
+      if (id === 'f_account') select.add(new Option('All',''));
+      names.forEach(name => select.add(new Option(name, name)));
+      if (names.includes(previous) || (id === 'f_account' && !previous)) select.value = previous;
+    });
+  }
+  function toggleAddAccount(force) {
+    const form = document.getElementById('addAccountForm');
+    form.classList.toggle('open', typeof force === 'boolean' ? force : !form.classList.contains('open'));
+  }
+  function updateAddAccountFields() {
+    const credit = document.getElementById('newAccountType').value === 'credit';
+    document.getElementById('newBankOpeningGroup').style.display = credit ? 'none' : '';
+    document.getElementById('newCreditLimitGroup').style.display = credit ? '' : 'none';
+    document.getElementById('newCreditAvailableGroup').style.display = credit ? '' : 'none';
+    document.getElementById('newBankOpening').required = !credit;
+    document.getElementById('newCreditLimit').required = credit;
+    document.getElementById('newCreditAvailable').required = credit;
+  }
+  document.getElementById('addAccountForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const name = document.getElementById('newAccountName').value.trim();
+    const type = document.getElementById('newAccountType').value;
+    if (!name || allAccountNames().some(v => v.toLowerCase() === name.toLowerCase())) {
+      alert('Please use a unique account name.'); return;
+    }
+    let account;
+    if (type === 'credit') {
+      const limit = Number(document.getElementById('newCreditLimit').value);
+      const openAvail = Number(document.getElementById('newCreditAvailable').value);
+      if (!Number.isFinite(limit) || !Number.isFinite(openAvail) || limit < 0 || openAvail < 0 || openAvail > limit) {
+        alert('Enter a valid limit and opening available balance (not greater than the limit).'); return;
+      }
+      account = {name,type,limit,openAvail};
+    } else {
+      const openingBalance = Number(document.getElementById('newBankOpening').value);
+      if (!Number.isFinite(openingBalance)) { alert('Enter a valid opening balance.'); return; }
+      account = {name,type:'bank',openingBalance};
+    }
+    customAccounts.push(account);
+    e.target.reset(); updateAddAccountFields(); toggleAddAccount(false);
+    refreshAllAndSync();
+  });
+
+  const copyState = () => ({expenses: structuredClone(expenses),projections: structuredClone(projections),customAccounts: structuredClone(customAccounts),accountRenames: structuredClone(accountRenames),creditStatements: structuredClone(creditStatements),bulkEpoch: cloudBulkEpoch});
+  function saveLocal() {
+    localStorage.setItem('offline_expenses_v2', JSON.stringify(expenses));
+    localStorage.setItem('offline_projections', JSON.stringify(projections));
+    localStorage.setItem('offline_custom_accounts_v1', JSON.stringify(customAccounts));
+    localStorage.setItem('offline_account_renames_v1', JSON.stringify(accountRenames));
+    localStorage.setItem('offline_credit_statements_v1', JSON.stringify(creditStatements));
+  }
+  function normalizeCloud(raw) {
+    const d = raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
+    return {...d, expenses:Array.isArray(d.expenses)?d.expenses:[],
+      projections:Array.isArray(d.projections)?d.projections:[], customAccounts:sanitizeCustomAccounts(d.customAccounts),creditStatements:Array.isArray(d.creditStatements)?d.creditStatements.filter(b=>b&&typeof b==='object'&&typeof b.id==='string'):[],accountRenames:(d.accountRenames && typeof d.accountRenames==='object' && !Array.isArray(d.accountRenames))?d.accountRenames:{}};
+  }
+  // Array multiset delta preserves remote additions while supporting local edits/deletes.
+  function mergeExpenseLists(baseline, local, remote) {
+    const key = item => JSON.stringify(item);
+    const counts = list => { const map = new Map(); list.forEach(item => map.set(key(item),(map.get(key(item))||0)+1)); return map; };
+    const baseCounts=counts(baseline), localCounts=counts(local), remaining=counts(remote);
+    for (const [k,n] of baseCounts) {
+      const removals=Math.max(0,n-(localCounts.get(k)||0));
+      remaining.set(k,Math.max(0,(remaining.get(k)||0)-removals));
+    }
+    const result=remote.filter(item => {const k=key(item),n=remaining.get(k)||0; if(!n)return false;remaining.set(k,n-1);return true;});
+    const addedCounts = new Map();
+    for (const [k,n] of localCounts) {
+      const added=Math.max(0,n-(baseCounts.get(k)||0));
+      if (added) addedCounts.set(k,added);
+    }
+    local.forEach(item => {const k=key(item),n=addedCounts.get(k)||0;if(n){result.push(item);addedCounts.set(k,n-1);}});
+    return result;
+  }
+  function mergeCloud(remote) {
+    const base = lastCloudSnapshot || {expenses:[],projections:[],customAccounts:[],accountRenames:{},creditStatements:[]};
+    const local = copyState();
+    const merged = {...remote}; // Retain any future/unknown database fields.
+    merged.expenses = mergeExpenseLists(base.expenses || [],local.expenses,remote.expenses);
+    merged.projections = JSON.stringify(local.projections) === JSON.stringify(base.projections || []) ? remote.projections : local.projections;
+    const accounts = new Map(remote.customAccounts.map(a => [a.name.toLowerCase(),a]));
+    local.customAccounts.forEach(a => {if (!accounts.has(a.name.toLowerCase())) accounts.set(a.name.toLowerCase(),a);});
+    merged.accountRenames={...remote.accountRenames};
+    Object.entries(local.accountRenames).forEach(([k,v])=>{
+      if ((base.accountRenames||{})[k]!==v) merged.accountRenames[k]=v;
+    });
+    merged.customAccounts = sanitizeCustomAccounts([...accounts.values()].map(a=>({...a,name:resolvedAccount(a.name,merged.accountRenames)}))); 
+    // Canonicalise old names after multiset merge, including Debt repay card references.
+    // Merge statement changes by stable ID. Preserve remote additions and respect
+    // locally edited/deleted statements relative to the last confirmed snapshot.
+    const baseBills=new Map((base.creditStatements||[]).map(b=>[b.id,b]));
+    const localBills=new Map((local.creditStatements||[]).map(b=>[b.id,b]));
+    const mergedBills=new Map((remote.creditStatements||[]).map(b=>[b.id,b]));
+    for(const [id,oldBill] of baseBills){
+      if(!localBills.has(id)) mergedBills.delete(id);
+      else if(JSON.stringify(localBills.get(id))!==JSON.stringify(oldBill)) mergedBills.set(id,localBills.get(id));
+    }
+    for(const [id,b] of localBills) if(!baseBills.has(id)) mergedBills.set(id,b);
+    merged.creditStatements=[...mergedBills.values()].map(b=>({...b,card:resolvedAccount(b.card,merged.accountRenames)}));
+    merged.expenses=normalizeAccountReferences(merged.expenses,merged.accountRenames);
+    merged.updatedAt = Date.now();
+    return merged;
+  }
+  function acceptCloud(d) {
+    cloudBulkEpoch=d.bulkEpoch||'';
+    expenses=normalizeAccountReferences(d.expenses,d.accountRenames);projections=d.projections;accountRenames=d.accountRenames;creditStatements=d.creditStatements.map(b=>({...b,card:resolvedAccount(b.card,d.accountRenames)}));customAccounts=sanitizeCustomAccounts(d.customAccounts.map(a=>({...a,name:resolvedAccount(a.name,d.accountRenames)})));
+    lastCloudSnapshot = copyState();
+    localStorage.setItem(SNAP_KEY,JSON.stringify(lastCloudSnapshot));
+    localDirty=false;localStorage.removeItem(DIRTY_KEY);
+    cloudReady=true;saveLocal();renderAllNoPush();
+  }
+  async function synchronizeCloud(write) {
+    if (!navigator.onLine) {setOnlineStatus(false);return;}
+    if (cloudBusy) return cloudSyncPromise;
+    cloudBusy=true;
+    cloudSyncPromise=(async()=>{
+      try {
+        for (let attempt=0;attempt<5;attempt++) {
+          const response=await fetch(firebaseUrl+'/trackerData.json',{headers:{'X-Firebase-ETag':'true'},cache:'no-store'});
+          if (!response.ok) throw Error('Cloud read failed: '+response.status);
+          const raw=await response.json();
+          const remote=normalizeCloud(raw);
+          const etag=response.headers.get('ETag');
+          if (!write && !localDirty) {
+            // Empty/missing remote state must not erase previously confirmed local records.
+            if ((!raw || !Array.isArray(raw.expenses)) && expenses.length) {
+              cloudReady=true;setOnlineStatus(false);return;
+            }
+            acceptCloud(remote);setOnlineStatus(true);return;
+          }
+          if (!etag) throw Error('Firebase ETag not available; refusing unsafe overwrite');
+          if (remote.bulkEpoch && remote.bulkEpoch !== (lastCloudSnapshot?.bulkEpoch || '') && localDirty) {
+            throw Error('Cloud data was bulk-replaced on another device. Your unsynced local edits were NOT uploaded. Export your local data before refreshing.');
+          }
+          const localRevision=cloudRevision;
+          const localBeforeWrite=copyState();
+          const payload=mergeCloud(remote);
+          const responseWrite=await fetch(firebaseUrl+'/trackerData.json',{
+            method:'PUT',headers:{'Content-Type':'application/json','if-match':etag},body:JSON.stringify(payload)
+          });
+          if (responseWrite.status===412) continue; // Race: read and merge again.
+          if (!responseWrite.ok) throw Error('Cloud update failed: '+responseWrite.status);
+          if (cloudRevision !== localRevision) {
+            // Preserve mutations made during the network round trip.
+            const laterLocal=copyState();
+            acceptCloud(normalizeCloud(payload));
+            expenses=mergeExpenseLists(localBeforeWrite.expenses,laterLocal.expenses,expenses);
+            if (JSON.stringify(laterLocal.projections)!==JSON.stringify(localBeforeWrite.projections)) projections=laterLocal.projections;
+            const names=new Set(customAccounts.map(a=>a.name.toLowerCase()));
+            laterLocal.customAccounts.forEach(a=>{if(!names.has(a.name.toLowerCase())) customAccounts.push(a);});
+            accountRenames={...accountRenames,...laterLocal.accountRenames};
+            // Keep statement edits created while the request was in flight.
+            const beforeBills=new Map(localBeforeWrite.creditStatements.map(b=>[b.id,b]));
+            const afterBills=new Map(laterLocal.creditStatements.map(b=>[b.id,b]));
+            const pendingBills=new Map(creditStatements.map(b=>[b.id,b]));
+            for(const [id,b] of beforeBills){if(!afterBills.has(id)) pendingBills.delete(id);}
+            for(const [id,b] of afterBills){if(JSON.stringify(b)!==JSON.stringify(beforeBills.get(id)))pendingBills.set(id,b);}
+            creditStatements=[...pendingBills.values()];
+            expenses=normalizeAccountReferences(expenses);
+            localDirty=true;localStorage.setItem(DIRTY_KEY,'1');saveLocal();renderAllNoPush();
+            continue;
+          }
+          acceptCloud(normalizeCloud(payload));setOnlineStatus(true);return;
         }
-      } else if (expenses.length > 0) { await pushToCloud(); }
-    } catch (err) { setOnlineStatus(false); }
+        throw Error('Concurrent changes prevented save; try again');
+      } catch(err) { console.error('Firebase sync:',err);setOnlineStatus(false); }
+      finally {cloudBusy=false;cloudSyncPromise=null;}
+    })();
+    return cloudSyncPromise;
+  }
+  function pushToCloud() {
+    cloudRevision++;
+    localDirty=true;
+    localStorage.setItem(DIRTY_KEY,'1');
+    saveLocal();
+    if (cloudBusy) {
+      // Another mutation may have occurred while the first write was in flight.
+      const revision=cloudRevision;
+      return cloudSyncPromise?.then(()=>{if (cloudRevision>=revision && localDirty) return synchronizeCloud(true);});
+    }
+    return synchronizeCloud(true);
+  }
+  function pullFromCloud() {
+    if (cloudBusy) return cloudSyncPromise;
+    return synchronizeCloud(localDirty);
   }
 
   window.addEventListener('online', pullFromCloud);
@@ -503,9 +864,10 @@ window.onerror = function(msg, url, line) {
   dateInput.addEventListener('change', updateMonthField);
 
   function computeBalances() {
-    const bankTotals = Object.assign({}, bankOpenings);
+    const bankTotals = allBankOpenings();
     const ccAvail = {};
-    for (let c in ccConfig) ccAvail[c] = ccConfig[c].openAvail;
+    const creditConfigs = allCreditConfigs();
+    for (let c in creditConfigs) ccAvail[c] = creditConfigs[c].openAvail;
 
     expenses.forEach(e => {
       const amt = parseFloat(e.amount) || 0;
@@ -528,16 +890,108 @@ window.onerror = function(msg, url, line) {
     return { bankTotals, ccAvail };
   }
 
+  function money2(value){return '₹'+Number(value||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
+  function clearBillForm(){
+    document.getElementById('creditBillForm').reset();
+    document.getElementById('billEditId').value='';
+    document.getElementById('billSaveBtn').textContent='+ Save Statement';
+  }
+  function editCreditStatement(id){
+    const b=creditStatements.find(x=>x.id===id);if(!b)return;
+    document.getElementById('billEditId').value=b.id;
+    document.getElementById('billCard').value=b.card;
+    document.getElementById('billStatementDate').value=b.statementDate;
+    document.getElementById('billDueDate').value=b.dueDate;
+    document.getElementById('billAmount').value=b.amount;
+    document.getElementById('billNote').value=b.note||'';
+    document.getElementById('billSaveBtn').textContent='💾 Update Statement';
+    document.getElementById('creditBillForm').scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  function deleteCreditStatement(id){
+    if(!confirm('Delete this statement record? Transactions and repayments will NOT be deleted.'))return;
+    creditStatements=creditStatements.filter(b=>b.id!==id);
+    clearBillForm();refreshAllAndSync();
+  }
+  document.getElementById('creditBillForm').addEventListener('submit',e=>{
+    e.preventDefault();
+    const card=document.getElementById('billCard').value;
+    const statementDate=document.getElementById('billStatementDate').value;
+    const dueDate=document.getElementById('billDueDate').value;
+    const amount=Number(document.getElementById('billAmount').value);
+    const id=document.getElementById('billEditId').value;
+    if(!Object.prototype.hasOwnProperty.call(allCreditConfigs(),card)||!statementDate||!dueDate||dueDate<statementDate||!Number.isFinite(amount)||amount<0){alert('Check card, dates and statement amount. Due date cannot precede statement date.');return;}
+    if(creditStatements.some(b=>b.card===card&&b.statementDate===statementDate&&b.id!==id)){
+      alert('A statement for this card and statement date already exists.');return;
+    }
+    const bill={id:id||'bill-'+Date.now()+'-'+Math.random().toString(36).slice(2),card,statementDate,dueDate,amount:Math.round(amount*100)/100,note:document.getElementById('billNote').value.trim()};
+    if(id){const pos=creditStatements.findIndex(b=>b.id===id);if(pos<0)return;creditStatements[pos]=bill;}
+    else creditStatements.push(bill);
+    clearBillForm();refreshAllAndSync();
+  });
+  // Apply actual card-payment transactions to each card's oldest outstanding
+  // saved statement, never counting an existing payment twice.
+  function reconcileCreditStatements(bills=creditStatements,transactions=expenses){
+    const result=bills.map(b=>({...b,paid:0,outstanding:Math.max(0,Number(b.amount)||0)}));
+    const byCard=new Map();
+    for(const b of result){if(!byCard.has(b.card))byCard.set(b.card,[]);byCard.get(b.card).push(b);}
+    for(const [card,entries] of byCard){
+      entries.sort((a,b)=>a.statementDate.localeCompare(b.statementDate)||a.id.localeCompare(b.id));
+      const payments=transactions.filter(e=>
+        (e.category||'').trim().toLowerCase()==='debt repay' &&
+        resolvedAccount((e.subCategory||'').trim())===card &&
+        (e.date||'')>=entries[0].statementDate &&
+        (e.type==='Expense'||e.type==='Debt') && Number(e.amount)>0
+      ).sort((a,b)=>a.date.localeCompare(b.date));
+      for(const payment of payments){
+        let remaining=Math.round(Number(payment.amount)*100);
+        for(const bill of entries){
+          if(bill.statementDate>payment.date)break;
+          const outstanding=Math.max(0,Math.round((bill.amount-bill.paid)*100));
+          const applied=Math.min(outstanding,remaining);
+          bill.paid=Math.round((bill.paid*100+applied))/100;
+          remaining-=applied;
+          if(remaining<=0)break;
+        }
+      }
+      entries.forEach(b=>b.outstanding=Math.max(0,Math.round((b.amount-b.paid)*100)/100));
+    }
+    return result;
+  }
+  function renderCreditStatements(){
+    const sel=document.getElementById('billCard');if(!sel)return;
+    const prev=sel.value;const cardNames=Object.keys(allCreditConfigs());
+    sel.replaceChildren(...cardNames.map(name=>new Option(name,name)));
+    if(cardNames.includes(prev))sel.value=prev;
+    const bills=reconcileCreditStatements().sort((a,b)=>b.statementDate.localeCompare(a.statementDate));
+    const isoToday=(()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');})();
+    const unpaid=bills.reduce((n,b)=>n+b.outstanding,0);
+    const overdue=bills.filter(b=>b.outstanding>.005&&b.dueDate<isoToday);
+    const upcoming=bills.filter(b=>b.outstanding>.005&&b.dueDate>=isoToday&&b.dueDate<=new Date(Date.now()+7*86400000).toISOString().slice(0,10));
+    document.getElementById('billKpis').innerHTML=
+      tag('div','class="kpi-box"',tag('small','','Statement Outstanding')+tag('div','class="val text-red"',money2(unpaid)))+
+      tag('div','class="kpi-box"',tag('small','','Overdue Bills')+tag('div','class="val text-red"',String(overdue.length)))+
+      tag('div','class="kpi-box"',tag('small','','Due in 7 Days')+tag('div','class="val"',String(upcoming.length)));
+    document.getElementById('billTableBody').innerHTML=bills.length?bills.map(b=>{
+      const status=b.outstanding<=.005?'Paid':b.dueDate<isoToday?'Overdue':'Pending';
+      const btn='<button type="button" class="bill-action" title="Edit statement" data-id="'+safeHtml(b.id)+'" onclick="editCreditStatement(this.dataset.id)">✏️</button>'+
+        '<button type="button" class="bill-action" title="Delete statement" data-id="'+safeHtml(b.id)+'" onclick="deleteCreditStatement(this.dataset.id)">✕</button>';
+      return tag('tr','',tag('td','',safeHtml(b.card))+tag('td','',formatDDMMYYYY(b.statementDate))+tag('td','',formatDDMMYYYY(b.dueDate))+
+        tag('td','class="num"',money2(b.amount))+tag('td','class="num text-green"',money2(b.paid))+
+        tag('td','class="num text-red"',money2(b.outstanding))+tag('td','',tag('span','class="bill-status '+status.toLowerCase()+'"',status))+
+        tag('td','',btn));
+    }).join(''):tag('tr','',tag('td','colspan="8" style="text-align:center;color:#64748b;"','No statements saved yet. Add your latest card bill above.'));
+  }
   function renderBalances() {
     const { bankTotals, ccAvail } = computeBalances();
+    const bankConfigs=allBankOpenings(), creditConfigs=allCreditConfigs();
     const strip = document.getElementById('liveBalanceStrip');
     let stripHtml = '';
     for (let acc in bankTotals) {
       const val = '₹' + bankTotals[acc].toLocaleString('en-IN',{maximumFractionDigits:0});
       stripHtml += tag('div', 'class="mini-card"', tag('small','',acc) + tag('strong','class="text-green"',val));
     }
-    for (let card in ccConfig) {
-      const debt = Math.max(0, ccConfig[card].limit - ccAvail[card]);
+    for (let card in creditConfigs) {
+      const debt = Math.max(0, creditConfigs[card].limit - ccAvail[card]);
       const val = '₹' + debt.toLocaleString('en-IN',{maximumFractionDigits:0});
       stripHtml += tag('div', 'class="mini-card"', tag('small','',card + ' (Debt)') + tag('strong','class="text-red"',val));
     }
@@ -546,18 +1000,19 @@ window.onerror = function(msg, url, line) {
     let bankRows = '', grandBank = 0;
     for (let acc in bankTotals) {
       grandBank += bankTotals[acc];
-      bankRows += tag('tr', '', tag('td','',acc) + tag('td','class="num"','₹' + bankOpenings[acc].toFixed(0)) + tag('td','class="num text-green"','₹' + bankTotals[acc].toFixed(2)));
+      bankRows += tag('tr', '', tag('td','',safeHtml(acc) + renameAccountButton(acc)) + tag('td','class="num"','₹' + bankConfigs[acc].toFixed(0)) + tag('td','class="num text-green"','₹' + bankTotals[acc].toFixed(2)));
     }
     bankRows += tag('tr', 'class="grand-total"', tag('td','','Total') + tag('td','','') + tag('td','class="num"','₹' + grandBank.toFixed(2)));
     document.getElementById('bankBalanceBody').innerHTML = bankRows;
 
     let ccRows = '';
-    for (let card in ccConfig) {
+    for (let card in creditConfigs) {
       const avail = ccAvail[card];
-      const debt = Math.max(0, ccConfig[card].limit - avail);
-      ccRows += tag('tr', '', tag('td','',card) + tag('td','class="num"','₹' + ccConfig[card].limit.toFixed(0)) + tag('td','class="num text-green"','₹' + avail.toFixed(0)) + tag('td','class="num text-red"','₹' + debt.toFixed(2)));
+      const debt = Math.max(0, creditConfigs[card].limit - avail);
+      ccRows += tag('tr', '', tag('td','',safeHtml(card) + renameAccountButton(card)) + tag('td','class="num"','₹' + creditConfigs[card].limit.toFixed(0)) + tag('td','class="num text-green"','₹' + avail.toFixed(0)) + tag('td','class="num text-red"','₹' + debt.toFixed(2)));
     }
     document.getElementById('ccBalanceBody').innerHTML = ccRows;
+    renderCreditStatements();
   }
   const editDateEl = document.getElementById('edit_date');
   const editMonthEl = document.getElementById('edit_month');
@@ -570,6 +1025,7 @@ window.onerror = function(msg, url, line) {
   function openEditModal(idx) {
     const item = expenses.at(idx);
     if (!item) return;
+    updateAccountDropdowns();
     document.getElementById('edit_idx').value = idx;
     editDateEl.value = item.date || '';
     editMonthEl.value = item.month || '';
@@ -608,6 +1064,11 @@ window.onerror = function(msg, url, line) {
     refreshAllAndSync();
   });
 
+  function formatAuditHTML(item) {
+    const added=item.addedBy ? safeHtml(item.addedBy)+' · '+safeHtml(item.addedAt||'') : 'Imported';
+    const edited=item.editedBy ? '<span class="audit-edited">(Ed: '+safeHtml(item.editedBy)+')</span>' : '';
+    return '<div class="audit-cell">'+added+edited+'</div>';
+  }
   function formatAudit(item) {
     if (!item.addedBy && !item.editedBy) return 'Imported';
     let txt = item.addedBy ? (item.addedBy + ' · ' + (item.addedAt || '')) : 'Imported';
@@ -688,18 +1149,18 @@ window.onerror = function(msg, url, line) {
         tag('td','',idx + 1) + tag('td','',item.dispDate) + tag('td','',item.month) + tag('td','',item.type) +
         tag('td','',item.category) + tag('td','',item.subCategory) + tag('td','',item.account) +
         tag('td','class="num"',parseFloat(item.amount || 0).toFixed(2)) + tag('td','',item.remarks) +
-        tag('td','',formatAudit(item)) + tag('td','',editBtn + delBtn)
+        tag('td','class="audit-cell"',formatAuditHTML(item)) + tag('td','',editBtn + delBtn)
       );
     }).join('');
 
     document.getElementById('entryCount').textContent = filtered.length + ' rows shown';
   }
   const msState = {
-    an_month: new Set(), an_acc: new Set(), an_type: new Set(), an_sub: new Set(),
+    an_month: new Set(), an_acc: new Set(), an_type: new Set(), an_cat: new Set(), an_sub: new Set(),
     off_month: new Set(), off_acc: new Set()
   };
 
-  let selectedDrillCat = null, selectedDrillSide = null;
+  const selectedDrillCategories = new Set();
   const excludedDashIdx = new Set();
   let selectedOffTour = null;
   const excludedOffIdx = new Set();
@@ -746,8 +1207,8 @@ window.onerror = function(msg, url, line) {
       btn.innerHTML = tag('span','',label) + tag('span','','▾');
     }
 
-    const searchBox = key === 'an_sub'
-      ? tag('div', 'class="ms-search"', tag('input', 'type="text" placeholder="Search sub-category..." value="' + prevSearch.replace(/"/g, '&quot;') + '" onkeyup="filterMsOptions(this)"'))
+    const searchBox = (key === 'an_sub' || key === 'an_cat')
+      ? tag('div', 'class="ms-search"', tag('input', 'type="text" placeholder="' + (key === 'an_cat' ? 'Search categories...' : 'Search sub-category...') + '" value="' + prevSearch.replace(/"/g, '&quot;') + '" onkeyup="filterMsOptions(this)"'))
       : '';
 
     const optsHtml = options.map(opt => {
@@ -760,121 +1221,209 @@ window.onerror = function(msg, url, line) {
     menu.innerHTML = searchBox + optsHtml;
   }
 
+  // V6: analysis selection is entirely local UI state; no Firebase writes.
+  const selectedKpiTiles = new Set();
+  const selectedInflowGroups = new Set();
   function clearDrill() {
-    selectedDrillCat = null; selectedDrillSide = null; excludedDashIdx.clear();
-    const ds = document.getElementById('drillSearch');
-    if (ds) ds.value = '';
-    const box = document.getElementById('drillBox');
-    if (box) box.style.display = 'none';
+    selectedDrillCategories.clear(); selectedKpiTiles.clear(); selectedInflowGroups.clear(); excludedDashIdx.clear();
+    const search=document.getElementById('drillSearch');if(search)search.value='';
+    const drill=document.getElementById('drillBox');if(drill)drill.style.display='block';
   }
-
-  function resetDashFilters() {
-    msState.an_month.clear(); msState.an_acc.clear(); msState.an_type.clear(); msState.an_sub.clear();
-    clearDrill(); renderAnalysis();
+  function resetDashFilters(){
+    ['an_month','an_acc','an_type','an_cat','an_sub'].forEach(k=>msState[k].clear());
+    clearDrill();renderAnalysis();
   }
-
   function selectDrillCategory(cat, side) {
-    if (selectedDrillCat === cat && selectedDrillSide === side) clearDrill();
-    else { selectedDrillCat = cat; selectedDrillSide = side; excludedDashIdx.clear(); }
-    renderAnalysis();
+    const key=side+'::'+cat;
+    if(selectedDrillCategories.has(key)) selectedDrillCategories.delete(key);
+    else selectedDrillCategories.add(key);
+    excludedDashIdx.clear();renderAnalysis();
   }
-
-  function toggleDrillCheck(realIdx, scope) {
-    const set = scope === 'dash' ? excludedDashIdx : excludedOffIdx;
-    if (set.has(realIdx)) set.delete(realIdx); else set.add(realIdx);
-    if (scope === 'dash') renderAnalysis(); else renderOfficial();
+  function selectAnKpi(k){
+    if(selectedKpiTiles.has(k))selectedKpiTiles.delete(k);
+    else selectedKpiTiles.add(k);
+    excludedDashIdx.clear();renderAnalysis();
   }
-
-  function toggleAllDrillChecks(scope, includeAll) {
-    if (scope === 'dash') { if (includeAll) excludedDashIdx.clear(); renderAnalysis(); }
-    else { if (includeAll) excludedOffIdx.clear(); renderOfficial(); }
+  function selectAnInflow(k){
+    if(selectedInflowGroups.has(k))selectedInflowGroups.delete(k);
+    else selectedInflowGroups.add(k);
+    excludedDashIdx.clear();renderAnalysis();
   }
-  function renderAnalysis() {
-    const orderedMonths = monthNames.filter(m => expenses.some(e => e.month === m));
-    const accounts = [...new Set(expenses.map(e => (e.account || '').trim()).filter(Boolean))].sort();
-    const types = ['Expense', 'Debt', 'Income'];
-    const subCats = [...new Set(expenses.map(e => (e.subCategory || '').trim()).filter(Boolean))].sort();
-
-    renderMsDropdown('an_month', 'menu_an_month', 'btn_an_month', 'All Months', orderedMonths, 'analysis');
-    renderMsDropdown('an_acc', 'menu_an_acc', 'btn_an_acc', 'All Accounts', accounts, 'analysis');
-    renderMsDropdown('an_type', 'menu_an_type', 'btn_an_type', 'All Types', types, 'analysis');
-    renderMsDropdown('an_sub', 'menu_an_sub', 'btn_an_sub', 'All Sub-Cats', subCats, 'analysis');
-
-    const indexed = expenses.map((e, i) => Object.assign({ realIdx: i }, e));
-    const filtered = indexed.filter(e => {
-      if (isSelfTransfer(e.category) || (e.category || '').toLowerCase() === 'debt repay') return false;
-      if (msState.an_month.size && !msState.an_month.has(e.month)) return false;
-      if (msState.an_acc.size && !msState.an_acc.has(e.account)) return false;
-      if (msState.an_type.size && !msState.an_type.has(e.type)) return false;
-      if (msState.an_sub.size && !msState.an_sub.has((e.subCategory || '').trim())) return false;
-      return true;
+  function removeAnSelection(kind,key){
+    if(kind==='kpi')selectedKpiTiles.delete(key);
+    if(kind==='cat')selectedDrillCategories.delete(key);
+    if(kind==='inflow')selectedInflowGroups.delete(key);
+    excludedDashIdx.clear();renderAnalysis();
+  }
+  function toggleDrillCheck(realIdx,scope){
+    const set=scope==='dash'?excludedDashIdx:excludedOffIdx;
+    if(set.has(realIdx))set.delete(realIdx);else set.add(realIdx);
+    if(scope==='dash')renderAnalysis();else renderOfficial();
+  }
+  function toggleAllDrillChecks(scope,includeAll){
+    if(scope==='dash'){if(includeAll)excludedDashIdx.clear();renderAnalysis();}
+    else{if(includeAll)excludedOffIdx.clear();renderOfficial();}
+  }
+  const anEsc = x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const anMoney=x=>'₹'+Number(x||0).toLocaleString('en-IN',{maximumFractionDigits:0});
+  const anAmount=e=>Math.max(0,Number(e.amount)||0);
+  const anLabel=e=>String(e.category||'Other').trim()||'Other';
+  const anLower=x=>String(x||'').trim().toLowerCase();
+  const anPeriod=e=>/^\d{4}-\d{2}/.test(e.date||'')?e.date.slice(0,7):'';
+  const anIsTransfer=e=>isSelfTransfer(e.category)||anLower(e.category)==='debt repay';
+  const anIsOut=e=>e.type==='Expense'||e.type==='Debt';
+  const anIsSalary=e=>e.type==='Income'&&!anIsTransfer(e)&&(
+    /(?:^|\b)(salary|salaries|incentive|bonus)(?:\b|$)/i.test((e.category||'')+' '+(e.subCategory||''))||anLower(e.category)==='gyproc'
+  );
+  const anIsSavings=e=>anIsOut(e)&&!anIsTransfer(e)&&(
+    anLower(e.category)==='investment'||/saving/i.test((e.category||'')+' '+(e.subCategory||''))
+  );
+  const anIsHousehold=e=>anIsOut(e)&&!anIsTransfer(e)&&!anIsSavings(e)&&!['official','investment','loan'].includes(anLower(e.category));
+  function anOfficialSurplusByTour(rows){
+    const groups=new Map();
+    rows.filter(e=>anLower(e.category)==='official'&&!anIsTransfer(e)&&!anIsSalary(e)).forEach(e=>{
+      const key=anLower(e.subCategory)||'general official';
+      if(!groups.has(key))groups.set(key,{spent:0,recd:0,income:[]});
+      const g=groups.get(key),v=anAmount(e);
+      if(e.type==='Income'){g.recd+=v;g.income.push(e);}
+      else if(anIsOut(e))g.spent+=v;
     });
-
-    const incMap = {}, expMap = {};
-    let totalInc = 0, totalExp = 0;
-    filtered.forEach(e => {
-      const amt = parseFloat(e.amount) || 0;
-      const cat = (e.category || 'Other').trim();
-      if (e.type === 'Income') { incMap[cat] = (incMap[cat] || 0) + amt; totalInc += amt; }
-      else { expMap[cat] = (expMap[cat] || 0) + amt; totalExp += amt; }
-    });
-
-    const net = totalInc - totalExp;
-    document.getElementById('dashKpis').innerHTML =
-      tag('div','class="kpi-box"', tag('small','','Total Income') + tag('div','class="val text-green"','₹' + totalInc.toLocaleString('en-IN',{maximumFractionDigits:0}))) +
-      tag('div','class="kpi-box"', tag('small','','Total Spend') + tag('div','class="val text-red"','₹' + totalExp.toLocaleString('en-IN',{maximumFractionDigits:0}))) +
-      tag('div','class="kpi-box"', tag('small','','Net Surplus') + tag('div','class="val ' + (net>=0?'text-green':'text-red') + '"','₹' + net.toLocaleString('en-IN',{maximumFractionDigits:0})));
-
-    const buildCatRows = (entries, total, side, colorCls) => entries.map(([cat, sum]) => {
-      const pct = total > 0 ? ((sum / total) * 100).toFixed(1) : '0.0';
-      const isSel = selectedDrillSide === side && selectedDrillCat === cat;
-      const safeAttr = cat.replace(/"/g, '&quot;');
-      return tag('tr', 'class="drill-row ' + (isSel ? 'selected' : '') + '" data-c="' + safeAttr + '" data-s="' + side + '" onclick="selectDrillCategory(this.dataset.c, this.dataset.s)"',
-        tag('td','',cat) + tag('td','class="num ' + colorCls + '"','₹' + sum.toLocaleString('en-IN',{maximumFractionDigits:0})) + tag('td','class="num"',pct + '%')
-      );
-    }).join('');
-
-    const sortedInc = Object.entries(incMap).sort((a, b) => b.at(1) - a.at(1));
-    document.getElementById('dashIncTable').innerHTML = buildCatRows(sortedInc, totalInc, 'inc', 'text-green') +
-      tag('tr','class="grand-total"', tag('td','','Total Income') + tag('td','class="num text-green"','₹' + totalInc.toLocaleString('en-IN',{maximumFractionDigits:0})) + tag('td','class="num"','100%'));
-
-    const sortedExp = Object.entries(expMap).sort((a, b) => b.at(1) - a.at(1));
-    document.getElementById('dashExpTable').innerHTML = buildCatRows(sortedExp, totalExp, 'exp', 'text-red') +
-      tag('tr','class="grand-total"', tag('td','','Total Spend') + tag('td','class="num text-red"','₹' + totalExp.toLocaleString('en-IN',{maximumFractionDigits:0})) + tag('td','class="num"','100%'));
-
-    const drillBox = document.getElementById('drillBox');
-    if (selectedDrillCat && selectedDrillSide) {
-      const dq = (document.getElementById('drillSearch')?.value || '').trim().toLowerCase();
-      const items = filtered.filter(e => {
-        const isInc = e.type === 'Income';
-        if (selectedDrillSide === 'inc' && !isInc) return false;
-        if (selectedDrillSide === 'exp' && isInc) return false;
-        if ((e.category || 'Other').trim() !== selectedDrillCat) return false;
-        if (dq && !(e.subCategory || '').toLowerCase().includes(dq) && !(e.remarks || '').toLowerCase().includes(dq)) return false;
-        return true;
-      }).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
-
-      let activeSum = 0, activeCount = 0;
-      const rowsHtml = items.map(e => {
-        const amt = parseFloat(e.amount) || 0;
-        const isEx = excludedDashIdx.has(e.realIdx);
-        if (!isEx) { activeSum += amt; activeCount++; }
-        const chk = tag('input', 'type="checkbox" ' + (!isEx ? 'checked' : '') + ' onchange="toggleDrillCheck(' + e.realIdx + ',\'dash\')"');
-        const editBtn = tag('button', 'type="button" class="btn-edit-ico" title="Edit" onclick="openEditModal(' + e.realIdx + ')"', '✏️');
-        return tag('tr', isEx ? 'class="excluded-row"' : '',
-          tag('td','',chk) + tag('td','',editBtn) + tag('td','',formatDDMMYYYY(e.date)) + tag('td','',e.type) +
-          tag('td','',e.subCategory || '-') + tag('td','',e.account) + tag('td','',e.remarks || '-') +
-          tag('td','class="num"','₹' + amt.toLocaleString('en-IN',{minimumFractionDigits:2}))
-        );
-      }).join('');
-
-      document.getElementById('drillTitle').textContent = selectedDrillCat + ' (' + activeCount + '/' + items.length + ' selected)';
-      document.getElementById('drillBody').innerHTML = rowsHtml +
-        tag('tr','class="grand-total"', tag('td','colspan="7"','Selected Total (' + selectedDrillCat + ')') + tag('td','class="num"','₹' + activeSum.toLocaleString('en-IN',{minimumFractionDigits:2})));
-      drillBox.style.display = 'block';
-    } else {
-      drillBox.style.display = 'none';
+    const contributions=new Map();
+    let total=0;
+    for(const group of groups.values()){
+      let surplus=Math.max(0,group.recd-group.spent);total+=surplus;
+      // Attribute no more than the real surplus to the newest receipts, once each.
+      for(const e of [...group.income].reverse()){
+        if(surplus<=0)break;
+        const piece=Math.min(surplus,anAmount(e));
+        contributions.set(e.realIdx,piece);surplus-=piece;
+      }
     }
+    return {total,contributions};
+  }
+  function anClassifyOther(e){
+    const c=anLower(e.category),combined=c+' '+anLower(e.subCategory);
+    if(c==='official')return 'Official reimbursements';
+    if(/mediclaim|health|insurance claim/.test(combined))return 'Mediclaim / Health recovery';
+    if(/dividend/.test(combined))return 'Dividends';
+    if(/interest/.test(combined))return 'Interest';
+    if(/cash\s?back|cashback/.test(combined))return 'Cashback';
+    if(/refund|reimburse|return/.test(combined))return 'Refunds / Recoveries';
+    if(c==='investment')return 'Investment redemption';
+    return 'Other receipts';
+  }
+  function anGetFiltered(){
+    return expenses.map((e,i)=>Object.assign({realIdx:i},e)).filter(e=>(
+      (!msState.an_month.size||msState.an_month.has(anPeriod(e)))&&
+      (!msState.an_acc.size||msState.an_acc.has(e.account))&&
+      (!msState.an_type.size||msState.an_type.has(e.type))&&
+      (!msState.an_cat.size||msState.an_cat.has(anLabel(e)))&&
+      (!msState.an_sub.size||msState.an_sub.has(String(e.subCategory||'').trim()))
+    ));
+  }
+  function anCalculate(rows){
+    const meaningful=rows.filter(e=>!anIsTransfer(e));
+    const out=meaningful.filter(anIsOut),income=meaningful.filter(e=>e.type==='Income');
+    const salary=income.filter(anIsSalary).reduce((n,e)=>n+anAmount(e),0);
+    const other=income.filter(e=>!anIsSalary(e));
+    const spend=out.reduce((n,e)=>n+anAmount(e),0);
+    const household=out.filter(anIsHousehold).reduce((n,e)=>n+anAmount(e),0);
+    const investmentSavings=out.filter(anIsSavings).reduce((n,e)=>n+anAmount(e),0);
+    const surplus=anOfficialSurplusByTour(rows);
+    return {meaningful,out,income,other,salary,spend,household,investmentSavings,surplus:surplus.total,
+      surplusByEntry:surplus.contributions,savings:investmentSavings+surplus.total,
+      otherTotal:other.reduce((n,e)=>n+anAmount(e),0)};
+  }
+  function anKpi(title,value,note,cls,key,icon){
+    return '<button type="button" class="an-kpi '+cls+(selectedKpiTiles.has(key)?' an-kpi-selected':'')+'" data-key="'+anEsc(key)+'" onclick="selectAnKpi(this.dataset.key)" aria-pressed="'+selectedKpiTiles.has(key)+'">'+
+      '<span class="an-kpititle"><span class="an-kpi-icon">'+icon+'</span>'+anEsc(title)+'</span><strong>'+anMoney(value)+'</strong><small>'+anEsc(note)+'</small></button>';
+  }
+  function anToggleHtml(kind,key,label){
+    return '<button type="button" class="an-chip" data-kind="'+anEsc(kind)+'" data-key="'+anEsc(key)+'" onclick="removeAnSelection(this.dataset.kind,this.dataset.key)" title="Remove this selection">'+anEsc(label)+' ×</button>';
+  }
+  function anCreditRelated(e,config){
+    const c=anLower(e.account),sub=anLower(e.subCategory);
+    return Object.keys(config).some(card=>anLower(card)===c||(anLower(e.category)==='debt repay'&&anLower(card)===sub));
+  }
+  function renderAnalysis(){
+    const periods=[...new Set(expenses.map(anPeriod).filter(Boolean))].sort().reverse();
+    const accounts=allAccountNames().sort();
+    const cats=[...new Set(expenses.map(anLabel))].sort();
+    const sub=[...new Set(expenses.map(e=>String(e.subCategory||'').trim()).filter(Boolean))].sort();
+    renderMsDropdown('an_month','menu_an_month','btn_an_month','All Months',periods,'analysis');
+    renderMsDropdown('an_acc','menu_an_acc','btn_an_acc','All Accounts',accounts,'analysis');
+    renderMsDropdown('an_type','menu_an_type','btn_an_type','All Types',['Expense','Debt','Income'],'analysis');
+    renderMsDropdown('an_cat','menu_an_cat','btn_an_cat','All Categories',cats,'analysis');
+    renderMsDropdown('an_sub','menu_an_sub','btn_an_sub','All Sub-Cats',sub,'analysis');
+    const rows=anGetFiltered(),s=anCalculate(rows),configs=allCreditConfigs();
+    const {ccAvail}=computeBalances();
+    // Credit debt is a live stock measure, rather than a date-filtered flow.
+    const debt=Object.keys(configs).reduce((n,c)=>n+Math.max(0,Number(configs[c].limit)-(ccAvail[c]||0)),0);
+    document.getElementById('dashKpis').innerHTML=
+      anKpi('Salary & Incentive Income',s.salary,'Salary and incentives only','an-kpi-blue','salary','💼')+
+      anKpi('Total Spend',s.spend,'Expenses + investment + official outflows','an-kpi-red','spend','🛒')+
+      anKpi('Actual Household Spending',s.household,'Excludes investment, official and loan','an-kpi-amber','household','🏠')+
+      anKpi('Savings',s.savings,'Investments + Savings labels + tour surplus','an-kpi-green','savings','🐷')+
+      anKpi('Other Inflows',s.otherTotal,'Reimbursements, dividends, recoveries etc.','an-kpi-cyan','other','↗')+
+      anKpi('Total Debt',debt,'Live unpaid credit-card debt · all dates','an-kpi-purple','debt','💳');
+    const spentMap=new Map();
+    s.out.forEach(e=>{let c=anLabel(e);spentMap.set(c,(spentMap.get(c)||0)+anAmount(e));});
+    const spent=[...spentMap.entries()].sort((a,b)=>b[1]-a[1]);
+    document.getElementById('anCategoryCount').textContent=spent.length+' categories';
+    const topMax=spent[0]?.[1]||1;
+    document.getElementById('anTopCats').innerHTML=spent.length?spent.map(([c,v])=>{
+      const key='exp::'+c,selected=selectedDrillCategories.has(key);
+      return '<button type="button" class="an-catgrid an-listrow '+(selected?'an-listselected':'')+'" data-cat="'+anEsc(c)+'" onclick="selectDrillCategory(this.dataset.cat,\'exp\')" aria-pressed="'+selected+'">'+
+      '<span class="an-check">'+(selected?'✓':'')+'</span><b class="an-catname">'+anEsc(c)+'</b><span class="an-bartrack"><i style="width:'+Math.max(1,100*v/topMax)+'%"></i></span><span class="an-catvalue">'+anMoney(v)+' <small>'+(s.spend?(100*v/s.spend).toFixed(1):'0.0')+'%</small></span></button>';
+    }).join(''):'<p class="an-empty">No spending for these filters.</p>';
+    const groupTotals=new Map();s.other.forEach(e=>{
+      const k=anClassifyOther(e);groupTotals.set(k,(groupTotals.get(k)||0)+anAmount(e));
+    });
+    const groups=[...groupTotals.entries()].sort((a,b)=>b[1]-a[1]);
+    document.getElementById('anInflowCount').textContent=groups.length+' groups';
+    document.getElementById('anInflowsList').innerHTML=groups.length?groups.map(([g,v])=>{
+      const selected=selectedInflowGroups.has(g);
+      return '<button type="button" class="an-inflowgrid an-listrow '+(selected?'an-listselected':'')+'" data-group="'+anEsc(g)+'" onclick="selectAnInflow(this.dataset.group)" aria-pressed="'+selected+'"><span class="an-check">'+(selected?'✓':'')+'</span><b>'+anEsc(g)+'</b><span class="an-catvalue">'+anMoney(v)+'</span></button>';
+    }).join(''):'<p class="an-empty">No other inflows for these filters.</p>';
+    // Every selection is a union: a matching transaction appears once even when multiple selectors match.
+    function matches(e){
+      const out=anIsOut(e)&&!anIsTransfer(e), income=e.type==='Income'&&!anIsTransfer(e);
+      const repay=anLower(e.category)==='debt repay';
+      if(selectedDrillCategories.has('exp::'+anLabel(e))&&out)return true;
+      if(income&&!anIsSalary(e)&&selectedInflowGroups.has(anClassifyOther(e)))return true;
+      if(selectedKpiTiles.has('salary')&&anIsSalary(e))return true;
+      if(selectedKpiTiles.has('spend')&&out)return true;
+      if(selectedKpiTiles.has('household')&&anIsHousehold(e))return true;
+      if(selectedKpiTiles.has('savings')&&(anIsSavings(e)||s.surplusByEntry.has(e.realIdx)))return true;
+      if(selectedKpiTiles.has('other')&&income&&!anIsSalary(e))return true;
+      if(selectedKpiTiles.has('debt')&&anCreditRelated(e,configs)&&(out||repay||income))return true;
+      return false;
+    }
+    const hasSelection=selectedDrillCategories.size||selectedInflowGroups.size||selectedKpiTiles.size;
+    const search=anLower(document.getElementById('drillSearch').value);
+    const visible=rows.filter(e=>matches(e)&&(!search||[e.date,e.month,e.type,e.category,e.subCategory,e.account,e.remarks,e.addedBy].some(v=>anLower(v).includes(search)))).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+    let included=0,spendSum=0,householdSum=0,incomeSum=0,savingsSum=0,otherSum=0,repaySum=0;
+    const body=visible.map(e=>{
+      const off=excludedDashIdx.has(e.realIdx),v=anAmount(e),repay=anLower(e.category)==='debt repay';
+      const income=e.type==='Income'&&!anIsTransfer(e),out=anIsOut(e)&&!anIsTransfer(e);
+      const src=repay?'Card repayment':income?(anIsSalary(e)?'Salary / Incentive':'Other inflow'):anIsSavings(e)?'Savings contribution':anIsHousehold(e)?'Household':'Spend';
+      if(!off){included++;if(out)spendSum+=v;if(anIsHousehold(e))householdSum+=v;if(income)incomeSum+=v;
+        if(income&&!anIsSalary(e))otherSum+=v;
+        if(anIsSavings(e))savingsSum+=v;
+        if(s.surplusByEntry.has(e.realIdx))savingsSum+=s.surplusByEntry.get(e.realIdx);
+        if(repay)repaySum+=v;
+      }
+      return '<tr class="'+(off?'excluded-row':'')+'"><td><input type="checkbox" aria-label="Include transaction" '+(!off?'checked':'')+' onchange="toggleDrillCheck('+e.realIdx+',\'dash\')"></td><td><button type="button" class="btn-edit-ico" title="Edit" onclick="openEditModal('+e.realIdx+')">✏️</button></td><td>'+anEsc(formatDDMMYYYY(e.date))+'</td><td>'+anEsc(e.month||'')+'</td><td>'+anEsc(e.type)+'</td><td>'+anEsc(src)+'</td><td>'+anEsc(anLabel(e))+'</td><td>'+anEsc(e.subCategory||'—')+'</td><td>'+anEsc(e.account||'—')+'</td><td class="num">'+v.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})+'</td><td>'+anEsc(e.remarks||'—')+'</td><td class="an-audit">'+anEsc((e.addedBy||'Imported')+' · '+(e.addedAt||''))+(e.editedBy?'<span>(Ed: '+anEsc(e.editedBy)+')</span>':'')+'</td></tr>';
+    }).join('');
+    document.getElementById('drillBox').style.display='block';
+    document.getElementById('drillBody').innerHTML=body||'<tr><td colspan="12" class="an-empty">'+(hasSelection?'No transactions match the selected items and search.':'Click any KPI, spending category or inflow group to display its transactions here.')+'</td></tr>';
+    document.getElementById('drillTitle').textContent=hasSelection?(included+' of '+visible.length+' transactions included · Combined selections'):'Choose one or more sources above to inspect underlying entries.';
+    const chips=[...selectedKpiTiles].map(k=>anToggleHtml('kpi',k,({salary:'Salary & Incentives',spend:'Total Spend',household:'Household',savings:'Savings',other:'Other Inflows',debt:'Total Debt'}[k]||k)))
+      .concat([...selectedDrillCategories].map(k=>anToggleHtml('cat',k,k.split('::').slice(1).join('::'))))
+      .concat([...selectedInflowGroups].map(k=>anToggleHtml('inflow',k,k)));
+    document.getElementById('anCatPills').innerHTML=chips.length?chips.join(''):'<span class="an-caption" style="margin:0">No active drill-down selections.</span>';
+    document.getElementById('anSelectedTotals').innerHTML='<div><small>Selected Transactions</small><strong>'+included+'</strong></div><div><small>Total Spend</small><strong>'+anMoney(spendSum)+'</strong></div><div><small>Household</small><strong>'+anMoney(householdSum)+'</strong></div><div><small>Savings Contribution</small><strong class="text-green">'+anMoney(savingsSum)+'</strong></div><div><small>Other Inflows</small><strong>'+anMoney(otherSum)+'</strong></div><div><small>All Income</small><strong>'+anMoney(incomeSum)+'</strong></div>';
+    document.getElementById('anDrillNote').textContent=(selectedKpiTiles.has('debt')?'Total Debt KPI is a live balance (including opening card debt); drill-down shows the card transactions and repayments within current filters. ':'')+(repaySum?'Card repayments displayed: '+anMoney(repaySum)+'. ':'')+'Amounts are grouped by type; overlapping selections do not duplicate transactions. Savings contributions are not necessarily money currently held in the bank.';
   }
   function clearOffDrill() {
     selectedOffTour = null; excludedOffIdx.clear();
@@ -894,7 +1443,7 @@ window.onerror = function(msg, url, line) {
   function renderOfficial() {
     const allOff = expenses.map((e, i) => Object.assign({ realIdx: i }, e)).filter(e => (e.category || '').trim().toLowerCase() === 'official');
     const orderedMonths = monthNames.filter(m => allOff.some(e => e.month === m));
-    const accounts = [...new Set(allOff.map(e => (e.account || '').trim()).filter(Boolean))].sort();
+    const accounts = allAccountNames().sort();
     renderMsDropdown('off_month', 'menu_off_month', 'btn_off_month', 'All Months', orderedMonths, 'official');
     renderMsDropdown('off_acc', 'menu_off_acc', 'btn_off_acc', 'All Accounts', accounts, 'official');
     const filtered = allOff.filter(e => (!msState.off_month.size || msState.off_month.has(e.month)) && (!msState.off_acc.size || msState.off_acc.has(e.account)));
@@ -982,7 +1531,7 @@ window.onerror = function(msg, url, line) {
     });
   }
   function renderMasterTable() {
-    const accounts = ['All', ...new Set(expenses.map(e => e.account).filter(Boolean))];
+    const accounts = ['All', ...allAccountNames()];
     const accSel = document.getElementById('masterAccountFilter');
     const curAcc = accSel.value;
     accSel.innerHTML = accounts.map(v => tag('option', 'value="' + v + '"' + (v===curAcc?' selected':''), v)).join('');
@@ -991,7 +1540,7 @@ window.onerror = function(msg, url, line) {
     document.getElementById('masterTableBody').innerHTML = list.map((item, idx) =>
       tag('tr', '', tag('td','',idx + 1) + tag('td','',formatDDMMYYYY(item.date)) + tag('td','',item.month) + tag('td','',item.type) +
       tag('td','',item.category) + tag('td','',item.subCategory) + tag('td','',item.account) +
-      tag('td','class="num"',parseFloat(item.amount || 0).toFixed(2)) + tag('td','',item.remarks) + tag('td','',formatAudit(item)))
+      tag('td','class="num"',parseFloat(item.amount || 0).toFixed(2)) + tag('td','',item.remarks) + tag('td','class="audit-cell"',formatAuditHTML(item)))
     ).join('');
   }
   function downloadXlsx() {
@@ -1009,6 +1558,128 @@ window.onerror = function(msg, url, line) {
     const a = document.createElement('a');
     a.href = url; a.download = 'Expenses_' + tagVal + '.csv';
     document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  }
+  // RFC4180-style CSV parser: supports quoted commas, escaped quotes and embedded newlines.
+  function readCSVTable(text) {
+    const rows=[];let row=[],cell='',quoted=false;
+    text=String(text||'').replace(/^\uFEFF/,'');
+    for(let i=0;i<text.length;i++) {
+      const ch=text[i];
+      if(quoted) {
+        if(ch==='"' && text[i+1]==='"'){cell+='"';i++;}
+        else if(ch==='"') quoted=false;
+        else cell+=ch;
+      } else if(ch==='"') quoted=true;
+      else if(ch===','){row.push(cell);cell='';}
+      else if(ch==='\n' || ch==='\r') {
+        if(ch==='\r'&&text[i+1]==='\n')i++;
+        row.push(cell);if(row.some(v=>String(v).trim()!==''))rows.push(row);
+        row=[];cell='';
+      } else cell+=ch;
+    }
+    if(quoted)throw Error('Unclosed quote in CSV');
+    if(cell!==''||row.length){row.push(cell);if(row.some(v=>String(v).trim()!==''))rows.push(row);}
+    return rows;
+  }
+  const FULL_CSV_HEADERS=['Sr.No.','Date','Month','Type','Category','Sub-Category','Account','Amount','Remarks','Added By / When','Added By','Added At','Edited By'];
+  function csvString(rows) {
+    const esc=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+    return '\uFEFF'+[FULL_CSV_HEADERS,...rows.map((e,i)=>[
+      i+1,formatDDMMYYYY(e.date),e.month,e.type,e.category,e.subCategory,e.account,e.amount,e.remarks,
+      formatAudit(e),e.addedBy||'',e.addedAt||'',e.editedBy||''
+    ])].map(r=>r.map(esc).join(',')).join('\r\n');
+  }
+  function triggerCSVDownload(rows, prefix) {
+    const content=csvString(rows);
+    const blob=new Blob([content],{type:'text/csv;charset=utf-8;'});
+    const url=URL.createObjectURL(blob), link=document.createElement('a');
+    link.href=url;link.download=prefix+'_'+new Date().toISOString().replace(/[:.]/g,'-')+'.csv';
+    document.body.appendChild(link);link.click();link.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+  }
+  function downloadFullCSV() { triggerCSVDownload(expenses,'Expenses_ALL'); }
+  function parseReplacementCSV(text) {
+    const rows=readCSVTable(text);
+    if(!rows.length)throw Error('CSV file is empty.');
+    const headers=rows.shift().map(v=>v.trim().replace(/^\uFEFF/,''));
+    const keys=['Date','Type','Category','Account','Amount'];
+    if(keys.some(k=>!headers.includes(k)))throw Error('Missing required columns: '+keys.filter(k=>!headers.includes(k)).join(', '));
+    const col=name=>headers.indexOf(name), val=(row,name)=>col(name)>=0?String(row[col(name)]??'').trim():'';
+    const result=[], errors=[];
+    rows.forEach((row,i)=>{
+      const date=normalizeDate(val(row,'Date'));
+      const type=val(row,'Type');
+      const category=val(row,'Category');
+      const account=resolvedAccount(val(row,'Account'));
+      const amountRaw=val(row,'Amount').replace(/,/g,'');
+      const amount=Number(amountRaw);
+      if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number.isNaN(Date.parse(date+'T00:00:00'))||new Date(date+'T00:00:00').toISOString().slice(0,10)!==date||!['Income','Expense','Debt'].includes(type)||!category||!account||!amountRaw||!Number.isFinite(amount)||amount<0) {
+        errors.push('Row '+(i+2)+': invalid date, type, category, account or amount');return;
+      }
+      const month=monthNames[Number(date.slice(5,7))-1];
+      if(!month){errors.push('Row '+(i+2)+': invalid month');return;}
+      let addedBy=val(row,'Added By'),addedAt=val(row,'Added At'),editedBy=val(row,'Edited By');
+      // Restore audit stamps from older ten-column exports when separate fields are absent.
+      const audit=val(row,'Added By / When');
+      if(!addedBy&&audit){
+        const match=audit.match(/^(.*?)\s*·\s*(\d{2}-\d{2}-\d{4}\s+\d{2}:\d{2})(?:\s*\(Ed:\s*(.*)\))?$/s);
+        if(match){addedBy=match[1].trim();addedAt=match[2];editedBy=editedBy||match[3]||'';}
+        else if(audit==='Imported')addedBy='CSV Import';
+      }
+      result.push({date,month,type,category,subCategory:val(row,'Sub-Category'),account,amount,
+        remarks:val(row,'Remarks'),addedBy:addedBy||'CSV Import',addedAt:addedAt||getNowTimestamp(),...(editedBy?{editedBy}:{})});
+    });
+    if(errors.length)throw Error(errors.slice(0,6).join('\n')+(errors.length>6?'\n... '+errors.length+' invalid rows total':''));
+    return result;
+  }
+  function getVerifiedPIN(action) {
+    if(!currentUser||!USER_PINS[currentUser]){alert('Unlock your profile first.');return false;}
+    const pin=prompt('SECURITY CHECK: Enter '+currentUser+' PIN to '+action+':');
+    if(pin===null)return false;
+    if(pin!==String(USER_PINS[currentUser])){alert('Incorrect PIN. No data was changed.');return false;}
+    return true;
+  }
+  async function guardedReplaceAll(nextRows,action) {
+    if(!navigator.onLine){alert('A cloud connection is required. No records were changed.');return;}
+    if(cloudBusy||localDirty||!cloudReady){alert('Wait for cloud sync to complete before bulk maintenance.');return;}
+    if(!getVerifiedPIN(action))return;
+    let response, remote, etag;
+    try {
+      response=await fetch(firebaseUrl+'/trackerData.json',{headers:{'X-Firebase-ETag':'true'},cache:'no-store'});
+      if(!response.ok)throw Error('Could not read Firebase');
+      etag=response.headers.get('ETag');if(!etag)throw Error('Missing server version; refusing unsafe replacement');
+      const raw=await response.json();remote=normalizeCloud(raw);
+      if(!raw||!Array.isArray(raw.expenses))throw Error('Cloud transactions were not available; refusing operation');
+    } catch(err){alert('Backup preparation failed: '+err.message+'\nNo data was changed.');return;}
+    // Backup comes from current Firebase data, not a potentially stale local cache.
+    try {triggerCSVDownload(remote.expenses,'AUTO_BACKUP_BEFORE_'+action.replace(/\W+/g,'_'));}
+    catch(err){alert('Backup download could not start. No data was changed. '+err.message);return;}
+    const phrase=nextRows.length?'REPLACE':'DELETE';
+    const verified=prompt('A backup download was started for '+remote.expenses.length+' Firebase entries.\nCheck that the CSV is saved on your device BEFORE continuing.\n\n'+action+': '+remote.expenses.length+' existing → '+nextRows.length+' entries.\nType '+phrase+' to confirm:');
+    if(verified!==phrase){alert('Cancelled. Cloud data remains unchanged.');return;}
+    if(!confirm('Final confirmation: apply '+action+' to BOTH devices? This cannot be undone except by restoring your backup.'))return;
+    cloudBusy=true;
+    try {
+      const payload={...remote,expenses:normalizeAccountReferences(nextRows,remote.accountRenames),bulkEpoch:'bulk-'+Date.now()+'-'+Math.random().toString(36).slice(2),updatedAt:Date.now()};
+      const result=await fetch(firebaseUrl+'/trackerData.json',{method:'PUT',headers:{'Content-Type':'application/json','if-match':etag},body:JSON.stringify(payload)});
+      if(result.status===412)throw Error('Firebase changed on another device. Cancelled safely; refresh and try again.');
+      if(!result.ok)throw Error('Firebase rejected update (HTTP '+result.status+')');
+      acceptCloud(normalizeCloud(payload));setOnlineStatus(true);
+      alert('Success: Firebase now contains '+expenses.length+' transactions. Your backup CSV should be in Downloads.');
+    } catch(err){alert('Not completed: '+err.message+'\nYour local records were not cleared.');}
+    finally{cloudBusy=false;cloudSyncPromise=null;}
+  }
+  async function replaceAllFromCSV(event) {
+    const file=event.target.files[0];event.target.value='';if(!file)return;
+    let incoming;
+    try{incoming=parseReplacementCSV(await file.text());if(!incoming.length)throw Error('No valid transaction rows. For emptying data, use Delete All Entries.');}
+    catch(err){alert('CSV validation failed. Nothing was changed.\n'+err.message);return;}
+    if(!confirm('Validated '+incoming.length+' CSV transactions. This will REPLACE ALL cloud transactions, not append. Continue to PIN and backup?'))return;
+    await guardedReplaceAll(incoming,'Replace all from CSV');
+  }
+  async function deleteAllTransactions() {
+    if(!confirm('Delete ALL transactions from Firebase on both devices? A full backup CSV will be downloaded first. Budget and accounts will be retained.'))return;
+    await guardedReplaceAll([],'Delete all entries');
   }
   function renderProjections() {
     const tbody = document.getElementById('projectionBody'); let net = 0;
@@ -1028,7 +1699,7 @@ window.onerror = function(msg, url, line) {
   function delProj(i) { projections.splice(i, 1); localStorage.setItem('offline_projections', JSON.stringify(projections)); renderProjections(); pushToCloud(); }
 
   function renderAllNoPush() {
-    localStorage.setItem('offline_expenses_v2', JSON.stringify(expenses));
+    saveLocal(); updateAccountDropdowns();
     renderEntryTable(); renderBalances(); renderProjections(); renderAnalysis(); renderOfficial(); renderMasterTable();
   }
   function refreshAllAndSync() { renderAllNoPush(); pushToCloud(); }
