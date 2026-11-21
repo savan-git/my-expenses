@@ -158,75 +158,244 @@
 </head>
 <body>
 <div id="authOverlay" class="auth-overlay">
-  <div class="auth-card">
-    <h2 style="margin:0 0 6px 0; font-size:1.25rem;">🔒 Finance Suite</h2>
-    <p style="margin:0 0 16px 0; font-size:0.82rem; color:var(--muted);">Select user and enter PIN to unlock</p>
-    <div style="text-align:left; margin-bottom:10px;">
-      <label>User</label>
-      <select id="loginUser"><option value="Savan">Savan</option><option value="Komal">Komal</option></select>
-    </div>
-    <div style="text-align:left; margin-bottom:12px;">
-      <label>PIN / Password</label>
-      <input type="password" id="loginPin" inputmode="numeric" placeholder="Enter PIN" onkeyup="if(event.key==='Enter') attemptLogin()">
-    </div>
-    <label style="display:flex; align-items:center; gap:6px; font-size:0.78rem; margin-bottom:14px; cursor:pointer;">
-      <input type="checkbox" id="rememberMe" checked style="width:16px; height:16px; margin:0;"> Keep me logged in on this device
-    </label>
-    <button type="button" class="btn btn-primary" style="width:100%;" onclick="attemptLogin()">Unlock Tracker</button>
-    <div id="loginError" style="color:var(--danger); font-size:0.78rem; font-weight:600; margin-top:8px;"></div>
+  <div class="auth-card" style="max-width:440px;text-align:left;max-height:94vh;overflow-y:auto;">
+    <h2 style="margin:0 0 5px;font-size:1.3rem;text-align:center;">🔒 Finance Suite</h2>
+    <p style="margin:0 0 16px;color:var(--muted);font-size:.83rem;text-align:center;">Secure Firebase sign-in • Savan &amp; Komal only</p>
+    <form id="secureLoginForm" onsubmit="event.preventDefault();attemptLogin();">
+      <div class="form-group" style="margin-bottom:10px"><label>Firebase account email</label><input type="email" id="loginEmail" autocomplete="username" required placeholder="Your registered email"></div>
+      <div class="form-group" style="margin-bottom:10px"><label>Password</label><input type="password" id="loginPassword" autocomplete="current-password" required placeholder="Firebase Authentication password"></div>
+      <label style="display:flex;align-items:center;gap:8px;margin:10px 0 13px;cursor:pointer"><input type="checkbox" id="rememberMe" style="width:17px;height:17px;margin:0"> Keep me signed in on this device</label>
+      <button id="secureLoginButton" type="submit" class="btn btn-primary" style="width:100%">Sign in securely</button>
+    </form>
+    <p id="loginError" style="min-height:1.3em;color:var(--danger);font-size:.8rem;font-weight:600;margin:10px 0 0" role="alert"></p>
+    <details id="firebaseSetup" style="margin-top:14px;border-top:1px solid #cbd5e1;padding-top:12px">
+      <summary style="cursor:pointer;font-size:.81rem;font-weight:700;color:#1d4ed8">⚙️ First-time setup: Firebase web key and authorized UIDs</summary>
+      <p style="font-size:.76rem;color:var(--muted);line-height:1.45">Find the Web API Key in Firebase Project settings → General → Web API Key. Find Savan/Komal user IDs under Authentication → Users. These identifiers are not passwords. Configure once per browser/device.</p>
+      <div class="form-group" style="margin:8px 0"><label>Firebase Web API Key</label><input id="configApiKey" autocomplete="off" spellcheck="false" placeholder="AIza…"></div>
+      <div class="form-group" style="margin:8px 0"><label>Savan user UID</label><input id="configSavanUid" autocomplete="off" spellcheck="false" placeholder="Firebase UID for Savan"></div>
+      <div class="form-group" style="margin:8px 0"><label>Komal user UID</label><input id="configKomalUid" autocomplete="off" spellcheck="false" placeholder="Firebase UID for Komal"></div>
+      <button type="button" class="btn btn-secondary" style="width:100%;margin-top:8px" onclick="saveFirebaseSetup()">Save Firebase configuration</button>
+      <div id="configStatus" style="font-size:.77rem;margin-top:6px;color:#475569"></div>
+    </details>
   </div>
-<script>
-window.onerror = function(msg, url, line) {
-  document.getElementById('syncStatusText').textContent = 'Err L' + line + ': ' + msg;
-};
-
-  const USER_PINS = {
-    "Savan": "1234",
-    "Komal": "5678"
-  };
-
-  let currentUser = localStorage.getItem('finance_active_user') || sessionStorage.getItem('finance_active_user') || '';
-
-  function initAuth() {
-    const overlay = document.getElementById('authOverlay');
-    const badge = document.getElementById('activeUserBadge');
-    if (currentUser && USER_PINS[currentUser]) {
-      overlay.classList.add('hidden');
-      if (badge) badge.textContent = '👤 ' + currentUser;
-    } else {
-      overlay.classList.remove('hidden');
-    }
-  }
-
-  function attemptLogin() {
-    const user = document.getElementById('loginUser').value;
-    const pin = document.getElementById('loginPin').value.trim();
-    const remember = document.getElementById('rememberMe').checked;
-    if (String(USER_PINS[user]) === pin) {
-      currentUser = user;
-      if (remember) localStorage.setItem('finance_active_user', user);
-      else sessionStorage.setItem('finance_active_user', user);
-      document.getElementById('loginPin').value = '';
-      document.getElementById('loginError').textContent = '';
-      initAuth();
-    } else {
-      document.getElementById('loginError').textContent = 'Incorrect PIN. Please try again.';
-    }
-  }
-
-  function logoutUser() {
-    if (confirm('Lock tracker and switch user?')) {
-      currentUser = '';
-      localStorage.removeItem('finance_active_user');
-      sessionStorage.removeItem('finance_active_user');
-      initAuth();
-    }
-  }
-
-  initAuth();
-</script>
+  <div id="openingSetupCard" class="auth-card" style="display:none;max-width:600px;text-align:left;max-height:90vh;overflow-y:auto">
+    <h2 style="margin:0 0 8px">🔐 Secure opening-balance migration</h2>
+    <p style="font-size:.83rem;line-height:1.5;color:#475569">Your old public HTML contained opening bank balances and credit limits. For privacy, V7 stores these settings in Firebase instead. This one-time setup <b>adds configuration only</b>, without replacing any expenses, budgets, accounts or statements.</p>
+    <p style="font-size:.82rem;color:#475569">Paste the opening configuration supplied with V7. It stays private in Firebase after saving. Confirm the figures against your records.</p>
+    <textarea id="openingConfigJson" rows="10" spellcheck="false" style="width:100%;font:12px monospace;resize:vertical;border:1px solid #cbd5e1;border-radius:8px;padding:10px" placeholder='{"bankOpenings": {"Your Bank": 0}, "ccConfig": {"Your Card": {"limit": 100000, "openAvail": 90000}}}'></textarea>
+    <button id="saveOpeningConfigButton" type="button" class="btn btn-primary" style="width:100%;margin-top:10px" onclick="saveOpeningConfigToCloud()">Save opening figures securely to Firebase</button>
+    <p id="openingConfigError" role="alert" style="font-size:.8rem;color:#dc2626"></p>
+  </div>
 </div>
+<script>
+  // Firebase identity is verified by the REST Authentication service and RTDB rules.
+  // No passwords or user PINs are embedded in this public HTML file.
+  window.onerror = function(msg,url,line){
+    const status=document.getElementById('syncStatusText');
+    if(status) status.textContent='Error (line '+line+')';
+    console.error(msg,url,line);
+  };
+  const FIREBASE_CONFIG_KEY='finance_firebase_client_config_v1';
+  const AUTH_SESSION_KEY='finance_firebase_session_v1';
+  const FIREBASE_PROJECT_ID='my-expense-tracker-3e5e4';
+  let firebaseClientConfig={apiKey:'',savanUid:'',komalUid:''};
+  try {firebaseClientConfig={...firebaseClientConfig,...JSON.parse(localStorage.getItem(FIREBASE_CONFIG_KEY)||'{}')};}catch(_){}
+  let authSession=null;
+  let currentUser='';
+  let authEpoch=0;
+  let initializedAfterLogin=false;
+  let authRefreshPromise=null;
+  let pendingOpeningMigration=null;
+  const tokenExpirySkewMs=90*1000;
 
+  function getSessionStorage(){return [sessionStorage,localStorage];}
+  function saveAuthSession(){
+    sessionStorage.removeItem(AUTH_SESSION_KEY);localStorage.removeItem(AUTH_SESSION_KEY);
+    if(authSession){(authSession.remember?localStorage:sessionStorage).setItem(AUTH_SESSION_KEY,JSON.stringify(authSession));}
+  }
+  function setLoginError(message){document.getElementById('loginError').textContent=message||'';}
+  function renderAuthGate(){
+    const setupNeeded=!!pendingOpeningMigration;
+    document.querySelector('#authOverlay > .auth-card').style.display=setupNeeded?'none':'';
+    document.getElementById('openingSetupCard').style.display=setupNeeded?'block':'none';
+    document.getElementById('authOverlay').classList.toggle('hidden',!(!authSession||!currentUser||!initializedAfterLogin));
+    const badge=document.getElementById('activeUserBadge');
+    if(badge)badge.textContent=currentUser?'👤 '+currentUser:'🔒 Sign in';
+  }
+  function initAuth(){renderAuthGate();}
+  function saveFirebaseSetup(){
+    const values={
+      apiKey:document.getElementById('configApiKey').value.trim(),
+      savanUid:document.getElementById('configSavanUid').value.trim(),
+      komalUid:document.getElementById('configKomalUid').value.trim()
+    };
+    const message=document.getElementById('configStatus');
+    if(!values.apiKey||!values.savanUid||!values.komalUid||values.savanUid===values.komalUid){message.textContent='Enter a Web API Key and two distinct Firebase UIDs.';return;}
+    firebaseClientConfig=values;
+    localStorage.setItem(FIREBASE_CONFIG_KEY,JSON.stringify(values));
+    message.textContent='Configuration saved on this device. Sign in above.';
+    setLoginError('');
+  }
+  function configuredUserForUid(uid){
+    if(uid&&uid===firebaseClientConfig.savanUid)return 'Savan';
+    if(uid&&uid===firebaseClientConfig.komalUid)return 'Komal';
+    return '';
+  }
+  function explainFirebaseError(error){
+    const code=String(error?.message||error||'');
+    if(/INVALID_LOGIN_CREDENTIALS|INVALID_PASSWORD|EMAIL_NOT_FOUND/i.test(code))return 'Incorrect email or password (or the account does not exist).';
+    if(/TOO_MANY_ATTEMPTS_TRY_LATER/i.test(code))return 'Too many attempts. Please try again later.';
+    if(/USER_DISABLED/i.test(code))return 'This Firebase user is disabled.';
+    if(/PERMISSION_DENIED|Cloud read failed: 401|Cloud read failed: 403/i.test(code))return 'Firebase denied access. Check the exact Savan/Komal UIDs and database rules.';
+    return code.slice(0,240);
+  }
+  async function authPost(url,payload,formEncoded=false){
+    const res=await fetch(url,{method:'POST',headers:{'Content-Type':formEncoded?'application/x-www-form-urlencoded':'application/json'},body:formEncoded?new URLSearchParams(payload).toString():JSON.stringify(payload),cache:'no-store'});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok)throw new Error(data?.error?.message||('Firebase HTTP '+res.status));
+    return data;
+  }
+  async function refreshFirebaseToken(){
+    if(!authSession?.refreshToken)throw new Error('Please sign in.');
+    if(authRefreshPromise)return authRefreshPromise;
+    const epoch=authEpoch;
+    authRefreshPromise=(async()=>{
+      const fresh=await authPost('https://securetoken.googleapis.com/v1/token?key='+encodeURIComponent(firebaseClientConfig.apiKey),{grant_type:'refresh_token',refresh_token:authSession.refreshToken},true);
+      if(epoch!==authEpoch||!authSession)throw new Error('Session changed.');
+      const uid=fresh.user_id;
+      const role=configuredUserForUid(uid);
+      if(!role||role!==currentUser)throw new Error('Firebase user is not one of the two approved accounts.');
+      authSession={...authSession,uid,idToken:fresh.id_token,refreshToken:fresh.refresh_token,expiresAt:Date.now()+Number(fresh.expires_in||3600)*1000};
+      saveAuthSession();return authSession.idToken;
+    })();
+    try{return await authRefreshPromise;}finally{authRefreshPromise=null;}
+  }
+  async function getFirebaseToken(){
+    if(!authSession||!currentUser||!configuredUserForUid(authSession.uid))throw new Error('Sign in first.');
+    if(Date.now()<authSession.expiresAt-tokenExpirySkewMs&&authSession.idToken)return authSession.idToken;
+    return refreshFirebaseToken();
+  }
+  async function authenticatedDatabaseUrl(){
+    // RTDB REST specifically accepts a Firebase Auth ID token with the auth= parameter.
+    const token=await getFirebaseToken();
+    return firebaseUrl+'/trackerData.json?auth='+encodeURIComponent(token);
+  }
+  async function saveOpeningConfigToCloud(){
+    if(!pendingOpeningMigration||!authSession)return;
+    const errorEl=document.getElementById('openingConfigError');errorEl.textContent='';
+    let parsed;
+    try{
+      parsed=JSON.parse(document.getElementById('openingConfigJson').value);
+      if(!parsed||!parsed.bankOpenings||!parsed.ccConfig||Array.isArray(parsed.bankOpenings)||Array.isArray(parsed.ccConfig))throw Error('Both bankOpenings and ccConfig objects are required.');
+      if(Object.keys(parsed.bankOpenings).length<1||Object.keys(parsed.ccConfig).length<1)throw Error('Provide at least one bank and one credit card.');
+      for(const [name,value] of Object.entries(parsed.bankOpenings))if(!name||!Number.isFinite(value))throw Error('Invalid bank opening for '+name);
+      for(const [name,v] of Object.entries(parsed.ccConfig))if(!name||!Number.isFinite(v?.limit)||!Number.isFinite(v?.openAvail)||v.limit<0||v.openAvail<0||v.openAvail>v.limit)throw Error('Invalid card limit/available for '+name);
+    }catch(e){errorEl.textContent=e.message;return;}
+    if(!confirm('Save these opening balances and card limits to your protected Firebase database? Your existing transactions will be preserved.'))return;
+    const button=document.getElementById('saveOpeningConfigButton');button.disabled=true;
+    try{
+      // Re-read the authoritative cloud record and use a version precondition. No implicit reset.
+      const url=await authenticatedDatabaseUrl();
+      const res=await fetch(url,{headers:{'X-Firebase-ETag':'true'},cache:'no-store'});
+      if(!res.ok)throw Error('Firebase read failed: '+res.status);
+      const raw=await res.json();const etag=res.headers.get('ETag');
+      if(!raw||!Array.isArray(raw.expenses)||!etag)throw Error('No reliable cloud snapshot; nothing saved.');
+      if(raw.bankOpenings&&raw.ccConfig){pendingOpeningMigration=null;await loadAuthenticatedTracker();return;}
+      const payload={...raw,bankOpenings:parsed.bankOpenings,ccConfig:parsed.ccConfig,updatedAt:Date.now()};
+      const put=await fetch(await authenticatedDatabaseUrl(),{method:'PUT',headers:{'Content-Type':'application/json','if-match':etag},body:JSON.stringify(payload)});
+      if(put.status===412)throw Error('Another device changed the cloud data. Nothing was replaced. Try again.');
+      if(!put.ok)throw Error('Firebase write rejected: '+put.status);
+      pendingOpeningMigration=null;await loadAuthenticatedTracker();
+    }catch(e){errorEl.textContent=e.message;}finally{button.disabled=false;renderAuthGate();}
+  }
+  async function loadAuthenticatedTracker(){
+    const epoch=authEpoch;
+    const url=await authenticatedDatabaseUrl();
+    const res=await fetch(url,{cache:'no-store'});
+    if(!res.ok)throw new Error('Cloud read failed: '+res.status);
+    const raw=await res.json();
+    if(epoch!==authEpoch)throw new Error('Session changed.');
+    if(!raw||!Array.isArray(raw.expenses))throw new Error('Cloud records missing. Refusing to overwrite or reset the database.');
+    if(!raw.bankOpenings||!raw.ccConfig){
+      pendingOpeningMigration={needed:true};
+      renderAuthGate();return;
+    }
+    pendingOpeningMigration=null;
+    if(localDirty){
+      // Legacy unsynced local entries must never be silently overwritten or uploaded.
+      const recovery={expenses,projections,customAccounts,accountRenames,creditStatements,backedUpAt:new Date().toISOString()};
+      const blob=new Blob([JSON.stringify(recovery,null,2)],{type:'application/json'});
+      const objUrl=URL.createObjectURL(blob);
+      const download=document.createElement('a');
+      download.href=objUrl;download.download='UNSYNCED_LOCAL_FINANCE_BACKUP_'+new Date().toISOString().slice(0,10)+'.json';
+      download.style.display='none';document.body.appendChild(download);download.click();download.remove();
+      setTimeout(()=>URL.revokeObjectURL(objUrl),30000);
+      const proceed=confirm('This device contains UNSYNCED local changes. A recovery JSON download was started.\n\nConfirm that your backup is saved before loading the current Firebase records. The unsynced changes will NOT be uploaded automatically.\n\nOK = I saved the backup and want to use the cloud version. Cancel = keep my existing local changes untouched.');
+      if(!proceed)throw new Error('Sign-in paused to preserve unsynced local records. Check your Downloads folder, then sign in again.');
+      localDirty=false;localStorage.removeItem(DIRTY_KEY);
+    }
+    acceptCloud(normalizeCloud(raw));setOnlineStatus(true);
+    initializedAfterLogin=true;renderAuthGate();
+  }
+  async function attemptLogin(){
+    const email=document.getElementById('loginEmail').value.trim();
+    const password=document.getElementById('loginPassword').value;
+    const btn=document.getElementById('secureLoginButton');
+    if(!firebaseClientConfig.apiKey||!firebaseClientConfig.savanUid||!firebaseClientConfig.komalUid){
+      document.getElementById('firebaseSetup').open=true;setLoginError('Complete Firebase first-time setup below.');return;
+    }
+    btn.disabled=true;btn.textContent='Verifying account…';setLoginError('');
+    try {
+      const result=await authPost('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+encodeURIComponent(firebaseClientConfig.apiKey),{email,password,returnSecureToken:true});
+      const role=configuredUserForUid(result.localId);
+      if(!role)throw new Error('This Firebase account is not Savan or Komal. Access denied.');
+      authEpoch++;
+      currentUser=role;
+      authSession={uid:result.localId,email,refreshToken:result.refreshToken,idToken:result.idToken,expiresAt:Date.now()+Number(result.expiresIn||3600)*1000,remember:document.getElementById('rememberMe').checked};
+      saveAuthSession();
+      document.getElementById('loginPassword').value='';
+      await loadAuthenticatedTracker();
+    }catch(err){
+      currentUser='';authSession=null;initializedAfterLogin=false;saveAuthSession();renderAuthGate();setLoginError(explainFirebaseError(err));
+    }finally{btn.disabled=false;btn.textContent='Sign in securely';}
+  }
+  function logoutUser(){
+    if(localDirty||cloudBusy){alert('Cloud synchronization is still pending. Complete sync (or export a backup of pending changes) before signing out.');return;}
+    if(!confirm('Sign out and lock the tracker on this device?'))return;
+    authEpoch++;authSession=null;currentUser='';initializedAfterLogin=false;
+    saveAuthSession();
+    // Purge plaintext financial browser caches after safe sign-out. Cloud records stay untouched.
+    ['offline_expenses_v2','offline_projections','offline_custom_accounts_v1','offline_account_renames_v1','offline_credit_statements_v1',SNAP_KEY,DIRTY_KEY].forEach(k=>localStorage.removeItem(k));
+    // Do not keep financial transactions exposed in this page's DOM after sign-out.
+    document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+    document.getElementById('tab-data').classList.add('active');
+    document.querySelectorAll('.tab-content tbody').forEach(el=>el.replaceChildren());
+    document.getElementById('liveBalanceStrip').replaceChildren();
+    expenses=[];projections=[];customAccounts=[];creditStatements=[];accountRenames={};
+    Object.keys(bankOpenings).forEach(k=>delete bankOpenings[k]);Object.keys(ccConfig).forEach(k=>delete ccConfig[k]);pendingOpeningMigration=null;
+    cloudReady=false;lastCloudSnapshot=null;localDirty=false;
+    setOnlineStatus(false);renderAuthGate();
+  }
+  function restoreLoginSetup(){
+    document.getElementById('configApiKey').value=firebaseClientConfig.apiKey||'';
+    document.getElementById('configSavanUid').value=firebaseClientConfig.savanUid||'';
+    document.getElementById('configKomalUid').value=firebaseClientConfig.komalUid||'';
+    if(!firebaseClientConfig.apiKey||!firebaseClientConfig.savanUid||!firebaseClientConfig.komalUid)document.getElementById('firebaseSetup').open=true;
+    for(const storage of getSessionStorage()){
+      try{const old=JSON.parse(storage.getItem(AUTH_SESSION_KEY)||'null');if(old?.refreshToken){authSession=old;break;}}catch(_){}
+    }
+    // Remove obsolete PIN-login persistence; this cannot grant database access.
+    localStorage.removeItem('finance_active_user');sessionStorage.removeItem('finance_active_user');
+    renderAuthGate();
+    if(authSession){
+      const role=configuredUserForUid(authSession.uid);
+      if(!role){authSession=null;saveAuthSession();return;}
+      currentUser=role;
+      (async()=>{try{await refreshFirebaseToken();await loadAuthenticatedTracker();}catch(err){currentUser='';authSession=null;saveAuthSession();renderAuthGate();setLoginError('Session expired or access denied. Please sign in again.');}})();
+    }
+  }
+  renderAuthGate();
+</script>
 <div class="container">
   <div class="top-bar">
     <div class="title-area">
@@ -485,16 +654,9 @@ window.onerror = function(msg, url, line) {
   let expenses = JSON.parse(localStorage.getItem('offline_expenses_v2')) || [];
   let sortCol = 'date';
   let sortAsc = false;
-  const bankOpenings = {
-    "Kotak - Savan": 123580.92, "Komal Kotak": 311262.02,
-    "BOB - Savan": 0, "BOB - Komal": 0, "SBI - Komal": 0, "Cash": 226.00
-  };
-
-  const ccConfig = {
-    "HDFC Pixel": { limit: 220000, openAvail: 172593.97 },
-    "ICICI": { limit: 200000, openAvail: 191380.67 },
-    "Kotak Rupay": { limit: 180000, openAvail: 180000.00 }
-  };
+  // Opening financial amounts belong in the restricted Firebase database, never a public GitHub file.
+  const bankOpenings = {};
+  const ccConfig = {};
 
   let accountRenames = JSON.parse(localStorage.getItem('offline_account_renames_v1') || '{}');
   if (!accountRenames || typeof accountRenames !== 'object' || Array.isArray(accountRenames)) accountRenames = {};
@@ -502,17 +664,7 @@ window.onerror = function(msg, url, line) {
   if (!Array.isArray(creditStatements)) creditStatements=[];
   let customAccounts = JSON.parse(localStorage.getItem('offline_custom_accounts_v1') || '[]');
   if (!Array.isArray(customAccounts)) customAccounts = [];
-  let projections = JSON.parse(localStorage.getItem('offline_projections')) || [
-    { type: "Income", name: "Salary (Gyproc)", amount: 80870 },
-    { type: "Expense", name: "Home Loan (Micasa)", amount: 11353 },
-    { type: "Expense", name: "NMIMS - MBA EMI", amount: 12500 },
-    { type: "Expense", name: "Living Expense", amount: 10000 },
-    { type: "Investment", name: "SIP (1500 x 2)", amount: 3000 },
-    { type: "Investment", name: "LIC - SIIP", amount: 11000 },
-    { type: "Investment", name: "LIC Regular", amount: 3925 },
-    { type: "Investment", name: "RD", amount: 2500 }
-  ];
-
+  let projections = JSON.parse(localStorage.getItem('offline_projections')) || [];
   const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   const dateInput = document.getElementById('date');
   const monthInput = document.getElementById('month');
@@ -755,6 +907,13 @@ window.onerror = function(msg, url, line) {
     return merged;
   }
   function acceptCloud(d) {
+    // Protected RTDB settings replace the formerly hardcoded opening financial amounts.
+    if(d.bankOpenings&&d.ccConfig){
+      Object.keys(bankOpenings).forEach(k=>delete bankOpenings[k]);
+      Object.keys(ccConfig).forEach(k=>delete ccConfig[k]);
+      Object.assign(bankOpenings,d.bankOpenings);
+      Object.assign(ccConfig,d.ccConfig);
+    }
     cloudBulkEpoch=d.bulkEpoch||'';
     expenses=normalizeAccountReferences(d.expenses,d.accountRenames);projections=d.projections;accountRenames=d.accountRenames;creditStatements=d.creditStatements.map(b=>({...b,card:resolvedAccount(b.card,d.accountRenames)}));customAccounts=sanitizeCustomAccounts(d.customAccounts.map(a=>({...a,name:resolvedAccount(a.name,d.accountRenames)})));
     lastCloudSnapshot = copyState();
@@ -763,13 +922,14 @@ window.onerror = function(msg, url, line) {
     cloudReady=true;saveLocal();renderAllNoPush();
   }
   async function synchronizeCloud(write) {
+    if (!initializedAfterLogin || !authSession || !currentUser) return;
     if (!navigator.onLine) {setOnlineStatus(false);return;}
     if (cloudBusy) return cloudSyncPromise;
     cloudBusy=true;
     cloudSyncPromise=(async()=>{
       try {
         for (let attempt=0;attempt<5;attempt++) {
-          const response=await fetch(firebaseUrl+'/trackerData.json',{headers:{'X-Firebase-ETag':'true'},cache:'no-store'});
+          const response=await fetch(await authenticatedDatabaseUrl(),{headers:{'X-Firebase-ETag':'true'},cache:'no-store'});
           if (!response.ok) throw Error('Cloud read failed: '+response.status);
           const raw=await response.json();
           const remote=normalizeCloud(raw);
@@ -788,7 +948,7 @@ window.onerror = function(msg, url, line) {
           const localRevision=cloudRevision;
           const localBeforeWrite=copyState();
           const payload=mergeCloud(remote);
-          const responseWrite=await fetch(firebaseUrl+'/trackerData.json',{
+          const responseWrite=await fetch(await authenticatedDatabaseUrl(),{
             method:'PUT',headers:{'Content-Type':'application/json','if-match':etag},body:JSON.stringify(payload)
           });
           if (responseWrite.status===412) continue; // Race: read and merge again.
@@ -822,6 +982,7 @@ window.onerror = function(msg, url, line) {
     return cloudSyncPromise;
   }
   function pushToCloud() {
+    if(!initializedAfterLogin || !authSession || !currentUser){alert('Please sign in before editing data.');return Promise.resolve();}
     cloudRevision++;
     localDirty=true;
     localStorage.setItem(DIRTY_KEY,'1');
@@ -1632,20 +1793,24 @@ window.onerror = function(msg, url, line) {
     if(errors.length)throw Error(errors.slice(0,6).join('\n')+(errors.length>6?'\n... '+errors.length+' invalid rows total':''));
     return result;
   }
-  function getVerifiedPIN(action) {
-    if(!currentUser||!USER_PINS[currentUser]){alert('Unlock your profile first.');return false;}
-    const pin=prompt('SECURITY CHECK: Enter '+currentUser+' PIN to '+action+':');
-    if(pin===null)return false;
-    if(pin!==String(USER_PINS[currentUser])){alert('Incorrect PIN. No data was changed.');return false;}
-    return true;
+  async function verifyFirebasePassword(action){
+    if(!authSession||!currentUser)return false;
+    const pwd=prompt('SECURITY CHECK: Enter your Firebase account password to '+action+':');
+    if(pwd===null)return false;
+    try{
+      const result=await authPost('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+encodeURIComponent(firebaseClientConfig.apiKey),{email:authSession.email,password:pwd,returnSecureToken:true});
+      if(result.localId!==authSession.uid||configuredUserForUid(result.localId)!==currentUser)throw Error('Account mismatch');
+      authSession={...authSession,idToken:result.idToken,refreshToken:result.refreshToken,expiresAt:Date.now()+Number(result.expiresIn||3600)*1000};
+      saveAuthSession();return true;
+    }catch(err){alert('Password verification failed. No data was changed.');return false;}
   }
   async function guardedReplaceAll(nextRows,action) {
     if(!navigator.onLine){alert('A cloud connection is required. No records were changed.');return;}
     if(cloudBusy||localDirty||!cloudReady){alert('Wait for cloud sync to complete before bulk maintenance.');return;}
-    if(!getVerifiedPIN(action))return;
+    if(!await verifyFirebasePassword(action))return;
     let response, remote, etag;
     try {
-      response=await fetch(firebaseUrl+'/trackerData.json',{headers:{'X-Firebase-ETag':'true'},cache:'no-store'});
+      response=await fetch(await authenticatedDatabaseUrl(),{headers:{'X-Firebase-ETag':'true'},cache:'no-store'});
       if(!response.ok)throw Error('Could not read Firebase');
       etag=response.headers.get('ETag');if(!etag)throw Error('Missing server version; refusing unsafe replacement');
       const raw=await response.json();remote=normalizeCloud(raw);
@@ -1661,7 +1826,7 @@ window.onerror = function(msg, url, line) {
     cloudBusy=true;
     try {
       const payload={...remote,expenses:normalizeAccountReferences(nextRows,remote.accountRenames),bulkEpoch:'bulk-'+Date.now()+'-'+Math.random().toString(36).slice(2),updatedAt:Date.now()};
-      const result=await fetch(firebaseUrl+'/trackerData.json',{method:'PUT',headers:{'Content-Type':'application/json','if-match':etag},body:JSON.stringify(payload)});
+      const result=await fetch(await authenticatedDatabaseUrl(),{method:'PUT',headers:{'Content-Type':'application/json','if-match':etag},body:JSON.stringify(payload)});
       if(result.status===412)throw Error('Firebase changed on another device. Cancelled safely; refresh and try again.');
       if(!result.ok)throw Error('Firebase rejected update (HTTP '+result.status+')');
       acceptCloud(normalizeCloud(payload));setOnlineStatus(true);
@@ -1771,7 +1936,7 @@ window.onerror = function(msg, url, line) {
     reader.readAsText(file);
   }
 
-  initAuth(); setTodayDate(); updateMasterSubFilter(); renderAllNoPush(); pullFromCloud();
+  setTodayDate(); restoreLoginSetup();
 </script>
 </body>
 </html>
