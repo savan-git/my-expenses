@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0f172a">
-<title>Personal & Official Finance Suite</title>
+<title>Personal & Official Finance Suite — V8.1</title>
 <style>
   :root {
     --primary: #2563eb; --success: #16a34a; --danger: #dc2626; --warning: #d97706;
@@ -420,7 +420,7 @@
           <div class="form-group"><label>Month</label><input type="text" id="month" readonly style="background:#f8fafc;"></div>
           <div class="form-group"><label>Type *</label><select id="type" required><option value="Expense">Expense</option><option value="Income">Income</option><option value="Debt">Debt (Card)</option></select></div>
           <div class="form-group"><label>Account *</label><select id="account" required><option value="Kotak - Savan">Kotak - Savan</option><option value="BOB - Savan">BOB - Savan</option><option value="ICICI">ICICI</option><option value="Cash">Cash</option><option value="Kotak Rupay">Kotak Rupay</option><option value="Komal Kotak">Komal Kotak</option><option value="HDFC Pixel">HDFC Pixel</option><option value="BOB - Komal">BOB - Komal</option><option value="SBI - Komal">SBI - Komal</option></select></div>
-          <div class="form-group"><label>Category *</label><input type="text" id="category" list="catList" placeholder="Select or Type" required><datalist id="catList"><option value="Official"><option value="Groceries"><option value="Dining Out"><option value="Investment"><option value="Loan"><option value="Debt repay"><option value="Self transfer"><option value="Health"><option value="Shopping"><option value="Vacation"><option value="Personal Care"><option value="Recharge"><option value="Miscellaneous"><option value="Gyproc"><option value="Interest"><option value="Dividend"><option value="Cash Back"></datalist></div>
+          <div class="form-group"><label>Category *</label><input type="text" id="category" list="catList" placeholder="Select or Type" required><datalist id="catList"><option value="Official"><option value="Groceries"><option value="Dining Out"><option value="Investment"><option value="Loan"><option value="Debt repay"><option value="Self transfer"><option value="Health"><option value="Shopping"><option value="Vacation"><option value="Personal Care"><option value="Recharge"><option value="Miscellaneous"><option value="Gyproc"><option value="Interest"><option value="Dividend"><option value="Cash Back"><option value="Salary"><option value="Other Income"><option value="Family Functions"></datalist></div>
           <div class="form-group"><label>Sub-Category</label><input type="text" id="subCategory" placeholder="e.g. Petrol, RD"></div>
           <div class="form-group"><label>Amount (₹) *</label><input type="number" id="amount" step="0.01" inputmode="decimal" placeholder="0.00" required></div>
           <div class="form-group"><label>Remarks</label><input type="text" id="remarks" placeholder="Optional note"></div>
@@ -526,7 +526,7 @@
         <div class="an-kpis" id="dashKpis" aria-label="Click any financial metric to see its transactions"></div>
         <div class="an-midgrid">
           <section class="card an-topcats"><div class="an-paneltitle"><h3>📊 Top Spending Categories</h3><span id="anCategoryCount" class="an-count"></span></div><p class="an-caption">All spending categories. Select multiple rows to combine their transactions.</p><div class="an-listhead an-catgrid"><span>✓</span><span>Category</span><span>Distribution</span><span class="num">Amount / Share</span></div><div id="anTopCats" class="an-scroll-list"></div></section>
-          <section class="card an-inflows"><div class="an-paneltitle"><h3>💰 Cash Recoveries &amp; Other Inflows</h3><span id="anInflowCount" class="an-count"></span></div><p class="an-caption">Non-salary receipts. Select multiple groups to drill down.</p><div class="an-listhead an-inflowgrid"><span>✓</span><span>Inflow group</span><span class="num">Amount</span></div><div id="anInflowsList" class="an-scroll-list"></div><p class="an-note">Official reimbursements above tour expenses contribute the surplus to Savings, but are not additional cash receipts.</p></section>
+          <section class="card an-inflows"><div class="an-paneltitle"><h3>💰 Cash Recoveries &amp; Other Inflows</h3><span id="anInflowCount" class="an-count"></span></div><p class="an-caption">Reimbursements, dividends, interest and other receipts. Official incentives stay in Salary &amp; Incentive Income.</p><div class="an-listhead an-inflowgrid"><span>✓</span><span>Inflow group</span><span class="num">Amount</span></div><div id="anInflowsList" class="an-scroll-list"></div><p class="an-note">Official reimbursements above tour expenses contribute the surplus to Savings, but are not additional cash receipts.</p></section>
         </div>
         <section class="card an-drill" id="drillBox"><div class="an-drillhead"><div><h3>🧾 Transaction Drill-Down</h3><p class="an-caption" id="drillTitle">Select a KPI, category or inflow group to inspect the matching transactions.</p></div><button type="button" class="btn-sm btn-secondary" onclick="clearDrill();renderAnalysis()">✕ Clear Selection</button></div>
           <div id="anSelectedTotals" class="an-totals"></div>
@@ -541,7 +541,7 @@
   <div id="tab-official" class="tab-content">
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <h3 style="margin:0;">Official Expenses & Claims</h3>
+        <h3 style="margin:0;">Official Expenses & Claims · V8.1</h3>
         <button type="button" class="btn-sm btn-secondary" onclick="resetOfficialFilters()">Reset All</button>
       </div>
       <div class="form-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:12px;">
@@ -549,9 +549,19 @@
         <div class="ms-wrap"><label>Accounts</label><button type="button" id="btn_off_acc" class="ms-btn" onclick="toggleMsMenu('menu_off_acc', event)"><span>All Accounts</span><span>▾</span></button><div id="menu_off_acc" class="ms-menu" onclick="event.stopPropagation()"></div></div>
         <div class="ms-wrap"><label>Claim Status</label><select id="off_status" style="padding:7px; font-size:0.84rem;" onchange="clearOffDrill(); renderOfficial();"><option value="All">All Tours</option><option value="Pending">Pending Claim</option><option value="Settled">Settled / Surplus</option></select></div>
       </div>
-      <div class="kpi-grid" id="officialSummary"></div>
+      <div class="card" style="padding:12px;background:#f8fafc;border:1px solid #bfdbfe;">
+        <h4 style="color:#1e40af;margin:0 0 6px;">Historical Tour Costs (not recorded in CSV)</h4>
+        <p style="font-size:12px;color:#475569;margin:0 0 9px;">Record known costs from before your CSV period here. These are <strong>matching adjustments only</strong>; they do not create expense transactions or change bank/card balances. Stored privately in Firebase and visible on both devices. Never enter a cost already included in transaction data.</p>
+        <form id="historicalTourForm" class="form-grid" style="align-items:end;grid-template-columns:minmax(140px,2fr) minmax(110px,1fr) auto;">
+          <div class="form-group"><label>Exact Tour / Sub-Category</label><input id="historicalTourName" type="text" maxlength="120" required placeholder="e.g. Mum-Mar-Tour"></div>
+          <div class="form-group"><label>Historical Expense (₹)</label><input id="historicalTourAmount" type="number" min="0.01" step="0.01" required placeholder="0.00"></div>
+          <button type="submit" class="btn btn-primary" style="min-width:96px;flex:0;padding:10px">Save</button>
+        </form>
+        <div id="historicalTourList" style="font-size:12px;margin-top:10px;"></div>
+      </div>
+      <div class="kpi-grid" id="officialSummary"></div><p class="an-caption" id="officialMatchNote" style="margin:0 0 12px">Tour names must match their expense sub-categories. Income tagged Incentive is excluded from claims.</p>
       <div class="grid-2">
-        <div><h4 style="color:var(--primary);">Tour-Wise Claim Tracker (Tap to inspect)</h4><div class="table-wrap"><table><thead><tr><th>Tour / Sub-Cat</th><th class="num">Spent</th><th class="num">Recd</th><th class="num">Pending</th></tr></thead><tbody id="officialTourTable"></tbody></table></div></div>
+        <div><h4 style="color:var(--primary);">Tour-Wise Claim Tracker (Tap to inspect)</h4><div class="table-wrap"><table><thead><tr><th>Tour / Sub-Cat</th><th class="num">Spent</th><th class="num">Recd</th><th class="num">Pending</th><th class="num">Surplus</th></tr></thead><tbody id="officialTourTable"></tbody></table></div></div>
         <div><h4 style="color:var(--success);">Reimbursements Received</h4><div class="table-wrap"><table><thead><tr><th>Date</th><th>Month</th><th>Sub-Cat</th><th>Account</th><th class="num">Amount</th></tr></thead><tbody id="officialIncBody"></tbody></table></div></div>
       </div>
       <div id="offDrillBox" style="display:none; margin-top:16px; border-top:2px solid var(--border); padding-top:12px;">
@@ -578,7 +588,7 @@
       </div>
       <div class="danger-zone">
         <h3 style="color:#991b1b;">🛡️ Bulk CSV Maintenance</h3>
-        <p style="font-size:.82rem;line-height:1.5;margin:6px 0;">For Excel changes, use <b>Export ALL CSV</b>, edit your file, then <b>Replace All From CSV</b>. The replacement checks every row, downloads a fresh backup, verifies your login PIN and performs one conditional cloud update. Budget and accounts stay intact.</p>
+        <p style="font-size:.82rem;line-height:1.5;margin:6px 0;">For Excel changes, use <b>Export ALL CSV</b>, edit your file, then <b>Replace All From CSV</b>. The replacement checks every row, downloads a fresh backup, verifies your Firebase password and performs one conditional cloud update. Budget and accounts stay intact.</p>
         <div class="btn-group">
           <button type="button" class="btn btn-secondary" onclick="downloadFullCSV()">⬇ Export ALL CSV</button>
           <button type="button" class="btn btn-warning" onclick="document.getElementById('replaceCsvInput').click()">♻ Replace All From CSV</button>
@@ -655,6 +665,8 @@
   if (!accountRenames || typeof accountRenames !== 'object' || Array.isArray(accountRenames)) accountRenames = {};
   let creditStatements = JSON.parse(localStorage.getItem('offline_credit_statements_v1') || '[]');
   if (!Array.isArray(creditStatements)) creditStatements=[];
+  let historicalTourCosts = {};
+  try {historicalTourCosts=JSON.parse(localStorage.getItem('offline_historical_tour_costs_v1')||'{}')||{};}catch(_){historicalTourCosts={};}
   let customAccounts = JSON.parse(localStorage.getItem('offline_custom_accounts_v1') || '[]');
   if (!Array.isArray(customAccounts)) customAccounts = [];
   let projections = JSON.parse(localStorage.getItem('offline_projections')) || [];
@@ -839,18 +851,32 @@
     refreshAllAndSync();
   });
 
-  const copyState = () => ({expenses: structuredClone(expenses),projections: structuredClone(projections),customAccounts: structuredClone(customAccounts),accountRenames: structuredClone(accountRenames),creditStatements: structuredClone(creditStatements),bulkEpoch: cloudBulkEpoch});
+  function sanitizeHistoricalTourCosts(value) {
+    const out={};
+    if(!value||typeof value!=='object'||Array.isArray(value))return out;
+    for(const [rawKey,v] of Object.entries(value)) {
+      const name=String(v?.name||rawKey||'').trim().slice(0,120);
+      const key=name.toLowerCase().replace(/\s+/g,' ');
+      const amount=Number(v?.amount);
+      if(key && Number.isFinite(amount) && amount>0 && amount<=1000000000)
+        out[key]={name,amount:Math.round(amount*100)/100};
+    }
+    return out;
+  }
+  historicalTourCosts=sanitizeHistoricalTourCosts(historicalTourCosts);
+  const copyState = () => ({expenses: structuredClone(expenses),projections: structuredClone(projections),customAccounts: structuredClone(customAccounts),accountRenames: structuredClone(accountRenames),creditStatements: structuredClone(creditStatements),historicalTourCosts:structuredClone(historicalTourCosts),bulkEpoch: cloudBulkEpoch});
   function saveLocal() {
     localStorage.setItem('offline_expenses_v2', JSON.stringify(expenses));
     localStorage.setItem('offline_projections', JSON.stringify(projections));
     localStorage.setItem('offline_custom_accounts_v1', JSON.stringify(customAccounts));
     localStorage.setItem('offline_account_renames_v1', JSON.stringify(accountRenames));
     localStorage.setItem('offline_credit_statements_v1', JSON.stringify(creditStatements));
+    localStorage.setItem('offline_historical_tour_costs_v1',JSON.stringify(historicalTourCosts));
   }
   function normalizeCloud(raw) {
     const d = raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
     return {...d, expenses:Array.isArray(d.expenses)?d.expenses:[],
-      projections:Array.isArray(d.projections)?d.projections:[], customAccounts:sanitizeCustomAccounts(d.customAccounts),creditStatements:Array.isArray(d.creditStatements)?d.creditStatements.filter(b=>b&&typeof b==='object'&&typeof b.id==='string'):[],accountRenames:(d.accountRenames && typeof d.accountRenames==='object' && !Array.isArray(d.accountRenames))?d.accountRenames:{}};
+      projections:Array.isArray(d.projections)?d.projections:[], customAccounts:sanitizeCustomAccounts(d.customAccounts),creditStatements:Array.isArray(d.creditStatements)?d.creditStatements.filter(b=>b&&typeof b==='object'&&typeof b.id==='string'):[],accountRenames:(d.accountRenames && typeof d.accountRenames==='object' && !Array.isArray(d.accountRenames))?d.accountRenames:{},historicalTourCosts:sanitizeHistoricalTourCosts(d.historicalTourCosts)};
   }
   // Array multiset delta preserves remote additions while supporting local edits/deletes.
   function mergeExpenseLists(baseline, local, remote) {
@@ -895,6 +921,16 @@
     }
     for(const [id,b] of localBills) if(!baseBills.has(id)) mergedBills.set(id,b);
     merged.creditStatements=[...mergedBills.values()].map(b=>({...b,card:resolvedAccount(b.card,merged.accountRenames)}));
+    // Three-way merge for historical costs: preserve remote entries and unrelated changes.
+    const baseCosts=sanitizeHistoricalTourCosts(base.historicalTourCosts);
+    const localCosts=sanitizeHistoricalTourCosts(local.historicalTourCosts);
+    const mergedCosts={...sanitizeHistoricalTourCosts(remote.historicalTourCosts)};
+    for(const key of new Set([...Object.keys(baseCosts),...Object.keys(localCosts)])){
+      if(JSON.stringify(localCosts[key])===JSON.stringify(baseCosts[key]))continue;
+      if(!Object.hasOwn(localCosts,key))delete mergedCosts[key];
+      else mergedCosts[key]=localCosts[key];
+    }
+    merged.historicalTourCosts=mergedCosts;
     merged.expenses=normalizeAccountReferences(merged.expenses,merged.accountRenames);
     merged.updatedAt = Date.now();
     return merged;
@@ -908,6 +944,7 @@
       Object.assign(ccConfig,d.ccConfig);
     }
     cloudBulkEpoch=d.bulkEpoch||'';
+    historicalTourCosts=sanitizeHistoricalTourCosts(d.historicalTourCosts);
     expenses=normalizeAccountReferences(d.expenses,d.accountRenames);projections=d.projections;accountRenames=d.accountRenames;creditStatements=d.creditStatements.map(b=>({...b,card:resolvedAccount(b.card,d.accountRenames)}));customAccounts=sanitizeCustomAccounts(d.customAccounts.map(a=>({...a,name:resolvedAccount(a.name,d.accountRenames)})));
     lastCloudSnapshot = copyState();
     localStorage.setItem(SNAP_KEY,JSON.stringify(lastCloudSnapshot));
@@ -962,6 +999,14 @@
             for(const [id,b] of beforeBills){if(!afterBills.has(id)) pendingBills.delete(id);}
             for(const [id,b] of afterBills){if(JSON.stringify(b)!==JSON.stringify(beforeBills.get(id)))pendingBills.set(id,b);}
             creditStatements=[...pendingBills.values()];
+            // Preserve local historical-cost updates made during an in-flight write.
+            const oldCosts=sanitizeHistoricalTourCosts(localBeforeWrite.historicalTourCosts);
+            const laterCosts=sanitizeHistoricalTourCosts(laterLocal.historicalTourCosts);
+            for(const key of new Set([...Object.keys(oldCosts),...Object.keys(laterCosts)])){
+              if(JSON.stringify(oldCosts[key])===JSON.stringify(laterCosts[key]))continue;
+              if(!Object.hasOwn(laterCosts,key))delete historicalTourCosts[key];
+              else historicalTourCosts[key]=laterCosts[key];
+            }
             expenses=normalizeAccountReferences(expenses);
             localDirty=true;localStorage.setItem(DIRTY_KEY,'1');saveLocal();renderAllNoPush();
             continue;
@@ -1375,7 +1420,7 @@
     menu.innerHTML = searchBox + optsHtml;
   }
 
-  // V6: analysis selection is entirely local UI state; no Firebase writes.
+  // V8: analysis selection is entirely local UI state; no Firebase writes.
   const selectedKpiTiles = new Set();
   const selectedInflowGroups = new Set();
   function clearDrill() {
@@ -1426,34 +1471,52 @@
   const anPeriod=e=>/^\d{4}-\d{2}/.test(e.date||'')?e.date.slice(0,7):'';
   const anIsTransfer=e=>isSelfTransfer(e.category)||anLower(e.category)==='debt repay';
   const anIsOut=e=>e.type==='Expense'||e.type==='Debt';
+  // V8 classification: salary category (e.g. Salary → Gyproc) or labelled incentives
+  // (e.g. Official → Incentive). Official incentives are NOT claim reimbursements.
   const anIsSalary=e=>e.type==='Income'&&!anIsTransfer(e)&&(
-    /(?:^|\b)(salary|salaries|incentive|bonus)(?:\b|$)/i.test((e.category||'')+' '+(e.subCategory||''))||anLower(e.category)==='gyproc'
+    /^(salary|salaries|incentive|incentives|bonus|bonuses)$/i.test(String(e.category||'').trim()) ||
+    /(?:^|\b)(salary|salaries|incentive|incentives|bonus|bonuses)(?:\b|$)/i.test(String(e.subCategory||''))
   );
+  const anIsOfficialClaim=e=>anLower(e.category)==='official'&&e.type==='Income'&&!anIsSalary(e);
+  const anIsOfficialOut=e=>anLower(e.category)==='official'&&anIsOut(e);
   const anIsSavings=e=>anIsOut(e)&&!anIsTransfer(e)&&(
     anLower(e.category)==='investment'||/saving/i.test((e.category||'')+' '+(e.subCategory||''))
   );
-  const anIsHousehold=e=>anIsOut(e)&&!anIsTransfer(e)&&!anIsSavings(e)&&!['official','investment','loan'].includes(anLower(e.category));
+  // Include loan EMIs as household cash outflows; principal/equity can be separated later.
+  const anIsHousehold=e=>anIsOut(e)&&!anIsTransfer(e)&&!anIsSavings(e)&&!['official','investment'].includes(anLower(e.category));
+  const anTourKey=e=>anLower(e.subCategory).replace(/\s+/g,' ') || 'general official';
   function anOfficialSurplusByTour(rows){
+    // Use the entire history to match claims to expenses across months/accounts.
+    // Never count an unmatched historic reimbursement as savings.
     const groups=new Map();
-    rows.filter(e=>anLower(e.category)==='official'&&!anIsTransfer(e)&&!anIsSalary(e)).forEach(e=>{
-      const key=anLower(e.subCategory)||'general official';
+    rows.filter(e=>anIsOfficialOut(e)||anIsOfficialClaim(e)).forEach(e=>{
+      const key=anTourKey(e);
       if(!groups.has(key))groups.set(key,{spent:0,recd:0,income:[]});
       const g=groups.get(key),v=anAmount(e);
-      if(e.type==='Income'){g.recd+=v;g.income.push(e);}
-      else if(anIsOut(e))g.spent+=v;
+      if(anIsOfficialClaim(e)){g.recd+=v;g.income.push(e);}
+      else if(anIsOfficialOut(e))g.spent+=v;
     });
-    const contributions=new Map();
+    // Historical costs are private matching metadata, not transactions.
+    for(const [key,cost] of Object.entries(historicalTourCosts)){
+      if(!groups.has(key))groups.set(key,{spent:0,recd:0,income:[]});
+      groups.get(key).spent+=cost.amount;
+    }
+    const contributions=new Map(),unmatched=new Map();
     let total=0;
-    for(const group of groups.values()){
+    for(const [name,group] of groups){
+      if(group.spent<=0){
+        if(group.recd>0)unmatched.set(name,group.recd);
+        continue;
+      }
       let surplus=Math.max(0,group.recd-group.spent);total+=surplus;
-      // Attribute no more than the real surplus to the newest receipts, once each.
-      for(const e of [...group.income].reverse()){
+      // Attribute surplus to the newest matching receipts only, without duplicating it.
+      for(const e of [...group.income].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||(b.realIdx-a.realIdx))){
         if(surplus<=0)break;
         const piece=Math.min(surplus,anAmount(e));
         contributions.set(e.realIdx,piece);surplus-=piece;
       }
     }
-    return {total,contributions};
+    return {total,contributions,unmatched};
   }
   function anClassifyOther(e){
     const c=anLower(e.category),combined=c+' '+anLower(e.subCategory);
@@ -1483,9 +1546,14 @@
     const spend=out.reduce((n,e)=>n+anAmount(e),0);
     const household=out.filter(anIsHousehold).reduce((n,e)=>n+anAmount(e),0);
     const investmentSavings=out.filter(anIsSavings).reduce((n,e)=>n+anAmount(e),0);
-    const surplus=anOfficialSurplusByTour(rows);
-    return {meaningful,out,income,other,salary,spend,household,investmentSavings,surplus:surplus.total,
-      surplusByEntry:surplus.contributions,savings:investmentSavings+surplus.total,
+    // Compute full-history claim matches; selected-period savings only includes surplus
+    // attributable to matching claim receipts in the currently selected filters.
+    const fullHistory=expenses.map((e,i)=>({...e,realIdx:i}));
+    const lifetimeSurplus=anOfficialSurplusByTour(fullHistory);
+    const currentSurplus=rows.reduce((n,e)=>n+(lifetimeSurplus.contributions.get(e.realIdx)||0),0);
+    return {meaningful,out,income,other,salary,spend,household,investmentSavings,surplus:currentSurplus,
+      surplusByEntry:lifetimeSurplus.contributions,savings:investmentSavings+currentSurplus,
+      unmatchedClaims:lifetimeSurplus.unmatched,
       otherTotal:other.reduce((n,e)=>n+anAmount(e),0)};
   }
   function anKpi(title,value,note,cls,key,icon){
@@ -1516,7 +1584,7 @@
     document.getElementById('dashKpis').innerHTML=
       anKpi('Salary & Incentive Income',s.salary,'Salary and incentives only','an-kpi-blue','salary','💼')+
       anKpi('Total Spend',s.spend,'Expenses + investment + official outflows','an-kpi-red','spend','🛒')+
-      anKpi('Actual Household Spending',s.household,'Excludes investment, official and loan','an-kpi-amber','household','🏠')+
+      anKpi('Actual Household Spending',s.household,'Includes loan payments; excludes investments and official','an-kpi-amber','household','🏠')+
       anKpi('Savings',s.savings,'Investments + Savings labels + tour surplus','an-kpi-green','savings','🐷')+
       anKpi('Other Inflows',s.otherTotal,'Reimbursements, dividends, recoveries etc.','an-kpi-cyan','other','↗')+
       anKpi('Total Debt',debt,'Live unpaid credit-card debt · all dates','an-kpi-purple','debt','💳');
@@ -1577,13 +1645,37 @@
       .concat([...selectedInflowGroups].map(k=>anToggleHtml('inflow',k,k)));
     document.getElementById('anCatPills').innerHTML=chips.length?chips.join(''):'<span class="an-caption" style="margin:0">No active drill-down selections.</span>';
     document.getElementById('anSelectedTotals').innerHTML='<div><small>Selected Transactions</small><strong>'+included+'</strong></div><div><small>Total Spend</small><strong>'+anMoney(spendSum)+'</strong></div><div><small>Household</small><strong>'+anMoney(householdSum)+'</strong></div><div><small>Savings Contribution</small><strong class="text-green">'+anMoney(savingsSum)+'</strong></div><div><small>Other Inflows</small><strong>'+anMoney(otherSum)+'</strong></div><div><small>All Income</small><strong>'+anMoney(incomeSum)+'</strong></div>';
-    document.getElementById('anDrillNote').textContent=(selectedKpiTiles.has('debt')?'Total Debt KPI is a live balance (including opening card debt); drill-down shows the card transactions and repayments within current filters. ':'')+(repaySum?'Card repayments displayed: '+anMoney(repaySum)+'. ':'')+'Amounts are grouped by type; overlapping selections do not duplicate transactions. Savings contributions are not necessarily money currently held in the bank.';
+    document.getElementById('anDrillNote').textContent=(selectedKpiTiles.has('debt')?'Total Debt KPI is a live balance (including opening card debt); drill-down shows the card transactions and repayments within current filters. ':'')+(repaySum?'Card repayments displayed: '+anMoney(repaySum)+'. ':'')+'Amounts are grouped by type; overlapping selections do not duplicate transactions. Tour savings use matched expenses across all dates/accounts; unmatched reimbursement receipts are not treated as savings. Savings contributions are not necessarily money currently held in the bank.';
   }
   function clearOffDrill() {
     selectedOffTour = null; excludedOffIdx.clear();
     const box = document.getElementById('offDrillBox');
     if (box) box.style.display = 'none';
   }
+  function renderHistoricalTourCosts(){
+    const target=document.getElementById('historicalTourList');if(!target)return;
+    const costs=Object.entries(historicalTourCosts).sort((a,b)=>a[0].localeCompare(b[0]));
+    target.innerHTML=costs.length?'<div style="display:flex;gap:8px;flex-wrap:wrap;">'+costs.map(([key,v])=>
+      '<span style="display:inline-flex;align-items:center;gap:8px;padding:7px 10px;background:#e0f2fe;border-radius:8px;">'+anEsc(v.name)+' · '+anMoney(v.amount)+
+      '<button type="button" data-key="'+anEsc(key)+'" onclick="removeHistoricalTourCost(this.dataset.key)" title="Remove historical cost" style="width:auto;padding:2px 5px;border:0;background:#fca5a5;border-radius:4px;cursor:pointer;">✕</button></span>'
+    ).join('')+'</div>':'No historical tour costs saved yet.';
+  }
+  function removeHistoricalTourCost(key){
+    if(!cloudReady||localDirty||!navigator.onLine){alert('Please wait until cloud synchronization is complete.');return;}
+    if(!historicalTourCosts[key]||!confirm('Remove historical cost for '+historicalTourCosts[key].name+'? This does not delete transactions.'))return;
+    delete historicalTourCosts[key];refreshAllAndSync();
+  }
+  document.getElementById('historicalTourForm').addEventListener('submit',ev=>{
+    ev.preventDefault();
+    if(!cloudReady||localDirty||!navigator.onLine){alert('Wait for the tracker to synchronize before saving a historical cost.');return;}
+    const name=document.getElementById('historicalTourName').value.trim();
+    const amount=Number(document.getElementById('historicalTourAmount').value);
+    const key=anLower(name).replace(/\s+/g,' ');
+    if(!key||name.length>120||!Number.isFinite(amount)||amount<=0||amount>1e9){alert('Enter a tour name and valid positive cost.');return;}
+    if(!confirm('Save historical expense of '+anMoney(amount)+' for '+name+'? Only use costs NOT already in the CSV.'))return;
+    historicalTourCosts[key]={name,amount:Math.round(amount*100)/100};
+    ev.target.reset();refreshAllAndSync();
+  });
   function resetOfficialFilters() {
     msState.off_month.clear(); msState.off_acc.clear();
     document.getElementById('off_status').value = 'All';
@@ -1595,46 +1687,69 @@
     renderOfficial();
   }
   function renderOfficial() {
-    const allOff = expenses.map((e, i) => Object.assign({ realIdx: i }, e)).filter(e => (e.category || '').trim().toLowerCase() === 'official');
-    const orderedMonths = monthNames.filter(m => allOff.some(e => e.month === m));
-    const accounts = allAccountNames().sort();
-    renderMsDropdown('off_month', 'menu_off_month', 'btn_off_month', 'All Months', orderedMonths, 'official');
-    renderMsDropdown('off_acc', 'menu_off_acc', 'btn_off_acc', 'All Accounts', accounts, 'official');
-    const filtered = allOff.filter(e => (!msState.off_month.size || msState.off_month.has(e.month)) && (!msState.off_acc.size || msState.off_acc.has(e.account)));
-    const tourMap = {}; let grandSpent = 0, grandRecd = 0; const incRows = [];
-    filtered.forEach(e => {
-      const amt = parseFloat(e.amount) || 0;
-      const tour = (e.subCategory || 'General Official').trim();
-      tourMap[tour] = tourMap[tour] || { spent: 0, recd: 0 };
-      if (e.type === 'Income') { tourMap[tour].recd += amt; grandRecd += amt; incRows.push(e); }
-      else { tourMap[tour].spent += amt; grandSpent += amt; }
+    renderHistoricalTourCosts();
+    // Classify Official → Incentive as earnings, not reimbursement.
+    const allOff = expenses.map((e,i)=>({...e,realIdx:i})).filter(e=>anIsOfficialOut(e)||anIsOfficialClaim(e));
+    const periods=[...new Set(allOff.map(anPeriod).filter(Boolean))].sort().reverse();
+    const accounts=allAccountNames().sort();
+    renderMsDropdown('off_month','menu_off_month','btn_off_month','All Months',periods,'official');
+    renderMsDropdown('off_acc','menu_off_acc','btn_off_acc','All Accounts',accounts,'official');
+    const filtered=allOff.filter(e=>(!msState.off_month.size||msState.off_month.has(anPeriod(e)))&&(!msState.off_acc.size||msState.off_acc.has(e.account)));
+    const tourMap=new Map();let grandSpent=0,grandRecd=0;const incRows=[];
+    filtered.forEach(e=>{
+      const amt=anAmount(e),tour=String(e.subCategory||'General Official').trim()||'General Official';
+      const key=anTourKey(e);
+      if(!tourMap.has(key))tourMap.set(key,{name:tour,spent:0,recd:0});
+      const g=tourMap.get(key);
+      if(anIsOfficialClaim(e)){g.recd+=amt;grandRecd+=amt;incRows.push(e);}
+      else if(anIsOfficialOut(e)){g.spent+=amt;grandSpent+=amt;}
     });
-    const pendingTotal = grandSpent - grandRecd;
+    // Historical baseline applies only to the all-month / all-account claim view.
+    // It is intentionally NOT included in current-period spend KPIs, balances or CSV export.
+    const historicalIncluded=!msState.off_month.size&&!msState.off_acc.size;
+    if(historicalIncluded){
+      Object.entries(historicalTourCosts).forEach(([key,cost])=>{
+        if(!tourMap.has(key))tourMap.set(key,{name:cost.name,spent:0,recd:0,historical:0});
+        const g=tourMap.get(key);g.spent+=cost.amount;g.historical=(g.historical||0)+cost.amount;
+      });
+    }
+    const pendingTotal=[...tourMap.values()].reduce((n,g)=>n+Math.max(0,g.spent-g.recd),0);
+    const surplusTotal=[...tourMap.values()].reduce((n,g)=>n+(g.spent>0?Math.max(0,g.recd-g.spent):0),0);
+    const unmatched=[...tourMap.values()].filter(g=>g.spent<=0&&g.recd>0);
+    const unmatchedTotal=unmatched.reduce((n,g)=>n+g.recd,0);
     document.getElementById('officialSummary').innerHTML =
-      tag('div','class="kpi-box"', tag('small','','Total Official Spend') + tag('div','class="val text-red"','₹' + grandSpent.toLocaleString('en-IN',{maximumFractionDigits:0}))) +
-      tag('div','class="kpi-box"', tag('small','','Reimbursed') + tag('div','class="val text-green"','₹' + grandRecd.toLocaleString('en-IN',{maximumFractionDigits:0}))) +
-      tag('div','class="kpi-box"', tag('small','','Pending Claim') + tag('div','class="val ' + (pendingTotal>0?'text-red':'text-green') + '"','₹' + pendingTotal.toLocaleString('en-IN',{maximumFractionDigits:0})));
-    const statusFilter = document.getElementById('off_status')?.value || 'All';
-    const tourEntries = Object.entries(tourMap).filter(([_, v]) => {
-      const pend = v.spent - v.recd;
-      if (statusFilter === 'Pending') return pend > 1;
-      if (statusFilter === 'Settled') return pend <= 1;
+      tag('div','class="kpi-box"',tag('small','','Total Official Spend')+tag('div','class="val text-red"',anMoney(grandSpent)))+
+      tag('div','class="kpi-box"',tag('small','','Reimbursed (excl. incentives)')+tag('div','class="val text-green"',anMoney(grandRecd)))+
+      tag('div','class="kpi-box"',tag('small','','Pending Claim')+tag('div','class="val text-red"',anMoney(pendingTotal)))+
+      tag('div','class="kpi-box"',tag('small','','Matched Surplus')+tag('div','class="val text-green"',anMoney(surplusTotal)))+
+      tag('div','class="kpi-box"',tag('small','','No matching expense in filter')+tag('div','class="val"',anMoney(unmatchedTotal)));
+    document.getElementById('officialMatchNote').textContent=unmatched.length?
+      'V8.1: '+unmatched.length+' reimbursement group(s) have no matching tour expense in the selected filters ('+unmatched.map(g=>g.name).slice(0,6).join(', ')+(unmatched.length>6?'…':'')+'). They remain visible, but are not treated as savings without matched costs. Official incentives are excluded.':
+      'Official incentives are excluded from reimbursements. Historical matching costs only apply in the all-month/all-account view, and never affect cash/card balances. Narrow filters can hide otherwise matching costs.';
+    const statusFilter=document.getElementById('off_status')?.value||'All';
+    const tourEntries=[...tourMap.entries()].filter(([_,g])=>{
+      const pend=Math.max(0,g.spent-g.recd);
+      if(statusFilter==='Pending')return pend>0.01;
+      if(statusFilter==='Settled')return pend<=0.01;
       return true;
-    }).sort((a, b) => (b.at(1).spent - b.at(1).recd) - (a.at(1).spent - a.at(1).recd));
-    document.getElementById('officialTourTable').innerHTML = tourEntries.map(([tour, v]) => {
-      const pend = v.spent - v.recd; const isSel = selectedOffTour === tour; const safeAttr = tour.replace(/"/g, '&quot;');
-      return tag('tr', 'class="drill-row ' + (isSel ? 'selected' : '') + '" data-t="' + safeAttr + '" onclick="selectOffTour(this.dataset.t)"',
-        tag('td','',tour) + tag('td','class="num"','₹' + v.spent.toLocaleString('en-IN',{maximumFractionDigits:0})) +
-        tag('td','class="num text-green"','₹' + v.recd.toLocaleString('en-IN',{maximumFractionDigits:0})) +
-        tag('td','class="num ' + (pend>1?'text-red':'text-green') + '"','₹' + pend.toLocaleString('en-IN',{maximumFractionDigits:0}))
+    }).sort((a,b)=>Math.max(0,b[1].spent-b[1].recd)-Math.max(0,a[1].spent-a[1].recd));
+    document.getElementById('officialTourTable').innerHTML=tourEntries.map(([key,g])=>{
+      const pending=Math.max(0,g.spent-g.recd), surplus=g.spent>0?Math.max(0,g.recd-g.spent):0;
+      const selected=anLower(selectedOffTour)===key;
+      return tag('tr','class="drill-row '+(selected?'selected':'')+'" data-t="'+safeHtml(g.name)+'" onclick="selectOffTour(this.dataset.t)"',
+        tag('td','',safeHtml(g.name)+(g.spent<=0&&g.recd>0?' <small title="No matching expense in filter">⚠ No cost</small>':''))+
+        tag('td','class="num"',anMoney(g.spent))+
+        tag('td','class="num text-green"',anMoney(g.recd))+
+        tag('td','class="num '+(pending>0?'text-red':'text-green')+'"',anMoney(pending))+
+        tag('td','class="num text-green"',anMoney(surplus))
       );
     }).join('');
-    document.getElementById('officialIncBody').innerHTML = incRows.sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(e =>
-      tag('tr', '', tag('td','',formatDDMMYYYY(e.date)) + tag('td','',e.month) + tag('td','',e.subCategory || '-') + tag('td','',e.account) + tag('td','class="num text-green"','₹' + parseFloat(e.amount||0).toLocaleString('en-IN',{minimumFractionDigits:2})))
-    ).join('') + tag('tr','class="grand-total"', tag('td','colspan="4"','Total Reimbursed') + tag('td','class="num text-green"','₹' + grandRecd.toLocaleString('en-IN',{minimumFractionDigits:2})));
+    document.getElementById('officialIncBody').innerHTML=incRows.sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(e=>
+      tag('tr','',tag('td','',formatDDMMYYYY(e.date))+tag('td','',e.month)+tag('td','',safeHtml(e.subCategory||'-'))+tag('td','',safeHtml(e.account))+tag('td','class="num text-green"','₹'+anAmount(e).toLocaleString('en-IN',{minimumFractionDigits:2})))
+    ).join('')+tag('tr','class="grand-total"',tag('td','colspan="4"','Total Reimbursed')+tag('td','class="num text-green"','₹'+grandRecd.toLocaleString('en-IN',{minimumFractionDigits:2})));
     const offBox = document.getElementById('offDrillBox');
     if (selectedOffTour) {
-      const items = filtered.filter(e => (e.subCategory || 'General Official').trim() === selectedOffTour).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+      const items = filtered.filter(e => anTourKey(e) === anLower(selectedOffTour).replace(/\s+/g,' ')).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
       let activeNet = 0, activeCount = 0;
       const rowsHtml = items.map(e => {
         const amt = parseFloat(e.amount) || 0; const isEx = excludedOffIdx.has(e.realIdx);
@@ -1752,38 +1867,54 @@
     setTimeout(()=>URL.revokeObjectURL(url),60000);
   }
   function downloadFullCSV() { triggerCSVDownload(expenses,'Expenses_ALL'); }
+  // V8.2: CSV replacement parser with explicit column-level errors and strict DD-MM-YYYY support.
+  // Validation happens completely before password confirmation or any Firebase write.
   function parseReplacementCSV(text) {
-    const rows=readCSVTable(text);
-    if(!rows.length)throw Error('CSV file is empty.');
-    const headers=rows.shift().map(v=>v.trim().replace(/^\uFEFF/,''));
-    const keys=['Date','Type','Category','Account','Amount'];
-    if(keys.some(k=>!headers.includes(k)))throw Error('Missing required columns: '+keys.filter(k=>!headers.includes(k)).join(', '));
-    const col=name=>headers.indexOf(name), val=(row,name)=>col(name)>=0?String(row[col(name)]??'').trim():'';
-    const result=[], errors=[];
-    rows.forEach((row,i)=>{
-      const date=normalizeDate(val(row,'Date'));
-      const type=val(row,'Type');
-      const category=val(row,'Category');
-      const account=resolvedAccount(val(row,'Account'));
-      const amountRaw=val(row,'Amount').replace(/,/g,'');
-      const amount=Number(amountRaw);
-      if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||Number.isNaN(Date.parse(date+'T00:00:00'))||new Date(date+'T00:00:00').toISOString().slice(0,10)!==date||!['Income','Expense','Debt'].includes(type)||!category||!account||!amountRaw||!Number.isFinite(amount)||amount<0) {
-        errors.push('Row '+(i+2)+': invalid date, type, category, account or amount');return;
+    const rows = readCSVTable(text);
+    if (!rows.length) throw Error('CSV file is empty.');
+    const headers = rows.shift().map(v => String(v).trim().replace(/^\uFEFF/, ''));
+    const keys = ['Date', 'Type', 'Category', 'Account', 'Amount'];
+    const missing = keys.filter(k => !headers.includes(k));
+    if (missing.length) throw Error('Missing required columns: ' + missing.join(', '));
+    const col = name => headers.indexOf(name);
+    const val = (row, name) => col(name) >= 0 ? String(row[col(name)] ?? '').trim() : '';
+    const validDate = iso => {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return false;
+      const [y, m, d] = iso.split('-').map(Number);
+      if (y < 1900 || y > 2100 || m < 1 || m > 12 || d < 1 || d > 31) return false;
+      const check = new Date(Date.UTC(y, m - 1, d));
+      return check.getUTCFullYear() === y && check.getUTCMonth() === m - 1 && check.getUTCDate() === d;
+    };
+    const result = [], errors = [];
+    rows.forEach((row, i) => {
+      const dateRaw = val(row, 'Date');
+      const date = normalizeDate(dateRaw);
+      const type = val(row, 'Type');
+      const category = val(row, 'Category');
+      const accountRaw = val(row, 'Account');
+      const account = resolvedAccount(accountRaw);
+      const amountRaw = val(row, 'Amount').replace(/,/g, '');
+      const amount = Number(amountRaw);
+      const issue = [];
+      if (!validDate(date)) issue.push('Date: ' + JSON.stringify(dateRaw));
+      if (!['Income', 'Expense', 'Debt'].includes(type)) issue.push('Type: ' + JSON.stringify(type));
+      if (!category) issue.push('Category empty');
+      if (!account) issue.push('Account empty');
+      if (!amountRaw || !Number.isFinite(amount) || amount < 0) issue.push('Amount: ' + JSON.stringify(val(row, 'Amount')));
+      if (issue.length) { errors.push('Row ' + (i + 2) + ': ' + issue.join('; ')); return; }
+      const month = monthNames[Number(date.slice(5, 7)) - 1];
+      if (!month) { errors.push('Row ' + (i + 2) + ': invalid calendar month'); return; }
+      let addedBy = val(row, 'Added By'), addedAt = val(row, 'Added At'), editedBy = val(row, 'Edited By');
+      const audit = val(row, 'Added By / When');
+      if (!addedBy && audit) {
+        const match = audit.match(/^(.*?)\s*·\s*(\d{2}-\d{2}-\d{4}\s+\d{2}:\d{2})(?:\s*\(Ed:\s*(.*)\))?$/s);
+        if (match) { addedBy = match[1].trim(); addedAt = match[2]; editedBy = editedBy || match[3] || ''; }
+        else if (audit === 'Imported') addedBy = 'CSV Import';
       }
-      const month=monthNames[Number(date.slice(5,7))-1];
-      if(!month){errors.push('Row '+(i+2)+': invalid month');return;}
-      let addedBy=val(row,'Added By'),addedAt=val(row,'Added At'),editedBy=val(row,'Edited By');
-      // Restore audit stamps from older ten-column exports when separate fields are absent.
-      const audit=val(row,'Added By / When');
-      if(!addedBy&&audit){
-        const match=audit.match(/^(.*?)\s*·\s*(\d{2}-\d{2}-\d{4}\s+\d{2}:\d{2})(?:\s*\(Ed:\s*(.*)\))?$/s);
-        if(match){addedBy=match[1].trim();addedAt=match[2];editedBy=editedBy||match[3]||'';}
-        else if(audit==='Imported')addedBy='CSV Import';
-      }
-      result.push({date,month,type,category,subCategory:val(row,'Sub-Category'),account,amount,
-        remarks:val(row,'Remarks'),addedBy:addedBy||'CSV Import',addedAt:addedAt||getNowTimestamp(),...(editedBy?{editedBy}:{})});
+      result.push({ date, month, type, category, subCategory: val(row, 'Sub-Category'), account, amount,
+        remarks: val(row, 'Remarks'), addedBy: addedBy || 'CSV Import', addedAt: addedAt || getNowTimestamp(), ...(editedBy ? {editedBy} : {}) });
     });
-    if(errors.length)throw Error(errors.slice(0,6).join('\n')+(errors.length>6?'\n... '+errors.length+' invalid rows total':''));
+    if (errors.length) throw Error(errors.slice(0, 6).join('\n') + (errors.length > 6 ? '\n... ' + errors.length + ' invalid rows total' : ''));
     return result;
   }
   async function verifyFirebasePassword(action){
@@ -1832,7 +1963,7 @@
     let incoming;
     try{incoming=parseReplacementCSV(await file.text());if(!incoming.length)throw Error('No valid transaction rows. For emptying data, use Delete All Entries.');}
     catch(err){alert('CSV validation failed. Nothing was changed.\n'+err.message);return;}
-    if(!confirm('Validated '+incoming.length+' CSV transactions. This will REPLACE ALL cloud transactions, not append. Continue to PIN and backup?'))return;
+    if(!confirm('Validated '+incoming.length+' CSV transactions. This will REPLACE ALL cloud transactions, not append. Continue to password verification and backup?'))return;
     await guardedReplaceAll(incoming,'Replace all from CSV');
   }
   async function deleteAllTransactions() {
