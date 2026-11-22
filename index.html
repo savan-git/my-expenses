@@ -319,14 +319,14 @@
     pendingOpeningMigration=null;
     if(localDirty){
       // Legacy unsynced local entries must never be silently overwritten or uploaded.
-      const recovery={expenses,projections,customAccounts,accountRenames,creditStatements,backedUpAt:new Date().toISOString()};
+      const recovery={expenses,projections,customAccounts,accountRenames,creditStatements,historicalTourCosts,backedUpAt:new Date().toISOString()};
       const blob=new Blob([JSON.stringify(recovery,null,2)],{type:'application/json'});
       const objUrl=URL.createObjectURL(blob);
       const download=document.createElement('a');
       download.href=objUrl;download.download='UNSYNCED_LOCAL_FINANCE_BACKUP_'+new Date().toISOString().slice(0,10)+'.json';
       download.style.display='none';document.body.appendChild(download);download.click();download.remove();
       setTimeout(()=>URL.revokeObjectURL(objUrl),30000);
-      const proceed=confirm('This device contains UNSYNCED local changes. A recovery JSON download was started.\n\nConfirm that your backup is saved before loading the current Firebase records. The unsynced changes will NOT be uploaded automatically.\n\nOK = I saved the backup and want to use the cloud version. Cancel = keep my existing local changes untouched.');
+      const proceed=confirm('This device contains UNSYNCED local changes. A recovery JSON download was started.\n\nConfirm that your backup is saved before loading the current Firebase records. The unsynced changes (including any historical tour costs) will NOT be uploaded automatically. Re-enter missing historical costs after signing in.\n\nOK = I saved the backup and want to use the cloud version. Cancel = keep my existing local changes untouched.');
       if(!proceed)throw new Error('Sign-in paused to preserve unsynced local records. Check your Downloads folder, then sign in again.');
       localDirty=false;localStorage.removeItem(DIRTY_KEY);
     }
@@ -519,6 +519,7 @@
           <div class="ms-wrap"><label>Transaction Types</label><button type="button" id="btn_an_type" class="ms-btn" onclick="toggleMsMenu('menu_an_type', event)"><span>All Types</span><span>▾</span></button><div id="menu_an_type" class="ms-menu" onclick="event.stopPropagation()"></div></div>
           <div class="ms-wrap"><label>Categories</label><button type="button" id="btn_an_cat" class="ms-btn" onclick="toggleMsMenu('menu_an_cat', event)"><span>All Categories</span><span>▾</span></button><div id="menu_an_cat" class="ms-menu" onclick="event.stopPropagation()"></div></div>
           <div class="ms-wrap"><label>Sub-Categories</label><button type="button" id="btn_an_sub" class="ms-btn" onclick="toggleMsMenu('menu_an_sub', event)"><span>All Sub-Cats</span><span>▾</span></button><div id="menu_an_sub" class="ms-menu" onclick="event.stopPropagation()"></div></div>
+          <div class="form-group"><label for="anRemarksSearch">Remarks search</label><input type="search" id="anRemarksSearch" placeholder="Search remarks across all entries…" oninput="renderAnalysis()" autocomplete="off" aria-label="Filter analysis by transaction remarks"></div>
           <button type="button" class="btn btn-secondary" style="width:100%;" onclick="resetDashFilters()">Clear All Filters</button>
         </div>
       </aside>
@@ -530,7 +531,7 @@
         </div>
         <section class="card an-drill" id="drillBox"><div class="an-drillhead"><div><h3>🧾 Transaction Drill-Down</h3><p class="an-caption" id="drillTitle">Select a KPI, category or inflow group to inspect the matching transactions.</p></div><button type="button" class="btn-sm btn-secondary" onclick="clearDrill();renderAnalysis()">✕ Clear Selection</button></div>
           <div id="anSelectedTotals" class="an-totals"></div>
-          <div class="an-drilltools"><input type="search" id="drillSearch" aria-label="Search selected transactions" placeholder="Search date, category, account, remarks…" oninput="renderAnalysis()"><button type="button" class="btn-sm btn-primary" onclick="toggleAllDrillChecks('dash',true)">✓ Include All</button></div>
+          <div class="an-drilltools"><input type="search" id="drillSearch" aria-label="Search all matching transactions" placeholder="Search transactions directly (no selection needed)…" oninput="renderAnalysis()"><button type="button" class="btn-sm btn-primary" onclick="toggleAllDrillChecks('dash',true)">✓ Include All</button></div>
           <div class="an-pills" id="anCatPills"></div>
           <div class="table-wrap"><table><thead><tr><th>Inc</th><th>Edit</th><th>Date</th><th>Month</th><th>Type</th><th>Source</th><th>Category</th><th>Sub-Category</th><th>Account</th><th class="num">Amount</th><th>Remarks</th><th>Added By / When</th></tr></thead><tbody id="drillBody"></tbody></table></div>
           <p id="anDrillNote" class="an-caption" style="margin:9px 2px 0"></p>
@@ -541,7 +542,7 @@
   <div id="tab-official" class="tab-content">
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <h3 style="margin:0;">Official Expenses & Claims · V8.1</h3>
+        <h3 style="margin:0;">Official Expenses & Claims · V8.4</h3>
         <button type="button" class="btn-sm btn-secondary" onclick="resetOfficialFilters()">Reset All</button>
       </div>
       <div class="form-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom:12px;">
@@ -561,13 +562,13 @@
       </div>
       <div class="kpi-grid" id="officialSummary"></div><p class="an-caption" id="officialMatchNote" style="margin:0 0 12px">Tour names must match their expense sub-categories. Income tagged Incentive is excluded from claims.</p>
       <div class="grid-2">
-        <div><h4 style="color:var(--primary);">Tour-Wise Claim Tracker (Tap to inspect)</h4><div class="table-wrap"><table><thead><tr><th>Tour / Sub-Cat</th><th class="num">Spent</th><th class="num">Recd</th><th class="num">Pending</th><th class="num">Surplus</th></tr></thead><tbody id="officialTourTable"></tbody></table></div></div>
-        <div><h4 style="color:var(--success);">Reimbursements Received</h4><div class="table-wrap"><table><thead><tr><th>Date</th><th>Month</th><th>Sub-Cat</th><th>Account</th><th class="num">Amount</th></tr></thead><tbody id="officialIncBody"></tbody></table></div></div>
+        <div><h4 style="color:var(--primary);">Tour-Wise Claim Tracker (Tap to inspect)</h4><div class="table-wrap"><table><thead><tr><th>Tour / Sub-Cat</th><th class="num">Spent</th><th class="num">Recd</th><th class="num">Pending</th><th class="num">Surplus</th></tr></thead><tbody id="officialTourTable"></tbody></table></div><div style="font-size:11px;color:var(--muted);margin-top:6px;">Totals follow the selected claim-status filter. * Historical tour costs are included for matching only, not in bank balances or the Official Spend KPI.</div></div>
+        <div><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px"><h4 style="color:var(--success);margin:0">Reimbursements Received (dated receipts)</h4><input type="search" id="officialReceiptSearch" placeholder="Search tour, date, account…" aria-label="Search reimbursement receipts" style="max-width:230px;font-size:13px;padding:7px" oninput="renderOfficial()"></div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Month</th><th>Sub-Cat</th><th>Account</th><th class="num">Amount</th></tr></thead><tbody id="officialIncBody"></tbody></table></div></div>
       </div>
       <div id="offDrillBox" style="display:none; margin-top:16px; border-top:2px solid var(--border); padding-top:12px;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
           <h4 id="offDrillTitle" style="margin:0; color:var(--primary);">Tour Breakdown</h4>
-          <div style="display:flex; gap:6px;"><button type="button" class="btn-sm btn-primary" style="flex:none; min-width:auto;" onclick="toggleAllDrillChecks('off', true)">Check All</button><button type="button" class="btn-sm btn-danger" onclick="clearOffDrill()">✕ Close</button></div>
+          <div style="display:flex; gap:6px;align-items:center;flex-wrap:wrap;"><input type="search" id="offDrillSearch" placeholder="Search expense, remarks, date, account…" aria-label="Search selected tour transactions" style="width:min(300px,65vw);font-size:13px;padding:7px" oninput="renderOfficial()"><button type="button" class="btn-sm btn-primary" style="flex:none; min-width:auto;" onclick="toggleAllDrillChecks('off', true)">Check All</button><button type="button" class="btn-sm btn-danger" onclick="clearOffDrill()">✕ Close</button></div>
         </div>
         <div class="table-wrap"><table><thead><tr><th style="width:32px;">Inc</th><th>Edit</th><th>Date</th><th>Type</th><th>Account</th><th>Remarks</th><th class="num">Amount</th></tr></thead><tbody id="offDrillBody"></tbody></table></div>
       </div>
@@ -851,12 +852,21 @@
     refreshAllAndSync();
   });
 
+  // Firebase RTDB keys cannot contain . # $ [ ] or /. Tour names are data,
+  // never raw object keys (e.g. "TA/DA - Mar 26" would make a PUT fail with HTTP 400).
+  function historicalTourStorageKey(name) {
+    const normalized=String(name||'').trim().toLowerCase().replace(/\s+/g,' ');
+    return encodeURIComponent(normalized).replace(/\./g,'%2E');
+  }
+  function historicalTourMatchKey(name) {
+    return String(name||'').trim().toLowerCase().replace(/\s+/g,' ');
+  }
   function sanitizeHistoricalTourCosts(value) {
     const out={};
     if(!value||typeof value!=='object'||Array.isArray(value))return out;
     for(const [rawKey,v] of Object.entries(value)) {
       const name=String(v?.name||rawKey||'').trim().slice(0,120);
-      const key=name.toLowerCase().replace(/\s+/g,' ');
+      const key=historicalTourStorageKey(name);
       const amount=Number(v?.amount);
       if(key && Number.isFinite(amount) && amount>0 && amount<=1000000000)
         out[key]={name,amount:Math.round(amount*100)/100};
@@ -930,7 +940,7 @@
       if(!Object.hasOwn(localCosts,key))delete mergedCosts[key];
       else mergedCosts[key]=localCosts[key];
     }
-    merged.historicalTourCosts=mergedCosts;
+    merged.historicalTourCosts=sanitizeHistoricalTourCosts(mergedCosts);
     merged.expenses=normalizeAccountReferences(merged.expenses,merged.accountRenames);
     merged.updatedAt = Date.now();
     return merged;
@@ -1014,7 +1024,12 @@
           acceptCloud(normalizeCloud(payload));setOnlineStatus(true);return;
         }
         throw Error('Concurrent changes prevented save; try again');
-      } catch(err) { console.error('Firebase sync:',err);setOnlineStatus(false); }
+      } catch(err) {
+        console.error('Firebase sync:',err);
+        setOnlineStatus(false);
+        const status=document.getElementById('syncStatusText');
+        if(status){status.textContent='🔴 Sync error — '+String(err?.message||err).slice(0,90);status.title='Local changes are retained for retry. Do not clear browser data or import CSV again until synchronization succeeds.';}
+      }
       finally {cloudBusy=false;cloudSyncPromise=null;}
     })();
     return cloudSyncPromise;
@@ -1430,6 +1445,7 @@
   }
   function resetDashFilters(){
     ['an_month','an_acc','an_type','an_cat','an_sub'].forEach(k=>msState[k].clear());
+    document.getElementById('anRemarksSearch').value='';
     clearDrill();renderAnalysis();
   }
   function selectDrillCategory(cat, side) {
@@ -1497,7 +1513,8 @@
       else if(anIsOfficialOut(e))g.spent+=v;
     });
     // Historical costs are private matching metadata, not transactions.
-    for(const [key,cost] of Object.entries(historicalTourCosts)){
+    for(const cost of Object.values(historicalTourCosts)){
+      const key=historicalTourMatchKey(cost.name);
       if(!groups.has(key))groups.set(key,{spent:0,recd:0,income:[]});
       groups.get(key).spent+=cost.amount;
     }
@@ -1535,7 +1552,8 @@
       (!msState.an_acc.size||msState.an_acc.has(e.account))&&
       (!msState.an_type.size||msState.an_type.has(e.type))&&
       (!msState.an_cat.size||msState.an_cat.has(anLabel(e)))&&
-      (!msState.an_sub.size||msState.an_sub.has(String(e.subCategory||'').trim()))
+      (!msState.an_sub.size||msState.an_sub.has(String(e.subCategory||'').trim()))&&
+      (!anLower(document.getElementById('anRemarksSearch')?.value)||anLower(e.remarks).includes(anLower(document.getElementById('anRemarksSearch')?.value)))
     ));
   }
   function anCalculate(rows){
@@ -1623,7 +1641,9 @@
     }
     const hasSelection=selectedDrillCategories.size||selectedInflowGroups.size||selectedKpiTiles.size;
     const search=anLower(document.getElementById('drillSearch').value);
-    const visible=rows.filter(e=>matches(e)&&(!search||[e.date,e.month,e.type,e.category,e.subCategory,e.account,e.remarks,e.addedBy].some(v=>anLower(v).includes(search)))).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+    // Direct search works even when no KPI/category/inflow is selected.
+    // Active selections continue to restrict the searchable population.
+    const visible=rows.filter(e=>(hasSelection?matches(e):Boolean(search))&&(!search||[e.date,formatDDMMYYYY(e.date),e.month,e.type,e.category,e.subCategory,e.account,e.remarks,e.addedBy].some(v=>anLower(v).includes(search)))).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
     let included=0,spendSum=0,householdSum=0,incomeSum=0,savingsSum=0,otherSum=0,repaySum=0;
     const body=visible.map(e=>{
       const off=excludedDashIdx.has(e.realIdx),v=anAmount(e),repay=anLower(e.category)==='debt repay';
@@ -1638,8 +1658,8 @@
       return '<tr class="'+(off?'excluded-row':'')+'"><td><input type="checkbox" aria-label="Include transaction" '+(!off?'checked':'')+' onchange="toggleDrillCheck('+e.realIdx+',\'dash\')"></td><td><button type="button" class="btn-edit-ico" title="Edit" onclick="openEditModal('+e.realIdx+')">✏️</button></td><td>'+anEsc(formatDDMMYYYY(e.date))+'</td><td>'+anEsc(e.month||'')+'</td><td>'+anEsc(e.type)+'</td><td>'+anEsc(src)+'</td><td>'+anEsc(anLabel(e))+'</td><td>'+anEsc(e.subCategory||'—')+'</td><td>'+anEsc(e.account||'—')+'</td><td class="num">'+v.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})+'</td><td>'+anEsc(e.remarks||'—')+'</td><td class="an-audit">'+anEsc((e.addedBy||'Imported')+' · '+(e.addedAt||''))+(e.editedBy?'<span>(Ed: '+anEsc(e.editedBy)+')</span>':'')+'</td></tr>';
     }).join('');
     document.getElementById('drillBox').style.display='block';
-    document.getElementById('drillBody').innerHTML=body||'<tr><td colspan="12" class="an-empty">'+(hasSelection?'No transactions match the selected items and search.':'Click any KPI, spending category or inflow group to display its transactions here.')+'</td></tr>';
-    document.getElementById('drillTitle').textContent=hasSelection?(included+' of '+visible.length+' transactions included · Combined selections'):'Choose one or more sources above to inspect underlying entries.';
+    document.getElementById('drillBody').innerHTML=body||'<tr><td colspan="12" class="an-empty">'+(hasSelection||search?'No transactions match the current selections and search.':'Search directly above, or click a KPI, spending category or inflow group to display transactions here.')+'</td></tr>';
+    document.getElementById('drillTitle').textContent=hasSelection?(included+' of '+visible.length+' transactions included · Combined selections'):(search?(included+' of '+visible.length+' matching transactions · Direct search'):'Search any transaction or select one or more sources above.');
     const chips=[...selectedKpiTiles].map(k=>anToggleHtml('kpi',k,({salary:'Salary & Incentives',spend:'Total Spend',household:'Household',savings:'Savings',other:'Other Inflows',debt:'Total Debt'}[k]||k)))
       .concat([...selectedDrillCategories].map(k=>anToggleHtml('cat',k,k.split('::').slice(1).join('::'))))
       .concat([...selectedInflowGroups].map(k=>anToggleHtml('inflow',k,k)));
@@ -1648,6 +1668,7 @@
     document.getElementById('anDrillNote').textContent=(selectedKpiTiles.has('debt')?'Total Debt KPI is a live balance (including opening card debt); drill-down shows the card transactions and repayments within current filters. ':'')+(repaySum?'Card repayments displayed: '+anMoney(repaySum)+'. ':'')+'Amounts are grouped by type; overlapping selections do not duplicate transactions. Tour savings use matched expenses across all dates/accounts; unmatched reimbursement receipts are not treated as savings. Savings contributions are not necessarily money currently held in the bank.';
   }
   function clearOffDrill() {
+    const q=document.getElementById('offDrillSearch');if(q)q.value='';
     selectedOffTour = null; excludedOffIdx.clear();
     const box = document.getElementById('offDrillBox');
     if (box) box.style.display = 'none';
@@ -1670,8 +1691,8 @@
     if(!cloudReady||localDirty||!navigator.onLine){alert('Wait for the tracker to synchronize before saving a historical cost.');return;}
     const name=document.getElementById('historicalTourName').value.trim();
     const amount=Number(document.getElementById('historicalTourAmount').value);
-    const key=anLower(name).replace(/\s+/g,' ');
-    if(!key||name.length>120||!Number.isFinite(amount)||amount<=0||amount>1e9){alert('Enter a tour name and valid positive cost.');return;}
+    const key=historicalTourStorageKey(name);
+    if(!historicalTourMatchKey(name)||name.length>120||!Number.isFinite(amount)||amount<=0||amount>1e9){alert('Enter a tour name and valid positive cost.');return;}
     if(!confirm('Save historical expense of '+anMoney(amount)+' for '+name+'? Only use costs NOT already in the CSV.'))return;
     historicalTourCosts[key]={name,amount:Math.round(amount*100)/100};
     ev.target.reset();refreshAllAndSync();
@@ -1683,7 +1704,7 @@
   }
   function selectOffTour(tour) {
     if (selectedOffTour === tour) clearOffDrill();
-    else { selectedOffTour = tour; excludedOffIdx.clear(); }
+    else { selectedOffTour = tour; excludedOffIdx.clear();const q=document.getElementById('offDrillSearch');if(q)q.value=''; }
     renderOfficial();
   }
   function renderOfficial() {
@@ -1708,7 +1729,8 @@
     // It is intentionally NOT included in current-period spend KPIs, balances or CSV export.
     const historicalIncluded=!msState.off_month.size&&!msState.off_acc.size;
     if(historicalIncluded){
-      Object.entries(historicalTourCosts).forEach(([key,cost])=>{
+      Object.values(historicalTourCosts).forEach(cost=>{
+        const key=historicalTourMatchKey(cost.name);
         if(!tourMap.has(key))tourMap.set(key,{name:cost.name,spent:0,recd:0,historical:0});
         const g=tourMap.get(key);g.spent+=cost.amount;g.historical=(g.historical||0)+cost.amount;
       });
@@ -1743,13 +1765,39 @@
         tag('td','class="num '+(pending>0?'text-red':'text-green')+'"',anMoney(pending))+
         tag('td','class="num text-green"',anMoney(surplus))
       );
-    }).join('');
-    document.getElementById('officialIncBody').innerHTML=incRows.sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(e=>
+    }).join('') + (()=>{
+      // Totals reflect currently displayed tour rows (respecting status and period filters).
+      // Historical tour costs, if present, are included in the displayed Spent amount
+      // for matching only; they do not change recorded expense totals or balances.
+      const totals=tourEntries.reduce((a,[,g])=>{
+        a.spent+=g.spent;a.recd+=g.recd;
+        a.pending+=Math.max(0,g.spent-g.recd);
+        a.surplus+=g.spent>0?Math.max(0,g.recd-g.spent):0;
+        a.historical+=(g.historical||0);
+        return a;
+      },{spent:0,recd:0,pending:0,surplus:0,historical:0});
+      const tip=totals.historical>0?' title="Includes historical costs used for matching; recorded spend KPI excludes them."':'';
+      return tag('tr','class="grand-total"',
+        tag('td','', 'Total ('+tourEntries.length+' shown)'+(totals.historical>0?' *':''))+
+        tag('td','class="num"'+tip,anMoney(totals.spent))+
+        tag('td','class="num text-green"',anMoney(totals.recd))+
+        tag('td','class="num text-red"',anMoney(totals.pending))+
+        tag('td','class="num text-green"',anMoney(totals.surplus))
+      );
+    })();
+    const receiptSearch=anLower(document.getElementById('officialReceiptSearch')?.value);
+    // Keep the receipt footer in sync with the exact rows visible after search.
+    // grandRecd is deliberately still used for the unsearched Official KPI.
+    const visibleReceipts=incRows.filter(e=>!receiptSearch||[e.date,formatDDMMYYYY(e.date),e.month,e.subCategory,e.account,e.remarks].some(v=>anLower(v).includes(receiptSearch)));
+    const visibleReceiptTotal=Math.round(visibleReceipts.reduce((sum,e)=>sum+anAmount(e),0)*100)/100;
+    document.getElementById('officialIncBody').innerHTML=visibleReceipts.sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(e=>
       tag('tr','',tag('td','',formatDDMMYYYY(e.date))+tag('td','',e.month)+tag('td','',safeHtml(e.subCategory||'-'))+tag('td','',safeHtml(e.account))+tag('td','class="num text-green"','₹'+anAmount(e).toLocaleString('en-IN',{minimumFractionDigits:2})))
-    ).join('')+tag('tr','class="grand-total"',tag('td','colspan="4"','Total Reimbursed')+tag('td','class="num text-green"','₹'+grandRecd.toLocaleString('en-IN',{minimumFractionDigits:2})));
+    ).join('')+tag('tr','class="grand-total"',tag('td','colspan="4"',receiptSearch?'Total Reimbursed ('+visibleReceipts.length+' search matches)':'Total Reimbursed ('+visibleReceipts.length+' receipts)')+tag('td','class="num text-green"','₹'+visibleReceiptTotal.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})));
     const offBox = document.getElementById('offDrillBox');
     if (selectedOffTour) {
-      const items = filtered.filter(e => anTourKey(e) === anLower(selectedOffTour).replace(/\s+/g,' ')).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+      const offSearch=anLower(document.getElementById('offDrillSearch')?.value);
+      const items = filtered.filter(e => anTourKey(e) === anLower(selectedOffTour).replace(/\s+/g,' ') &&
+        (!offSearch||[e.date,formatDDMMYYYY(e.date),e.month,e.type,e.category,e.subCategory,e.account,e.remarks,e.amount].some(v=>anLower(v).includes(offSearch)))).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
       let activeNet = 0, activeCount = 0;
       const rowsHtml = items.map(e => {
         const amt = parseFloat(e.amount) || 0; const isEx = excludedOffIdx.has(e.realIdx);
